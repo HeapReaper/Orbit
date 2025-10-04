@@ -2,6 +2,7 @@
 import { useState } from "react";
 import guilds from "../data/guilds";
 import modules from "../data/modules";
+import Image from "next/image";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -28,13 +29,14 @@ export default function Sidebar() {
           </div>
 
           {/* User avatar */}
-          <img
+          <Image
             src="https://placehold.co/40x40"
             alt="User Avatar"
+            width={32}
+            height={32}
             className="h-8 w-8 rounded-full border border-gray-700"
           />
 
-          {/* Mobile close button */}
           <button className="md:hidden ml-2" onClick={() => setOpen(false)}>
             ✖
           </button>
