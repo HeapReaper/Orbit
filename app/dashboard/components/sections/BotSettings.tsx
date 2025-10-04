@@ -1,6 +1,6 @@
 "use client";
 
-import SaveButton from "./buttons/Save";
+import SaveButton from "../buttons/Save";
 
 export default function BotSettings() {
   return (
@@ -8,19 +8,6 @@ export default function BotSettings() {
       <h2 className="text-lg font-semibold mb-4">Bot Settings</h2>
 
       <form className="space-y-4">
-        {/* Checkbox */}
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="disable"
-            className="rounded bg-gray-700 border-gray-600"
-          />
-          <label htmlFor="disable" className="text-sm text-gray-300">
-            Disable warnings for disabled commands/modules
-          </label>
-        </div>
-
-        {/* Nickname & Prefix */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className="block text-gray-400 text-sm mb-1">Nickname</label>

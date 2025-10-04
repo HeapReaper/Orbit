@@ -1,0 +1,34 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Unix-style newlines with UTF-8 encoding
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Default for all files
+indent_style = space
+indent_size = 2
+
+# Specific for TypeScript / TSX files
+[*.ts]
+indent_style = space
+indent_size = 2
+
+[*.tsx]
+indent_style = space
+indent_size = 2
+
+# Optional: JavaScript files
+[*.js]
+indent_style = space
+indent_size = 2
+
+# Optional: JSON files
+[*.json]
+indent_style = space
+indent_size = 2

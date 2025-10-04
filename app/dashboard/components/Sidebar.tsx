@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import guilds from "../data/guilds";
+import modules from "../data/modules";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -15,7 +17,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed md:static inset-y-0 left-0 w-64 bg-[#14171f] p-4 transform transition-transform duration-200 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-screen w-64 bg-[#14171f] p-4 transform transition-transform duration-200 ease-in-out z-40 ${
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -24,10 +26,28 @@ export default function Sidebar() {
             <img src="/logo.png" alt="Logo" className="h-8 w-8" />
             <span className="px-2 py-1">Orbit</span>
           </div>
-          <button className="md:hidden" onClick={() => setOpen(false)}>
+
+          {/* User avatar */}
+          <img
+            src="https://placehold.co/40x40"
+            alt="User Avatar"
+            className="h-8 w-8 rounded-full border border-gray-700"
+          />
+
+          {/* Mobile close button */}
+          <button className="md:hidden ml-2" onClick={() => setOpen(false)}>
             ✖
           </button>
         </div>
+
+        <select className="w-full mb-4 bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
+          {/*<option>Select...</option>*/}
+          {guilds.map((guild) => (
+            <option value={`guild/${guild.url}`}>
+              {guild.name}
+            </option>
+          ))}
+        </select>
 
         <nav className="flex flex-col space-y-2 text-gray-400">
           <a href="#" className="hover:text-white px-2 py-1 rounded-md">🏠 Dashboard</a>
@@ -44,9 +64,9 @@ export default function Sidebar() {
             </button>
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
-                <a href="#" className="hover:text-white px-2 py-1 rounded-md">Module 1</a>
-                <a href="#" className="hover:text-white px-2 py-1 rounded-md">Module 2</a>
-                <a href="#" className="hover:text-white px-2 py-1 rounded-md">Module 3</a>
+                {modules.map((module) => (
+                  <a href={`modules/${module.url}`} className="hover:text-white px-2 py-1 rounded-md">{module.name}</a>
+                ))}
               </div>
             )}
           </div>
