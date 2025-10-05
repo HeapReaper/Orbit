@@ -1,11 +1,16 @@
 import { Save } from "lucide-react";
 
-export default function SettingsButton() {
+interface SaveButtonProps {
+  onClick?: () => void;
+}
+
+export default function SaveButton({ onClick }: SaveButtonProps) {
   return (
     <button
       type="button"
+      onClick={onClick} // <-- pass the onClick prop here
       className="text-[var(--primary-color)] hover:text-[var(--hover-color)] transition-colors duration-200"
-      aria-label="Settings"
+      aria-label="Save"
     >
       <Save className="w-6 h-6" />
     </button>

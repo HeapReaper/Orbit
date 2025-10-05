@@ -107,7 +107,7 @@ export default function Sidebar() {
           </a>
         </nav>
 
-        <div className="absolute bottom-4 text-xs text-gray-500">© Dyno Premium</div>
+        <div className="absolute bottom-4 text-xs text-gray-500">By HeapReaper</div>
       </aside>
 
       <button

@@ -1,5 +1,8 @@
+"use client";
+
 import IconButton from "@/app/dashboard/components/inputs/IconButton";
-import { Settings, Save } from "lucide-react";
+import { Settings } from "lucide-react";
+import ToggleSwitch from "@/app/dashboard/components/inputs/Switch";
 
 interface Props {
   name: string;
@@ -16,8 +19,23 @@ export default function ModuleCard({ name, description, type }: Props) {
         <h3 className="text-white font-semibold">{name}</h3>
         <span className={`text-xs ${color} px-2 py-1 rounded`}>{type}</span>
       </div>
+
       <p className="text-gray-400 text-sm mb-3 flex-1">{description}</p>
-      <IconButton icon={Settings} label="Settings" size={24} onClick={() => console.log("Settings clicked")} />
+
+      <div className="flex items-center gap-4">
+        <IconButton
+          icon={Settings}
+          label="Settings"
+          size={24}
+          onClick={() => console.log("Settings clicked")}
+        />
+
+
+        <ToggleSwitch
+          enabled={true}
+          onChange={(val) => console.log("Toggled:", val)}
+        />
+      </div>
     </div>
   );
 }

@@ -18,7 +18,7 @@ export default function BotSettings() {
             <label className="block text-gray-400 text-sm mb-1">Nickname</label>
             <input
               type="text"
-              value="Dyno"
+              value="Aether"
               className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white"
             />
           </div>
