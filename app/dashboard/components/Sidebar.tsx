@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
 import Cookies from "js-cookie";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
+import Link from "next/link";
 
 // temp guilds where bot is in
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
@@ -81,25 +82,24 @@ export default function Sidebar() {
         <SelectInput
           label=""
           value={selectedGuild}
-          onChange={(value: string) => {
-            setSelectedGuild(value);
-            Cookies.set("selectedGuild", value, { expires: 7 });
-          }}
-          options={[
-            ...guilds
-              .filter((guild) => botGuildIds.includes(guild.id))
-              .map((guild) => ({ value: guild.id, label: guild.name })),
-          ]}
+          onChange={(value: string) => setSelectedGuild(value)}
+          options={
+            Array.isArray(guilds)
+              ? guilds
+                .filter((guild) => botGuildIds.includes(guild.id))
+                .map((guild) => ({ value: guild.id, label: guild.name }))
+              : []
+          }
         />
 
         <nav className="flex flex-col space-y-2 text-gray-400">
-          <a
+          <Link
             href="/dashboard"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
-          </a>
+          </Link>
 
           <div>
             <button
@@ -117,41 +117,49 @@ export default function Sidebar() {
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
                 {modules.map((module, index: number) => (
-                  <a key={index} href={`dashboard/modules/${module.url}`} className="hover:text-white px-2 py-1 rounded-md">{module.name}</a>
+                  <Link
+                    key={index}
+                    href={`/dashboard/modules/${module.url}`}
+                    className="hover:text-white px-2 py-1 rounded-md"
+                  >
+                    {module.name}
+                  </Link>
                 ))}
               </div>
             )}
           </div>
 
-          <a
+          <Link
             href="/dashboard/bot"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
-          </a>
-          <a
+          </Link>
+
+          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <ScrollText className="w-6 h-6 text-[var(--primary-color)]" />
             Server Listing
-          </a>
-          <a
+          </Link>
+
+          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
-          </a>
+          </Link>
         </nav>
 
 
