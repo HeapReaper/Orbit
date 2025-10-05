@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock, Bot } from "lucide-react";
+import { Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
-import Cookies from "js-cookie";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import Link from "next/link";
 
@@ -143,14 +142,6 @@ export default function Sidebar() {
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
-          </Link>
-
-          <Link
-            href="#"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
-          >
-            <ScrollText className="w-6 h-6 text-[var(--primary-color)]" />
-            Server Listing
           </Link>
 
           <Link
