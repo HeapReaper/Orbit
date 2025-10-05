@@ -1,8 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import guilds from "../data/guilds";
 import modules from "../data/modules";
 import Image from "next/image";
+import { Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock } from "lucide-react";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -44,38 +46,65 @@ export default function Sidebar() {
 
         <select className="w-full mb-4 bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
           {/*<option>Select...</option>*/}
-          {guilds.map((guild) => (
-            <option value={`guild/${guild.url}`}>
+          {guilds.map((guild, index: number) => (
+            <option key={index} value={`guild/${guild.url}`}>
               {guild.name}
             </option>
           ))}
         </select>
 
         <nav className="flex flex-col space-y-2 text-gray-400">
-          <a href="#" className="hover:text-white px-2 py-1 rounded-md">🏠 Dashboard</a>
+          <a
+            href="/dashboard"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <Home className="w-6 h-6 text-[var(--primary-color)]" />
+            Dashboard
+          </a>
 
           <div>
             <button
               onClick={() => setModulesOpen(!modulesOpen)}
               className="flex justify-between items-center w-full px-2 py-1 hover:text-white rounded-md"
             >
-              🧩 Modules
+              <div className="flex items-center gap-2">
+                <Package className="w-6 h-6 text-[var(--primary-color)]" />
+                <span>Modules</span>
+              </div>
               <span className={`transition-transform duration-200 ${modulesOpen ? "rotate-90" : ""}`}>
-                <img src="icons/arrow-right.png" className="w-6 text-red" />
+                <Play className="w-6 h-6 text-[var(--primary-color)]" />
               </span>
             </button>
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
-                {modules.map((module) => (
-                  <a href={`modules/${module.url}`} className="hover:text-white px-2 py-1 rounded-md">{module.name}</a>
+                {modules.map((module, index: number) => (
+                  <a key={index} href={`dashboard/modules/${module.url}`} className="hover:text-white px-2 py-1 rounded-md">{module.name}</a>
                 ))}
               </div>
             )}
           </div>
 
-          <a href="#" className="hover:text-white px-2 py-1 rounded-md">💬 Commands</a>
-          <a href="#" className="hover:text-white px-2 py-1 rounded-md">📜 Server Listing</a>
-          <a href="#" className="hover:text-white px-2 py-1 rounded-md">📘 Logs</a>
+          <a
+            href="#"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
+            Commands
+          </a>
+          <a
+            href="#"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <ScrollText className="w-6 h-6 text-[var(--primary-color)]" />
+            Server Listing
+          </a>
+          <a
+            href="#"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
+            Logs
+          </a>
         </nav>
 
         <div className="absolute bottom-4 text-xs text-gray-500">© Dyno Premium</div>

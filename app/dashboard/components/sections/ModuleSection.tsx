@@ -1,9 +1,11 @@
+"use client";
+
 import ModuleCard from "@/app/dashboard/components/cards/ModuleCard";
 import modules from "@/app/dashboard/data/modules";
 
 export default function ModuleSection() {
   return (
-    <section>
+    <section className="bg-[#181b25] p-6 rounded-lg">
       <h2 className="text-xl font-semibold mb-4">Modules</h2>
       <input
         type="text"

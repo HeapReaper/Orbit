@@ -1,7 +1,13 @@
+import { User } from "lucide-react";
+
 export default function UserInfo() {
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">User Info</h2>
+      <div className="flex items-center gap-2 mb-3">
+        <User className="w-6 h-6 text-[var(--primary-color)]" />
+
+        <h2 className="text-lg font-semibold">User Info</h2>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
         <p>
@@ -11,7 +17,7 @@ export default function UserInfo() {
           <span className="font-semibold text-white">Servers joined:</span> 3
         </p>
         <p>
-          <span className="font-semibold text-white">Test:</span> 14
+          <span className="font-semibold text-white">Account age:</span> 6 years
         </p>
       </div>
     </section>

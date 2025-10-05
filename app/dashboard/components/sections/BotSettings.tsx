@@ -1,11 +1,16 @@
 "use client";
 
-import SaveButton from "../buttons/Save";
+import IconButton from "@/app/dashboard/components/inputs/IconButton";
+import { Bot, Save } from "lucide-react";
 
 export default function BotSettings() {
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">Bot Settings</h2>
+      <div className="flex items-center gap-2 mb-3">
+        <Bot className="w-6 h-6 text-[var(--primary-color)]" />
+
+        <h2 className="text-lg font-semibold">Bot settings</h2>
+      </div>
 
       <form className="space-y-4">
         <div className="grid md:grid-cols-2 gap-4">
@@ -19,22 +24,13 @@ export default function BotSettings() {
           </div>
 
           <div>
-            <label className="block text-gray-400 text-sm mb-1">Command Prefix</label>
-            <input
-              type="text"
-              value="?"
-              className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white"
-            />
+            <label className="block text-gray-400 text-sm mb-1">
+              Manager Roles (Owner/Administrator Only)
+            </label>
+            <select className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
+              <option>Select...</option>
+            </select>
           </div>
-        </div>
-
-        <div>
-          <label className="block text-gray-400 text-sm mb-1">
-            Manager Roles (Owner/Administrator Only)
-          </label>
-          <select className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
-            <option>Select...</option>
-          </select>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
@@ -56,7 +52,7 @@ export default function BotSettings() {
           </div>
         </div>
 
-        <SaveButton />
+        <IconButton icon={Save} label="Settings" size={24} onClick={() => console.log("Save clicked")} />
       </form>
     </section>
   );
