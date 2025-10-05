@@ -4,7 +4,10 @@ import UserInfo from "./components/sections/UserInfo";
 import BotInfo from "@/app/dashboard/components/sections/BotInfo";
 import HelpArticles from "@/app/dashboard/components/sections/Help";
 
-export default function DashboardPage() {
+
+export default async function DashboardPage() {
+
+
   return (
     <div className="space-y-8">
       <UserInfo />

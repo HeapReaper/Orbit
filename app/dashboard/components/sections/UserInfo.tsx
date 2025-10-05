@@ -1,6 +1,13 @@
+"use client";
+
 import { User } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function UserInfo() {
+  const { data: session } = useSession();
+
+  if (!session || !session.user) return;
+
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
@@ -11,7 +18,7 @@ export default function UserInfo() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
         <p>
-          <span className="font-semibold text-white">Username:</span> HeapReaper
+          <span className="font-semibold text-white">Username:</span> {session.user.name}
         </p>
         <p>
           <span className="font-semibold text-white">Servers joined:</span> 3
