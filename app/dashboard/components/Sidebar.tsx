@@ -1,14 +1,43 @@
 "use client";
 
-import { useState } from "react";
-import guilds from "../data/guilds";
-import modules from "../data/modules";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import {Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock, Bot} from "lucide-react";
+import { Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import modules from "../data/modules";
+import SelectInput from "@/app/dashboard/components/inputs/Select";
+import Link from "next/link";
+
+// temp guilds where bot is in
+const botGuildIds = ["1373949549495844954", "1332406393105289236"];
+
+interface Guild {
+  id: string;
+  name: string;
+  icon: string | null;
+  owner: boolean;
+  permissions: string;
+}
 
 export default function Sidebar() {
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
+  const [guilds, setGuilds] = useState<Guild[]>([]);
+  const [selectedGuild, setSelectedGuild] = useState<string>("");
+
+  useEffect(() => {
+    // @ts-ignore
+    if (!session?.accessToken) return;
+
+    fetch("https://discord.com/api/users/@me/guilds", {
+      // @ts-ignore
+      headers: { Authorization: `Bearer ${session.accessToken}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setGuilds(data))
+      .catch(console.error);
+  }, [session]);
 
   return (
     <>
@@ -31,37 +60,45 @@ export default function Sidebar() {
           </div>
 
           {/* User avatar */}
-          <Image
-            src="https://placehold.co/40x40"
-            alt="User Avatar"
-            width={32}
-            height={32}
-            className="h-8 w-8 rounded-full border"
-            style={{ borderColor: "var(--primary-color)" }}
-          />
+          {session?.user?.image ? (
+            <Image
+              src={session.user.image}
+              alt={session.user.name || "User Avatar"}
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full border"
+              style={{ borderColor: "var(--primary-color)" }}
+            />
+          ) : (
+            <div className="h-8 w-8 rounded-full bg-gray-700 border" />
+          )}
 
           <button className="md:hidden ml-2" onClick={() => setOpen(false)}>
             ✖
           </button>
         </div>
 
-        <select className="w-full mb-4 bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
-          {/*<option>Select...</option>*/}
-          {guilds.map((guild, index: number) => (
-            <option key={index} value={`guild/${guild.url}`}>
-              {guild.name}
-            </option>
-          ))}
-        </select>
+        <SelectInput
+          label=""
+          value={selectedGuild}
+          onChange={(value: string) => setSelectedGuild(value)}
+          options={
+            Array.isArray(guilds)
+              ? guilds
+                .filter((guild) => botGuildIds.includes(guild.id))
+                .map((guild) => ({ value: guild.id, label: guild.name }))
+              : []
+          }
+        />
 
         <nav className="flex flex-col space-y-2 text-gray-400">
-          <a
+          <Link
             href="/dashboard"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
-          </a>
+          </Link>
 
           <div>
             <button
@@ -79,44 +116,53 @@ export default function Sidebar() {
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
                 {modules.map((module, index: number) => (
-                  <a key={index} href={`dashboard/modules/${module.url}`} className="hover:text-white px-2 py-1 rounded-md">{module.name}</a>
+                  <Link
+                    key={index}
+                    href={`/dashboard/modules/${module.url}`}
+                    className="hover:text-white px-2 py-1 rounded-md"
+                  >
+                    {module.name}
+                  </Link>
                 ))}
               </div>
             )}
           </div>
 
-          <a
+          <Link
             href="/dashboard/bot"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
-          >
-            <ScrollText className="w-6 h-6 text-[var(--primary-color)]" />
-            Server Listing
-          </a>
-          <a
+          </Link>
+
+          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
-          </a>
+          </Link>
         </nav>
 
-        <div className="absolute bottom-4 text-xs text-gray-500">By HeapReaper</div>
+
+        <div className="absolute bottom-4 flex flex-col gap-2 text-xs text-gray-500">
+          <span>By HeapReaper</span>
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="text-red-500 hover:text-red-400 text-left"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
       <button

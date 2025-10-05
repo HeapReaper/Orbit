@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dyno Dashboard Clone",
-  description: "Responsive Dyno-style dashboard built with Next.js + TailwindCSS",
+  title: "Orbit dashboard",
+  description: "The dashboard for Aether",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
