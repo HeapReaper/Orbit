@@ -5,8 +5,10 @@ import Image from "next/image";
 import { Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock, Bot } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
+import Cookies from "js-cookie";
+import SelectInput from "@/app/dashboard/components/inputs/Select";
 
-// temp
+// temp guilds where bot is in
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
 interface Guild {
@@ -22,6 +24,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
   const [guilds, setGuilds] = useState<Guild[]>([]);
+  const [selectedGuild, setSelectedGuild] = useState<string>("");
 
   useEffect(() => {
     // @ts-ignore
@@ -75,15 +78,19 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <select className="w-full mb-4 bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-gray-400">
-          {guilds
-            .filter(guild => botGuildIds.includes(guild.id))
-            .map((guild, index: number) => (
-              <option key={index} value={`guild/${guild.id}`}>
-                {guild.name}
-              </option>
-            ))}
-        </select>
+        <SelectInput
+          label=""
+          value={selectedGuild}
+          onChange={(value: string) => {
+            setSelectedGuild(value);
+            Cookies.set("selectedGuild", value, { expires: 7 });
+          }}
+          options={[
+            ...guilds
+              .filter((guild) => botGuildIds.includes(guild.id))
+              .map((guild) => ({ value: guild.id, label: guild.name })),
+          ]}
+        />
 
         <nav className="flex flex-col space-y-2 text-gray-400">
           <a

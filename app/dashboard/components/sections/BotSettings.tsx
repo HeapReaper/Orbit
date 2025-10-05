@@ -10,21 +10,16 @@ import { useState } from "react";
 export default function BotSettings() {
   const { notify } = useNotification();
 
-  // Bot settings
   const [nickname, setNickname] = useState("Aether");
   const [managerRoles, setManagerRoles] = useState("");
   const [updatesChannel, setUpdatesChannel] = useState("");
   const [timezone, setTimezone] = useState("Europe/Amsterdam");
 
-  // Theme settings
   const [primaryColor, setPrimaryColor] = useState("#4f46e5");
   const [secondaryColor, setSecondaryColor] = useState("#10b981");
-  const [fontStyle, setFontStyle] = useState("Default");
-  const [darkMode, setDarkMode] = useState(true);
 
   const handleSave = () => {
     notify("Settings saved!", "", "success");
-    // Send settings to API here if needed
   };
 
   return (
@@ -35,7 +30,6 @@ export default function BotSettings() {
       </div>
 
       <form className="space-y-6">
-        {/* Bot General Settings */}
         <div className="grid md:grid-cols-2 gap-4">
           <TextInput label="Nickname" value={nickname} onChange={setNickname} />
           <SelectInput
@@ -56,7 +50,6 @@ export default function BotSettings() {
           <TextInput label="Timezone" value={timezone} onChange={setTimezone} />
         </div>
 
-        {/* Theme Settings */}
         <div className="border-t border-gray-700 pt-4 space-y-4 mb-3">
           <h3 className="text-md font-semibold text-gray-300 mb-2">Theme Settings</h3>
 
