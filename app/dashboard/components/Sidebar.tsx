@@ -36,7 +36,8 @@ export default function Sidebar() {
             alt="User Avatar"
             width={32}
             height={32}
-            className="h-8 w-8 rounded-full border border-gray-700"
+            className="h-8 w-8 rounded-full border"
+            style={{ borderColor: "var(--primary-color)" }}
           />
 
           <button className="md:hidden ml-2" onClick={() => setOpen(false)}>

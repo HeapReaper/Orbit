@@ -4,16 +4,17 @@ import { useState } from "react";
 import SaveButton from "@/app/dashboard/components/buttons/Save"; // jouw bestaande SaveButton
 import ToggleSwitch from "@/app/dashboard/components/inputs/Switch";
 import { useNotification } from "@/app/context/NotificationContext";
+import TextInput from "@/app/dashboard/components/inputs/Text";
+import NumberInput from "@/app/dashboard/components/inputs/Number";
 
 export default function BumpReminderPage() {
   const [enabled, setEnabled] = useState(true);
-  const [message, setMessage] = useState("Don't forget to bump the server!");
-  const [intervalHours, setIntervalHours] = useState(24);
+  const [message, setMessage] = useState("The server can be bumped again!");
+  const [intervalHours, setIntervalHours] = useState(2);
   const { notify } = useNotification();
 
   const handleSave = () => {
-    console.log("Bump reminder saved:", { enabled, message, intervalHours });
-    notify("Settings saved", "", "success")
+    notify("Settings saved!", "", "success")
   };
 
   return (
@@ -37,26 +38,19 @@ export default function BumpReminderPage() {
         </button>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-400 mb-1">Bump Message</label>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white"
-        />
-      </div>
+      <TextInput
+        label="Bump Message"
+        value={message}
+        onChange={setMessage}
+      />
 
-      <div className="mb-4">
-        <label className="block text-gray-400 mb-1">Interval (hours)</label>
-        <input
-          type="number"
-          min={1}
-          value={intervalHours}
-          onChange={(e) => setIntervalHours(Number(e.target.value))}
-          className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white"
-        />
-      </div>
+      <NumberInput
+        label="Interval (hours)"
+        value={intervalHours}
+        onChange={setIntervalHours}
+        min={1}
+        max={24}
+      />
 
       <SaveButton onClick={handleSave} />
     </section>
