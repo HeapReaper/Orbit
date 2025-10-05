@@ -59,23 +59,25 @@ export const NotificationProvider = ({ children }: ProviderProps) => {
     <NotificationContext.Provider value={{ notify }}>
       {children}
 
-      {/* Bottom-right notification container */}
       <div className="fixed bottom-4 right-4 flex flex-col gap-3 z-50">
         {notifications.map((n) => (
           <div
             key={n.id}
             role="alert"
-            className="rounded-md border border-gray-300 bg-white p-4 shadow-sm flex items-start gap-4"
+            className="rounded-md border border-gray-300 backdrop-blur-md p-4 shadow-sm flex items-start gap-4"
+            style={{ borderColor: "rgba(255, 255, 255, 0.2)" }} // zachtere rand
           >
             {getIcon(n.type)}
 
             <div className="flex-1">
-              <strong className="font-medium text-gray-900">{n.title}</strong>
-              {n.description && <p className="mt-0.5 text-sm text-gray-700">{n.description}</p>}
+              <strong className="font-medium text-white">{n.title}</strong>
+              {n.description && (
+                <p className="mt-0.5 text-sm text-gray-200">{n.description}</p>
+              )}
             </div>
 
             <button
-              className="-m-3 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
+              className="-m-3 rounded-full p-1.5 text-gray-200 transition-colors hover:bg-white/20 hover:text-white"
               onClick={() => dismiss(n.id)}
               aria-label="Dismiss alert"
             >
@@ -84,6 +86,7 @@ export const NotificationProvider = ({ children }: ProviderProps) => {
           </div>
         ))}
       </div>
+
     </NotificationContext.Provider>
   );
 };
