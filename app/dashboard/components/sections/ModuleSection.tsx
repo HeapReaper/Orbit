@@ -2,21 +2,36 @@
 
 import ModuleCard from "@/app/dashboard/components/cards/ModuleCard";
 import modules from "@/app/dashboard/data/modules";
+import { Package } from "lucide-react";
+import {useState} from "react";
+import TextInput from "@/app/dashboard/components/inputs/Text";
 
 export default function ModuleSection() {
+  const [search, setSearch] = useState("");
+
+  const filteredModules = modules.filter(module =>
+    module.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
-      <h2 className="text-xl font-semibold mb-4">Modules</h2>
-      <input
-        type="text"
-        placeholder="Search"
-        className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white mb-6"
+      <div className="flex items-center gap-2 mb-3">
+        <Package className="w-6 h-6 text-[var(--primary-color)]" />
+
+        <h2 className="text-lg font-semibold">Modules</h2>
+      </div>
+
+      <TextInput
+        label=""
+        placeholder="Search..."
+        value={search}
+        onChange={setSearch}
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {modules.map((m) => (
+        {filteredModules.map((module) => (
           // @ts-ignore
-          <ModuleCard key={m.name} {...m} />
+          <ModuleCard key={module.name} {...module} />
         ))}
       </div>
     </section>

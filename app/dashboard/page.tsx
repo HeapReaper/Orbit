@@ -1,7 +1,8 @@
 import ServerInfo from "@/app/dashboard/components/sections/ServerInfo";
-import BotSettings from "@/app/dashboard/components/sections/BotSettings";
 import ModuleSection from "./components/sections/ModuleSection";
 import UserInfo from "./components/sections/UserInfo";
+import BotInfo from "@/app/dashboard/components/sections/BotInfo";
+import HelpArticles from "@/app/dashboard/components/sections/Help";
 
 export default function DashboardPage() {
   return (
@@ -9,8 +10,10 @@ export default function DashboardPage() {
       <UserInfo />
 
       <ServerInfo />
-      
-      <BotSettings />
+
+      <BotInfo />
+
+      <HelpArticles />
 
       <ModuleSection />
     </div>

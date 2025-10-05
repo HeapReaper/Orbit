@@ -4,7 +4,7 @@ import { useState } from "react";
 import guilds from "../data/guilds";
 import modules from "../data/modules";
 import Image from "next/image";
-import { Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock } from "lucide-react";
+import {Play, Package, Home, SquareChevronRight, ScrollText, ClipboardClock, Bot} from "lucide-react";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -84,6 +84,14 @@ export default function Sidebar() {
               </div>
             )}
           </div>
+
+          <a
+            href="/dashboard/bot"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <Bot className="w-6 h-6 text-[var(--primary-color)]" />
+            Bot
+          </a>
 
           <a
             href="#"
