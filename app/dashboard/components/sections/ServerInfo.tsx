@@ -1,6 +1,15 @@
+"use client";
+
 import { MessageCircle } from "lucide-react";
+import { useGuild } from "@/app/context/GuildContext";
 
 export default function ServerInfo() {
+  const { selectedGuild, setSelectedGuild, channels, guilds } = useGuild();
+
+  let guildName = guilds.find(g => g.id === selectedGuild);
+
+  if (!guildName) return null;
+
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
@@ -11,22 +20,13 @@ export default function ServerInfo() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
         <p>
-          <span className="font-semibold text-white">Guild:</span> RC Garage
+          <span className="font-semibold text-white">Guild:</span> {guildName.name}
         </p>
         <p>
           <span className="font-semibold text-white">Members:</span> 3
         </p>
         <p>
-          <span className="font-semibold text-white">Categories:</span> 3
-        </p>
-        <p>
-          <span className="font-semibold text-white">Text Channels:</span> 14
-        </p>
-        <p>
-          <span className="font-semibold text-white">Voice Channels:</span> 0
-        </p>
-        <p>
-          <span className="font-semibold text-white">Roles:</span> 2
+          <span className="font-semibold text-white">Channels:</span> {channels.length}
         </p>
       </div>
     </section>

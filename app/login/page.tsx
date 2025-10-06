@@ -2,12 +2,22 @@
 
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#0d0f13] flex flex-col items-center justify-center px-4">
+      <Image
+        src="/logo.png"
+        width={100}
+        height={100}
+        alt="Logo"
+        className="mb-3"
+      />
+
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Orbit Dashboard</h1>
+
+        <h1 className="text-3xl font-bold text-white mb-2">Orbit</h1>
         <p className="text-gray-400 text-sm">Log in to manage your server(s)</p>
       </div>
 
@@ -33,7 +43,7 @@ export default function LoginPage() {
       </div>
 
       <footer className="mt-10 text-gray-600 text-xs text-center">
-        © {new Date().getFullYear()} Orbit Dashboard. All rights reserved.
+        © {new Date().getFullYear()} Orbit Dashboard. By HeapReaper
       </footer>
     </div>
   );
