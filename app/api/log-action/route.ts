@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
+import { PrismaClient } from "@/app/generated/prisma";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end();
@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const log = await prisma.user_action.create({
+    const log = await PrismaClient.user_action.create({
       data: { userId, username, action, guildId },
     });
     res.status(200).json(log);
