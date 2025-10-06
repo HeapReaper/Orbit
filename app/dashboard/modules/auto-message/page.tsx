@@ -17,7 +17,7 @@ type AutoMessage = {
   enabled: boolean;
 };
 
-export default function AutoMessagesPage() {
+export default function Page() {
   const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
   const [autoMessages, setAutoMessages] = useState<AutoMessage[]>([]);
@@ -57,7 +57,7 @@ export default function AutoMessagesPage() {
 
   const handleSave = async () => {
     try {
-      const resp = await fetch(`/api/automessage`, {
+      const resp = await fetch(`/api/auto-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ guild_id: selectedGuild, autoMessages }),
@@ -94,9 +94,6 @@ export default function AutoMessagesPage() {
               value={msg.message}
               onChange={(v) => updateAutoMessage(msg.id, "message", v)}
             />
-            <p className="text-sm text-gray-500 mt-1">
-              You can use <InlineCode text="{user}" /> to mention the user.
-            </p>
           </div>
 
           <div className="mb-2">
@@ -105,9 +102,12 @@ export default function AutoMessagesPage() {
               label=""
               value={msg.channel}
               onChange={(v) => updateAutoMessage(msg.id, "channel", v)}
-              options={channels
-                .filter(c => c.type === 0)
-                .map(c => ({ value: c.id, label: c.name }))}
+              options={[
+                { value: "", label: "Select..." },
+                ...channels
+                  .filter(c => c.type === 0)
+                  .map(c => ({ value: c.id, label: c.name }))
+              ]}
             />
           </div>
 
