@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const data = await prisma.birthday_settings.findFirst({
+    const data = await prisma.bot_settings.findFirst({
       where: { guild_id },
     });
     return NextResponse.json(data);
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const data = await req.json();
   const session = await getServerSession();
 
@@ -41,12 +41,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ error: "guild_id is required" });
   }
 
-  const { guild_id, channel, message, time, enabled } = data;
+  const { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color } = data;
 
-  const updated = await prisma.birthday_settings.upsert({
+  const updated = await prisma.bot_settings.upsert({
     where: { guild_id },
-    update: { channel, message, time, enabled },
-    create: { guild_id, channel, message, time, enabled },
+    update: { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color },
+    create: { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color },
   });
 
   return NextResponse.json(updated);
