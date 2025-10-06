@@ -53,7 +53,7 @@ const modules = [
     url: "auto-message",
     description: "Send automatic messages to channels.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Welcome message",
