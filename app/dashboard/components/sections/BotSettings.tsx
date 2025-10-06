@@ -96,7 +96,7 @@ export default function BotSettings() {
             label="Updates channel"
             value={updatesChannel || ""}
             onChange={(val) => setUpdatesChannel(val)}
-            options={channels.map(channel => ({
+            options={channels.filter(c => c.type === 0).map(channel => ({
               value: channel.id,
               label: channel.name,
             }))}

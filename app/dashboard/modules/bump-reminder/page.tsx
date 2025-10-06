@@ -14,9 +14,7 @@ export default function BumpReminderPage() {
   const [intervalHours, setIntervalHours] = useState<number>(1);
   const { selectedGuild, setSelectedGuild, channels } = useGuild();
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-
   const { notify } = useNotification();
-
 
   useEffect(() => {
     if (!selectedGuild) return;
@@ -103,7 +101,7 @@ export default function BumpReminderPage() {
         label="Select channel"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
-        options={channels.map(channel => ({
+        options={channels.filter(c => c.type === 0).map(channel => ({
           value: channel.id,
           label: channel.name,
         }))}

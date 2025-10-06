@@ -116,7 +116,7 @@ export default async function Page() {
         label="Select channel"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
-        options={channels.map(channel => ({
+        options={channels.filter(c => c.type === 0).map(channel => ({
           value: channel.id,
           label: channel.name,
         }))}

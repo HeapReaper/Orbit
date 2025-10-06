@@ -1,21 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import SaveButton from "@/app/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import TextInput from "@/app/dashboard/components/inputs/Text";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import InlineCode from "@/app/dashboard/components/ui/InlineCode";
+import {useGuild} from "@/app/context/GuildContext";
 
 export default function Page() {
-  const [enabled, setEnabled] = useState(true);
-  const [message, setMessage] = useState("🎉 Welcome to our server, {user}!");
-  const [channel, setChannel] = useState("");
-
+  const [enabled, setEnabled] = useState<boolean>();
+  const [message, setMessage] = useState<string>();
+  const [channel, setChannel] = useState<string>();
   const { notify } = useNotification();
+  const { selectedGuild, channels } = useGuild();
 
-  const handleSave = () => {
-    notify("Welcome message settings saved!", "", "success");
+  useEffect(() => {
+    if (!selectedGuild) return;
+
+    const fetchGuildData = async () => {
+      try {
+        const res = await fetch(`/api/welcome-message?guild_id=${selectedGuild}`);
+        const data = await res.json();
+
+        setMessage(data.message ?? "");
+        setChannel(data.channel ?? "");
+        setEnabled(data.enabled ?? false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void fetchGuildData();
+  }, [selectedGuild]);
+
+  const handleSave = async () => {
+    try {
+      const resp = await fetch("/api/welcome-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          guild_id: selectedGuild,
+          message: message,
+          channel: channel,
+          enabled: enabled ? 1 : 0,
+        })
+      });
+
+      if (!resp.ok) {
+        return notify("Oeps", "Could not save settings", "error");
+      }
+
+      notify("Saved", "", "success");
+    } catch (error) {
+      notify("Error", `${error}`, "error");
+    }
   };
 
   return (
@@ -41,7 +82,7 @@ export default function Page() {
 
       <TextInput
         label="Welcome message"
-        value={message}
+        value={message ?? ""}
         onChange={setMessage}
         placeholder="Example: 🎉 Welcome to our server, {user}!"
       />
@@ -49,11 +90,15 @@ export default function Page() {
         You can use <InlineCode text={"{user}"}/> to mention the user in the message.
       </p>
 
+
       <SelectInput
-        label="Announcement Channel"
-        value={channel}
-        onChange={setChannel}
-        options={[{ value: "", label: "Select..." }]}
+        label="Announcement channel"
+        value={channel || ""}
+        onChange={(val) => setChannel(val)}
+        options={channels.filter(c => c.type === 0).map(channel => ({
+          value: channel.id,
+          label: channel.name,
+        }))}
       />
 
       <SaveButton onClick={handleSave} />
