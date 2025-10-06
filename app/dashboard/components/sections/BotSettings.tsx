@@ -11,7 +11,7 @@ import { useGuild } from "@/app/context/GuildContext";
 export default function BotSettings() {
   const { notify } = useNotification();
 
-  const [nickname, setNickname] = useState<string>();
+  const [nickname, setNickname] = useState<string>("");
   const [managerRoles, setManagerRoles] = useState<string>();
   const [updatesChannel, setUpdatesChannel] = useState<string>();
   const [timezone, setTimezone] = useState<string>();

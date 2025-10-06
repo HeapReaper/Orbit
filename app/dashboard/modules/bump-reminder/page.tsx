@@ -7,6 +7,7 @@ import TextInput from "@/app/dashboard/components/inputs/Text";
 import NumberInput from "@/app/dashboard/components/inputs/Number";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
+import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
 
 export default function BumpReminderPage() {
   const [enabled, setEnabled] = useState(false);
@@ -83,11 +84,16 @@ export default function BumpReminderPage() {
         </button>
       </div>
 
-      <TextInput
-        label="Bump Message"
-        value={message}
-        onChange={setMessage}
-      />
+      <div className="mb-6">
+        <label className="block text-gray-400 mb-2">Bump Message</label>
+        <div className="rounded-lg border border-gray-700 bg-[#1f2330]">
+          <MarkdownEditor
+            value={message}
+            onChange={setMessage}
+            placeholder=""
+          />
+        </div>
+      </div>
 
       <NumberInput
         label="Interval (hours)"
