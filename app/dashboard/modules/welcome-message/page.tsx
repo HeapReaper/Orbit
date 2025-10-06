@@ -7,6 +7,7 @@ import TextInput from "@/app/dashboard/components/inputs/Text";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import InlineCode from "@/app/dashboard/components/ui/InlineCode";
 import {useGuild} from "@/app/context/GuildContext";
+import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
 
 export default function Page() {
   const [enabled, setEnabled] = useState<boolean>();
@@ -80,16 +81,19 @@ export default function Page() {
         </button>
       </div>
 
-      <TextInput
-        label="Welcome message"
-        value={message ?? ""}
-        onChange={setMessage}
-        placeholder="Example: 🎉 Welcome to our server, {user}!"
-      />
-      <p className="text-sm text-gray-500 mb-4">
-        You can use <InlineCode text={"{user}"}/> to mention the user in the message.
-      </p>
-
+      <div className="mb-6">
+        <label className="block text-gray-400 mb-2">Welcome Message</label>
+        <div className="rounded-lg border border-gray-700 bg-[#1f2330]">
+          <MarkdownEditor
+            value={message ?? ""}
+            onChange={setMessage}
+            placeholder=""
+          />
+        </div>
+        <p className="text-sm text-gray-500 mb-4 mt-2">
+          You can use <InlineCode text={"{user}"}/> to mention the user in the message.
+        </p>
+      </div>
 
       <SelectInput
         label="Announcement channel"

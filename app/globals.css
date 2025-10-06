@@ -46,3 +46,56 @@ textarea:focus {
 .animate-spin-slow {
   animation: spin-slow 10s linear infinite;
 }
+
+.mdxeditor-toolbar {
+  background-color: #20242e !important;
+  color: white;
+  border-bottom: 1px solid #2e3442 !important;
+}
+
+.mdxeditor-toolbar button {
+  fill: #f3f4f6 !important;  /* SVGs */
+}
+
+.mdxeditor-toolbar button:hover {
+  background-color: #2d3343 !important;
+  color: var(--primary-color, #60a5fa) !important;
+  fill: var(--primary-color, #60a5fa) !important;
+}
+
+.mdxeditor-toolbar button:active {
+  opacity: 0.8 !important;
+}
+
+.mdxeditor-toolbar .mdxeditor-toolbar-dropdown {
+  background-color: #1f2330 !important;
+  color: #fff !important;
+}
+
+.mdxeditor-content {
+  background-color: #1f2330 !important;
+  color: #ffffff !important;
+}
+
+.mdxeditor-content code {
+  background-color: #2a2f3f !important;
+  color: #f3f4f6 !important;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+._contentEditable_1e2ox_380 {
+  color: white !important;
+}
+.mdxeditor-toolbar button,
+.mdxeditor-toolbar button svg {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+.mdxeditor-toolbar select {
+  background-color: black !important;
+}
+._selectTrigger_1e2ox_308 {
+  background-color: #0a0a0a !important;
+}

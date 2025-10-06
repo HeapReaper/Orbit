@@ -7,8 +7,9 @@ import TextInput from "@/app/dashboard/components/inputs/Text";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import InlineCode from "@/app/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
+import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
 
-export default async function Page() {
+export default function Page() {
   const [enabled, setEnabled] = useState<boolean>(true);
   const [message, setMessage] = useState<string>();
   const [time, setTime] = useState<string>();
@@ -92,15 +93,20 @@ export default async function Page() {
         </button>
       </div>
 
-      <TextInput
-        label="Birthday Message"
-        value={message}
-        onChange={setMessage}
-        placeholder="Example: 🎉 Happy Birthday, {user}! 🎂"
-      />
-      <p className="text-sm text-gray-500 mb-4">
-        You can use <InlineCode text={"{user}"}/> to mention the user in the message and <InlineCode text={"{age}"}/> to display his age.
-      </p>
+
+      <div className="mb-6">
+        <label className="block text-gray-400 mb-2">Bump Message</label>
+        <div className="rounded-lg border border-gray-700 bg-[#1f2330]">
+          <MarkdownEditor
+            value={message}
+            onChange={setMessage}
+            placeholder=""
+          />
+        </div>
+        <p className="text-sm text-gray-500 mb-4 mt-1">
+          You can use <InlineCode text={"{user}"}/> to mention the user in the message and <InlineCode text={"{age}"}/> to display his age.
+        </p>
+      </div>
 
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">Announcement Time</label>
