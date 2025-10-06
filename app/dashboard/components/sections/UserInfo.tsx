@@ -7,7 +7,6 @@ export default function UserInfo() {
   const { data: session } = useSession();
 
   if (!session || !session.user) return;
-
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
