@@ -9,6 +9,7 @@ import SelectInput from "@/app/dashboard/components/inputs/Select";
 import Link from "next/link";
 import { useGuild } from "@/app/context/GuildContext";
 import AddBot from "@/app/dashboard/components/buttons/AddBot";
+import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
@@ -71,7 +72,7 @@ export default function Sidebar() {
           onChange={setSelectedGuild}
           options={
             guilds
-              .filter(g => botGuildIds.includes(g.id))
+              .filter(g => botGuildIds.includes(g.id) && isUserGuildAdmin(session!.user.id, g.id))
               .map(g => ({ value: g.id, label: g.name }))
           }
         />

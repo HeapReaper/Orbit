@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const guild_id = searchParams.get("guild_id");
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "Please authenticate first" });
@@ -15,6 +17,11 @@ export async function GET(req: NextRequest) {
 
   if (!guild_id) {
     return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  }
+
+  // @ts-ignore
+  if (!await isUserGuildAdmin(session.user.id, guild_id)) {
+    return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
   try {
@@ -38,6 +45,11 @@ export async function POST(req: NextRequest) {
 
   if (!data.guild_id) {
     return NextResponse.json({ error: "guild_id is required" });
+  }
+
+  // @ts-ignore
+  if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+    return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
   const { guild_id, channel, message, interval, enabled } = data;
