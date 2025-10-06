@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
+COPY /app/package.json ./package.json
+COPY /app/next.config.js ./next.config.js
+
 RUN npm ci --include=dev
 
 COPY . .
