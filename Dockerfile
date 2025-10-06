@@ -24,20 +24,16 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install system dependencies needed for Prisma
+# System dependencies
 RUN apk add --no-cache openssl libstdc++ libc6-compat
 
-# Copy necessary files from builder
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/generated/prisma ./generated/prisma
-COPY --from=builder /app/next.config.ts ./next.config.ts
+COPY --from=builder /app/next.config.js ./next.config.js
 
 EXPOSE 3000
-
-# Set environment variable to let Prisma find the binary
-ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/generated/prisma/query_engine-linux-musl-openssl-3.0.so.node
 
 CMD ["npm", "start"]
