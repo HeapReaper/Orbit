@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orbit dashboard",
-  description: "The dashboard for Aether",
+  title: "Orbit",
+  description: "The dashboard for Lumix",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
