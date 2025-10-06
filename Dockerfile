@@ -1,29 +1,30 @@
+# Stage 1: Builder
 FROM node:20-alpine AS builder
-
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-COPY /app/package.json ./package.json
-COPY /app/next.config.js ./next.config.js
+# Copy package files
+COPY package*.json ./
 
-RUN npm ci --include=dev
+# Install dependencies
+RUN npm ci
 
+# Copy the rest of the project
 COPY . .
 
-RUN npx prisma generate
-
+# Build the Next.js app
 RUN npm run build
 
+# Stage 2: Runner
 FROM node:20-alpine AS runner
-
 WORKDIR /app
 
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+
+# Only copy next.config.js if it exists
 COPY --from=builder /app/next.config.js ./next.config.js
 
 EXPOSE 3000
-
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]
