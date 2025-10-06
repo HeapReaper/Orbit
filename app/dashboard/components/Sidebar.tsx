@@ -14,7 +14,7 @@ import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
 export default function Sidebar() {
-  const { data: session } = useSession();
+  const { data: session } =  useSession();
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
   const { selectedGuild, setSelectedGuild, guilds, channels } = useGuild();
@@ -72,7 +72,7 @@ export default function Sidebar() {
           onChange={setSelectedGuild}
           options={
             guilds
-              .filter(g => botGuildIds.includes(g.id) && isUserGuildAdmin(session!.user.id, g.id))
+              .filter(g => botGuildIds.includes(g.id)) //  isUserGuildAdmin(session.user.id, g.id)
               .map(g => ({ value: g.id, label: g.name }))
           }
         />
