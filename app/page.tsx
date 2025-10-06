@@ -14,12 +14,24 @@ export default function Home() {
           <p className="text-gray-400 text-lg md:text-xl">
             Take full control of your servers and Discord bot with ease. Enable, configure, and monitor modules, manage members, and keep everything running smoothly—all from one clean dashboard.
           </p>
-          <a
-            href="/dashboard"
-            className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition"
-          >
-            Go to Dashboard
-          </a>
+
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <a
+              href="/dashboard"
+              className="inline-block px-6 py-3 bg-[var(--primary-color)] hover:bg-blue-600 text-white font-semibold rounded-lg transition text-center"
+            >
+              Go to Dashboard
+            </a>
+
+            <a
+              href="https://discord.com/oauth2/authorize?client_id=YOUR_BOT_CLIENT_ID&scope=bot%20applications.commands&permissions=8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 bg-[var(--primary-color)] hover:bg-blue-600 text-white font-semibold rounded-lg transition text-center"
+            >
+              Add bot to your server
+            </a>
+          </div>
         </div>
 
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
