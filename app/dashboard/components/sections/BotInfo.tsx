@@ -1,6 +1,13 @@
 import { Bot } from "lucide-react";
 
-export default function BotInfo() {
+async function getBotInfo() {
+  const res = await fetch("https://lumix.heapreaper.nl/api/bot-info")
+  return await res.json();
+}
+
+export default async function BotInfo() {
+  const data = await getBotInfo();
+
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
@@ -11,22 +18,22 @@ export default function BotInfo() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
         <p>
-          <span className="font-semibold text-white">Status: </span> Online
+          <span className="font-semibold text-white">Status: </span> {data.status}
         </p>
         <p>
-          <span className="font-semibold text-white">Uptime: </span> 12h 3m
+          <span className="font-semibold text-white">Uptime: </span> {data.uptime}
         </p>
         <p>
-          <span className="font-semibold text-white">Ping: </span> 69ms
+          <span className="font-semibold text-white">Ping: </span> {data.ping}ms
         </p>
         <p>
-          <span className="font-semibold text-white">Guilds: </span> 4
+          <span className="font-semibold text-white">Guilds: </span> {data.guilds}
         </p>
         <p>
-          <span className="font-semibold text-white">Users: </span> 30
+          <span className="font-semibold text-white">Users: </span> {data.users}
         </p>
         <p>
-          <span className="font-semibold text-white">Version:</span> v1.6.9
+          <span className="font-semibold text-white">Version:</span> v1.6.9 {/* TODO: add Gb version */}
         </p>
       </div>
     </section>

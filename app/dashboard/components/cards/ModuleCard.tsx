@@ -7,7 +7,7 @@ import ToggleSwitch from "@/app/dashboard/components/inputs/Switch";
 interface Props {
   name: string;
   description: string;
-  type: "Standard" | "Premium";
+  type: "Free" | "Premium";
 }
 
 export default function ModuleCard({ name, description, type }: Props) {
@@ -28,12 +28,6 @@ export default function ModuleCard({ name, description, type }: Props) {
           label="Settings"
           size={24}
           onClick={() => console.log("Settings clicked")}
-        />
-
-
-        <ToggleSwitch
-          enabled={true}
-          onChange={(val) => console.log("Toggled:", val)}
         />
       </div>
     </div>
