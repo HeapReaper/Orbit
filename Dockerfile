@@ -24,7 +24,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
 # Only copy next.config.js if it exists
-COPY --from=builder /app/next.config.js ./next.config.js
+COPY --from=builder /app/next.config.ts ./next.config.ts
 
 EXPOSE 3000
 CMD ["npm", "start"]
