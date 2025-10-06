@@ -8,16 +8,28 @@ export interface Channel {
   type: number;
 }
 
+export interface Role {
+  id: string;
+  name: string;
+  color: number;
+  position: number;
+  hoist: boolean;
+  permissions: string;
+  managed: boolean;
+}
+
 interface Guild {
   id: string;
   name: string;
   channels: Channel[];
+  roles: Role[];
 }
 
 interface GuildContextType {
   selectedGuild: string;
   setSelectedGuild: (id: string) => void;
   channels: Channel[];
+  roles: Role[];
   guilds: Guild[];
 }
 
@@ -27,11 +39,12 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const [selectedGuild, setSelectedGuild] = useState<string>("");
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
     const fetchGuilds = async () => {
       try {
-        const res = await fetch("https://lumix.heapreaper.nl/api/ExposeGuildChannels");
+        const res = await fetch("https://lumix.heapreaper.nl/api/expose-guild-channels-and-roles");
         const data = await res.json();
         setGuilds(data.guilds || []);
       } catch (err) {
@@ -45,10 +58,11 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const guild = guilds.find(g => g.id === selectedGuild);
     setChannels(guild?.channels || []);
+    setRoles(guild?.roles || []);
   }, [selectedGuild, guilds]);
 
   return (
-    <GuildContext.Provider value={{ selectedGuild, setSelectedGuild, channels, guilds }}>
+    <GuildContext.Provider value={{ selectedGuild, setSelectedGuild, channels, roles, guilds }}>
       {children}
     </GuildContext.Provider>
   );

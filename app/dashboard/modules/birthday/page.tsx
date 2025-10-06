@@ -44,7 +44,6 @@ export default async function Page() {
   }, [selectedGuild]);
 
   const handleSave = async () => {
-
     try {
       const resp = await fetch(`/api/birthday`, {
         method: "POST",

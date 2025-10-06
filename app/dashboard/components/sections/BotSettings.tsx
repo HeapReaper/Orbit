@@ -17,7 +17,7 @@ export default function BotSettings() {
   const [timezone, setTimezone] = useState<string>();
   const [primaryColor, setPrimaryColor] = useState<string>();
   const [secondaryColor, setSecondaryColor] = useState<string>();
-  const { selectedGuild, channels } = useGuild();
+  const { selectedGuild, channels, roles } = useGuild();
 
   useEffect(() => {
     if (!selectedGuild) return;
@@ -30,8 +30,8 @@ export default function BotSettings() {
         setNickname(data.nickname);
         setUpdatesChannel(data.updates_channel);
         setTimezone(data.timezone);
-        setPrimaryColor(`#${data.primary_color}`);
-        setSecondaryColor(`#${data.secondary_color}`);
+        setPrimaryColor(data.primary_color);
+        setSecondaryColor(data.secondary_color);
       } catch (err) {
         console.error(err);
       }
@@ -40,8 +40,32 @@ export default function BotSettings() {
     void fetchGuildData();
   }, [selectedGuild]);
 
+  const handleSave = async () => {
+    console.log(primaryColor)
+    try {
+      const resp = await fetch("/api/bot-settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          guild_id: selectedGuild,
+          nickname: nickname,
+          manager_roles: managerRoles,
+          updates_channel: updatesChannel,
+          timezone: timezone,
+          primary_color: primaryColor,
+          secondary_color: secondaryColor,
+        }),
+      });
 
-  const handleSave = () => {
+      if (!resp.ok) {
+        return notify("Error", `${resp.statusText}`, "error");
+      }
+    } catch (error) {
+      return notify("Error", `${error}`, "error");
+    }
+
     notify("Settings saved!", "", "success");
   };
 
@@ -55,17 +79,21 @@ export default function BotSettings() {
       <form className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
           <TextInput label="Nickname" value={nickname ?? ""} onChange={setNickname} />
+
           <SelectInput
             label="Manager Roles (Owner/Administrator Only)"
             value={managerRoles ?? ""}
             onChange={setManagerRoles}
-            options={[{ value: "", label: "Select..." }]}
+            options={roles.map(role => ({
+              value: role.id,
+              label: role.name,
+            }))}
           />
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
           <SelectInput
-            label="Select channel"
+            label="Updates channel"
             value={updatesChannel || ""}
             onChange={(val) => setUpdatesChannel(val)}
             options={channels.map(channel => ({
