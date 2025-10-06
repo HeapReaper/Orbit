@@ -9,8 +9,6 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <UserInfo />
 
-      <ServerInfo />
-
       <BotInfo />
 
       <HelpArticles />
