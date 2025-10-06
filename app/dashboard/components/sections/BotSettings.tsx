@@ -12,11 +12,11 @@ export default function BotSettings() {
   const { notify } = useNotification();
 
   const [nickname, setNickname] = useState<string>("");
-  const [managerRoles, setManagerRoles] = useState<string>();
-  const [updatesChannel, setUpdatesChannel] = useState<string>();
-  const [timezone, setTimezone] = useState<string>();
-  const [primaryColor, setPrimaryColor] = useState<string>();
-  const [secondaryColor, setSecondaryColor] = useState<string>();
+  const [managerRoles, setManagerRoles] = useState<string>("");
+  const [updatesChannel, setUpdatesChannel] = useState<string>("");
+  const [timezone, setTimezone] = useState<string>("");
+  const [primaryColor, setPrimaryColor] = useState<string>("");
+  const [secondaryColor, setSecondaryColor] = useState<string>("");
   const { selectedGuild, channels, roles } = useGuild();
 
   useEffect(() => {
