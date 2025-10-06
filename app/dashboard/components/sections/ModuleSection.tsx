@@ -10,7 +10,7 @@ export default function ModuleSection() {
   const [search, setSearch] = useState("");
 
   const filteredModules = modules.filter(module =>
-    module.name.toLowerCase().includes(search.toLowerCase())
+    module.name.toLowerCase().includes(search.toLowerCase()) && module.enabled
   );
 
   return (

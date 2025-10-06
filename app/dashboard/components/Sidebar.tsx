@@ -1,43 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 import Image from "next/image";
 import { Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import Link from "next/link";
+import { useGuild } from "@/app/context/GuildContext";
 
-// temp guilds where bot is in
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
-
-interface Guild {
-  id: string;
-  name: string;
-  icon: string | null;
-  owner: boolean;
-  permissions: string;
-}
 
 export default function Sidebar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
-  const [guilds, setGuilds] = useState<Guild[]>([]);
-  const [selectedGuild, setSelectedGuild] = useState<string>("");
+  const { selectedGuild, setSelectedGuild, guilds, channels } = useGuild();
 
+  const filteredModules = modules.filter(module => module.enabled);
+
+  // Select first guild
   useEffect(() => {
-    // @ts-ignore
-    if (!session?.accessToken) return;
-
-    fetch("https://discord.com/api/users/@me/guilds", {
-      // @ts-ignore
-      headers: { Authorization: `Bearer ${session.accessToken}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setGuilds(data))
-      .catch(console.error);
-  }, [session]);
+    if (guilds.length > 0 && !selectedGuild) {
+      setSelectedGuild(guilds[0].id);
+    }
+  }, [guilds, selectedGuild]);
 
   return (
     <>
@@ -59,7 +46,6 @@ export default function Sidebar() {
             <span className="px-2 py-1">Orbit</span>
           </div>
 
-          {/* User avatar */}
           {session?.user?.image ? (
             <Image
               src={session.user.image}
@@ -81,23 +67,29 @@ export default function Sidebar() {
         <SelectInput
           label=""
           value={selectedGuild}
-          onChange={(value: string) => setSelectedGuild(value)}
+          onChange={setSelectedGuild}
           options={
-            Array.isArray(guilds)
-              ? guilds
-                .filter((guild) => botGuildIds.includes(guild.id))
-                .map((guild) => ({ value: guild.id, label: guild.name }))
-              : []
+            guilds
+              .filter(g => botGuildIds.includes(g.id))
+              .map(g => ({ value: g.id, label: g.name }))
           }
         />
 
-        <nav className="flex flex-col space-y-2 text-gray-400">
+        <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
             href="/dashboard"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
+          </Link>
+
+          <Link
+            href="/dashboard/bot"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+          >
+            <Bot className="w-6 h-6 text-[var(--primary-color)]" />
+            Bot
           </Link>
 
           <div>
@@ -115,7 +107,7 @@ export default function Sidebar() {
             </button>
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
-                {modules.map((module, index: number) => (
+                {filteredModules.map((module, index: number) => (
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
@@ -129,14 +121,6 @@ export default function Sidebar() {
           </div>
 
           <Link
-            href="/dashboard/bot"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
-          >
-            <Bot className="w-6 h-6 text-[var(--primary-color)]" />
-            Bot
-          </Link>
-
-          <Link
             href="#"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
@@ -145,14 +129,13 @@ export default function Sidebar() {
           </Link>
 
           <Link
-            href="#"
+            href="/dashboard/logs"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
           </Link>
         </nav>
-
 
         <div className="absolute bottom-4 flex flex-col gap-2 text-xs text-gray-500">
           <span>By HeapReaper</span>

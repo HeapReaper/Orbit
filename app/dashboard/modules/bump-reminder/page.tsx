@@ -1,21 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import SaveButton from "@/app/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import TextInput from "@/app/dashboard/components/inputs/Text";
 import NumberInput from "@/app/dashboard/components/inputs/Number";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
+import { useGuild } from "@/app/context/GuildContext";
 
 export default function BumpReminderPage() {
-  const [enabled, setEnabled] = useState(true);
-  const [message, setMessage] = useState("The server can be bumped again!");
-  const [channel, setChannel] = useState("");
+  const [enabled, setEnabled] = useState(false);
+  const [message, setMessage] = useState<string>("");
+  const [intervalHours, setIntervalHours] = useState<number>(1);
+  const { selectedGuild, setSelectedGuild, channels } = useGuild();
+  const [selectedChannel, setSelectedChannel] = useState<string>("");
 
-  const [intervalHours, setIntervalHours] = useState(2);
   const { notify } = useNotification();
-  const handleSave = () => {
-    notify("Settings saved!", "", "success")
+
+
+  useEffect(() => {
+    if (!selectedGuild) return;
+
+    const fetchGuildData = async () => {
+      try {
+        const res = await fetch(`/api/bumpreminders?guild_id=${selectedGuild}`);
+        const data = await res.json();
+
+        setMessage(data.message);
+        setIntervalHours(data.interval);
+        setSelectedChannel(data.channel);
+        setEnabled(data.enabled);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void fetchGuildData();
+  }, [selectedGuild]);
+
+  const handleSave = async () => {
+    try {
+      const resp = await fetch("/api/bumpreminders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          guild_id: selectedGuild,
+          channel: selectedChannel,
+          message: message,
+          interval: intervalHours,
+          enabled: enabled ? 1 : 0,
+        })
+      });
+
+      if (!resp.ok) {
+        return notify("Oeps", "Could not save settings", "error");
+      }
+
+      notify("Saved", "", "success");
+    } catch (error) {
+      notify("Error", `${error}`, "error");
+    }
   };
 
   return (
@@ -23,7 +69,7 @@ export default function BumpReminderPage() {
       <h1 className="text-2xl font-semibold mb-4 text-white">Bump Reminder Settings</h1>
 
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400">Enable Bump Reminder</span>
+        <span className="text-gray-400">Enable</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}
@@ -54,11 +100,15 @@ export default function BumpReminderPage() {
       />
 
       <SelectInput
-        label="Bump channel"
-        value={channel}
-        onChange={setMessage}
-        options={[{ value: "", label: "Select..." }]}
+        label="Select channel"
+        value={selectedChannel || ""}
+        onChange={(val) => setSelectedChannel(val)}
+        options={channels.map(channel => ({
+          value: channel.id,
+          label: channel.name,
+        }))}
       />
+
 
       <SaveButton onClick={handleSave} />
     </section>
