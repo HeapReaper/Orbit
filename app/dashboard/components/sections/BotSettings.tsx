@@ -6,6 +6,7 @@ import SelectInput from "@/app/dashboard/components/inputs/Select";
 import TextInput from "@/app/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
 import { useState } from "react";
+import { useGuild } from "@/app/context/GuildContext";
 
 export default function BotSettings() {
   const { notify } = useNotification();
