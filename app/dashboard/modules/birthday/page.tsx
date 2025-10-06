@@ -8,7 +8,7 @@ import SelectInput from "@/app/dashboard/components/inputs/Select";
 import InlineCode from "@/app/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
 
-export default function Page() {
+export default async function Page() {
   const [enabled, setEnabled] = useState<boolean>(true);
   const [message, setMessage] = useState<string>();
   const [time, setTime] = useState<string>();
@@ -69,6 +69,8 @@ export default function Page() {
 
     notify("Settings saved!", "", "success");
   };
+
+  if (!message) return null;
 
   return (
     <section className="bg-[#181b25] p-6 rounded-lg max-w-xl mx-auto mt-6">
