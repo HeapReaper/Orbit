@@ -5,19 +5,41 @@ import { Bot, Save } from "lucide-react";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import TextInput from "@/app/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useGuild } from "@/app/context/GuildContext";
 
 export default function BotSettings() {
   const { notify } = useNotification();
 
-  const [nickname, setNickname] = useState("Aether");
-  const [managerRoles, setManagerRoles] = useState("");
-  const [updatesChannel, setUpdatesChannel] = useState("");
-  const [timezone, setTimezone] = useState("Europe/Amsterdam");
+  const [nickname, setNickname] = useState<string>();
+  const [managerRoles, setManagerRoles] = useState<string>();
+  const [updatesChannel, setUpdatesChannel] = useState<string>();
+  const [timezone, setTimezone] = useState<string>();
+  const [primaryColor, setPrimaryColor] = useState<string>();
+  const [secondaryColor, setSecondaryColor] = useState<string>();
+  const { selectedGuild, channels } = useGuild();
 
-  const [primaryColor, setPrimaryColor] = useState("#4f46e5");
-  const [secondaryColor, setSecondaryColor] = useState("#10b981");
+  useEffect(() => {
+    if (!selectedGuild) return;
+
+    const fetchGuildData = async () => {
+      try {
+        const res = await fetch(`/api/bot-settings?guild_id=${selectedGuild}`);
+        const data = await res.json();
+
+        setNickname(data.nickname);
+        setUpdatesChannel(data.updates_channel);
+        setTimezone(data.timezone);
+        setPrimaryColor(`#${data.primary_color}`);
+        setSecondaryColor(`#${data.secondary_color}`);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void fetchGuildData();
+  }, [selectedGuild]);
+
 
   const handleSave = () => {
     notify("Settings saved!", "", "success");
@@ -32,10 +54,10 @@ export default function BotSettings() {
 
       <form className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
-          <TextInput label="Nickname" value={nickname} onChange={setNickname} />
+          <TextInput label="Nickname" value={nickname ?? ""} onChange={setNickname} />
           <SelectInput
             label="Manager Roles (Owner/Administrator Only)"
-            value={managerRoles}
+            value={managerRoles ?? ""}
             onChange={setManagerRoles}
             options={[{ value: "", label: "Select..." }]}
           />
@@ -43,12 +65,16 @@ export default function BotSettings() {
 
         <div className="grid md:grid-cols-2 gap-4">
           <SelectInput
-            label="Updates Channel"
-            value={updatesChannel}
-            onChange={setUpdatesChannel}
-            options={[{ value: "", label: "Select..." }]}
+            label="Select channel"
+            value={updatesChannel || ""}
+            onChange={(val) => setUpdatesChannel(val)}
+            options={channels.map(channel => ({
+              value: channel.id,
+              label: channel.name,
+            }))}
           />
-          <TextInput label="Timezone" value={timezone} onChange={setTimezone} />
+
+          <TextInput label="Timezone" value={timezone ?? ""} onChange={setTimezone} />
         </div>
 
         <div className="border-t border-gray-700 pt-4 space-y-4 mb-3">
