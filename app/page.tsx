@@ -1,20 +1,25 @@
-// app/page.tsx (Next.js 13+ with app directory)
 "use client";
 
 import Image from "next/image";
+import modules from "../app/dashboard/data/modules";
 
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-[#0d0f13] text-white">
-      {/* Hero section */}
       <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-20">
         <div className="md:w-1/2 space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold text-white">
             Welcome to Orbit
           </h1>
           <p className="text-gray-400 text-lg md:text-xl">
-            Manage Aether
+            Take full control of your servers and Discord bot with ease. Enable, configure, and monitor modules, manage members, and keep everything running smoothly—all from one clean dashboard.
           </p>
+          <a
+            href="/dashboard"
+            className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition"
+          >
+            Go to Dashboard
+          </a>
         </div>
 
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
@@ -23,12 +28,12 @@ export default function Home() {
             alt="Orbit Logo"
             width={300}
             height={300}
-            className=""
+            priority
+            className="animate-spin-slow"
           />
         </div>
       </section>
 
-      {/* Features section */}
       <section className="px-6 md:px-20 py-16">
         <h2 className="text-3xl font-bold text-white mb-8">Features</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -53,7 +58,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      <section className="px-6 md:px-20 py-16">
+        <h2 className="text-3xl font-bold text-white mb-8">Bot Modules</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {modules.map((mod) => (
+            <div
+              key={mod.url}
+              className={`p-6 rounded-lg hover:shadow-lg transition border ${
+                mod.enabled ? "border-green-500" : "border-gray-700"
+              } bg-[#14171f]`}
+            >
+              <h3 className="text-xl font-semibold mb-2">{mod.name}</h3>
+              <p className="text-gray-400 mb-4">{mod.description}</p>
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  mod.enabled
+                    ? "bg-green-500 text-black"
+                    : "bg-gray-700 text-gray-300"
+                }`}
+              >
+                {mod.enabled ? "Enabled" : "Disabled"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <footer className="bg-[#14171f] text-gray-500 text-center py-6 mt-auto">
         &copy; {new Date().getFullYear()} Orbit. By HeapReaper.
       </footer>

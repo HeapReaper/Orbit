@@ -44,5 +44,5 @@ textarea:focus {
 }
 
 .animate-spin-slow {
-  animation: spin-slow 3s linear infinite;
+  animation: spin-slow 10s linear infinite;
 }
