@@ -8,6 +8,7 @@ import modules from "../data/modules";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import Link from "next/link";
 import { useGuild } from "@/app/context/GuildContext";
+import AddBot from "@/app/dashboard/components/buttons/AddBot";
 
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
@@ -74,6 +75,8 @@ export default function Sidebar() {
               .map(g => ({ value: g.id, label: g.name }))
           }
         />
+
+        <AddBot />
 
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
