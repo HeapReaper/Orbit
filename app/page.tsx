@@ -6,6 +6,7 @@ import modules from "../app/dashboard/data/modules";
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-[#0d0f13] text-white">
+      {/* Hero Section */}
       <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-20">
         <div className="md:w-1/2 space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold text-white">
@@ -46,6 +47,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Features */}
       <section className="px-6 md:px-20 py-16">
         <h2 className="text-3xl font-bold text-white mb-8">Features</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -70,6 +72,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Bot Modules */}
       <section className="px-6 md:px-20 py-16">
         <h2 className="text-3xl font-bold text-white mb-8">Bot Modules</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -96,8 +99,58 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Screenshots Section */}
+      <section className="px-6 md:px-20 py-16 bg-[#101218]">
+        <h2 className="text-3xl font-bold text-white mb-8">Configuration Previews</h2>
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold">Bot Settings</h3>
+            <p className="text-gray-400">
+              Manage global bot preferences, prefixes, and permissions directly from this page.
+              Everything is synced automatically with your Discord server.
+            </p>
+          </div>
+          <div className="rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/screenshots/bot_settings.png"
+              alt="Bot Settings Screenshot"
+              width={600}
+              height={350}
+              className="rounded-lg border border-gray-700"
+            />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-10 items-center mt-16">
+          <div className="order-2 md:order-1 rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/screenshots/bump_reminder.png"
+              alt="Bump Reminder Screenshot"
+              width={600}
+              height={350}
+              className="rounded-lg border border-gray-700"
+            />
+          </div>
+          <div className="order-1 md:order-2 space-y-4">
+            <h3 className="text-2xl font-semibold">Bump Reminder</h3>
+            <p className="text-gray-400">
+              Set automatic reminders for server bumps, helping your community stay visible on Discord lists.
+              Fully configurable and easy to use.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer className="bg-[#14171f] text-gray-500 text-center py-6 mt-auto">
-        &copy; {new Date().getFullYear()} Orbit. By HeapReaper.
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+          <p>&copy; {new Date().getFullYear()} Orbit. By HeapReaper.</p>
+          <div className="flex gap-4 text-sm">
+            <a href="/terms" className="hover:text-white transition">Terms of Service</a>
+            <span>|</span>
+            <a href="/privacy" className="hover:text-white transition">Privacy Policy</a>
+          </div>
+        </div>
       </footer>
     </main>
   );
