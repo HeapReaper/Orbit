@@ -1,6 +1,14 @@
 import Image from "next/image";
 
-export default function EmbedPreview() {
+interface Props {
+  username: string;
+  title: string;
+  description: string;
+  content: string;
+  color: string;
+}
+
+export default function EmbedPreview({ username, title, description, content, color }: Props) {
   return (
     <section className="px-6 md:px-20 py-16 bg-[#101218]">
       <div className="grid md:grid-cols-2 gap-10 items-center mt-16">
@@ -17,10 +25,12 @@ export default function EmbedPreview() {
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-white">Orbit</span>
                 <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded">BOT</span>
-                <span className="text-xs text-gray-400">Today at 15:42</span>
+                <span className="text-xs text-gray-400">Today at{" "}
+                  {new Date().toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit"})} {/* nl-NL */}
+                </span>
               </div>
 
-              <div className="mt-3 border-l-4 border-blue-500 bg-[#1e2124] p-4 rounded-r-lg">
+              <div className="mt-3 border-l-4 bg-[#1e2124] p-4 rounded-r-lg" style={{ borderColor: color }}>
                 <h4 className="text-white font-semibold text-lg mb-1">Server Announcement</h4>
                 <p className="text-gray-300 text-sm">
                   Hey everyone! Don’t forget our weekly game night starts in 1 hour 🎮

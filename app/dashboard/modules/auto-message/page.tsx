@@ -8,6 +8,7 @@ import SelectInput from "@/app/dashboard/components/inputs/Select";
 import InlineCode from "@/app/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
+import MessagePreview from "@/app/dashboard/components/previews/Message";
 
 type AutoMessage = {
   id: string;
@@ -137,6 +138,8 @@ export default function Page() {
               />
             </button>
           </div>
+
+          <MessagePreview username="Orbit" message={msg.message} />
         </div>
       ))}
 

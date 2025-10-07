@@ -8,6 +8,7 @@ import NumberInput from "@/app/dashboard/components/inputs/Number";
 import SelectInput from "@/app/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
+import MessagePreview from "@/app/dashboard/components/previews/Message";
 
 export default function BumpReminderPage() {
   const [enabled, setEnabled] = useState(false);
@@ -113,6 +114,8 @@ export default function BumpReminderPage() {
         }))}
       />
 
+
+      <MessagePreview username="Orbit" message={message} />
 
       <SaveButton onClick={handleSave} />
     </section>
