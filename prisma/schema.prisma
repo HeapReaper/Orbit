@@ -48,6 +48,7 @@ model bot_settings {
 
 model user_action {
   id        Int      @id @default(autoincrement())
+  userId    String
   guildId   String
   action    String
   createdAt DateTime @default(now())
