@@ -25,9 +25,9 @@ export default function Page() {
         const res = await fetch(`/api/welcome-message?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        setMessage(data.message ?? "");
-        setChannel(data.channel ?? "");
-        setEnabled(data.enabled ?? false);
+        setMessage(data.message != null ? data.message : "");
+        setChannel(data.channel != null ? data.channel : "");
+        setEnabled(data.enabled != null ? data.enabledd : false);
       } catch (err) {
         console.error(err);
       }

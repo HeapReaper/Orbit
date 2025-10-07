@@ -27,10 +27,10 @@ export default function Page() {
         const res = await fetch(`/api/birthday?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        setMessage(data.message);
-        setTime(data.time);
-        setSelectedChannel(data.channel);
-        setEnabled(data.enabled);
+        setMessage(data.message != null ? data.message : "");
+        setTime(data.time != null ? data.time : "");
+        setSelectedChannel(data.channel != null ? data.channel : "");
+        setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
       }
@@ -65,8 +65,6 @@ export default function Page() {
 
     notify("Settings saved!", "", "success");
   };
-
-  if (!message) return null;
 
   return (
     <section className="bg-[#181b25] p-6 rounded-lg max-w-xl mx-auto mt-6">

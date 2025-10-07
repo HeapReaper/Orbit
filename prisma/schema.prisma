@@ -30,7 +30,7 @@ model birthday_settings {
   channel    String   @db.VarChar(22)
   message    String   @db.Text
   time       String   @db.VarChar(5)
-  enabled    Int
+  enabled    Boolean
   created_at DateTime @default(now()) @db.DateTime(0)
 }
 

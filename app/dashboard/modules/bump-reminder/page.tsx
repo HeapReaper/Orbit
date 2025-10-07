@@ -26,10 +26,10 @@ export default function BumpReminderPage() {
         const res = await fetch(`/api/bumpreminders?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        setMessage(data.message);
-        setIntervalHours(data.interval);
-        setSelectedChannel(data.channel);
-        setEnabled(data.enabled);
+        setMessage(data.message != null ? data.message : "");
+        setIntervalHours(data.interval != null ? data.interval : "");
+        setSelectedChannel(data.channel != null ? data.channel : "");
+        setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
       }
