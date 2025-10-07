@@ -46,14 +46,11 @@ model bot_settings {
   created_at      DateTime @default(now()) @db.DateTime(0)
 }
 
-model user_action {
-  id        String   @id @default(cuid())
-  userId    String
-  username  String
+model UserAction {
+  id        Int      @id @default(autoincrement())
+  guildId   String
   action    String
   createdAt DateTime @default(now())
-  guildId   String?
-  guildName String?
 }
 
 model welcome_message_settings {

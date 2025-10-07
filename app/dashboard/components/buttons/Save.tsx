@@ -8,7 +8,7 @@ export default function SaveButton({ onClick }: SaveButtonProps) {
   return (
     <button
       type="button"
-      onClick={onClick} // <-- pass the onClick prop here
+      onClick={onClick}
       className="text-[var(--primary-color)] hover:text-[var(--hover-color)] transition-colors duration-200"
       aria-label="Save"
     >
