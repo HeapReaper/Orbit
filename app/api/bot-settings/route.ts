@@ -37,18 +37,21 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
+    console.log("1")
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
   if (!data.guild_id) {
+    console.log("2")
     return NextResponse.json({ error: "guild_id is required" });
   }
 
   // @ts-ignore
   if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+    console.log("3")
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
