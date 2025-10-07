@@ -13,7 +13,9 @@ export default function Home() {
             Welcome to Orbit
           </h1>
           <p className="text-gray-400 text-lg md:text-xl">
-            Take full control of your servers and Discord bot with ease. Enable, configure, and monitor modules, manage members, and keep everything running smoothly—all from one clean dashboard.
+            Take full control of your servers and Discord bot with ease.
+            Enable, configure, and monitor modules, manage members, and keep everything running smoothly.
+            All from one clean dashboard.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -144,7 +146,9 @@ export default function Home() {
           <div className="space-y-4">
             <h3 className="text-2xl font-semibold">Auto message</h3>
             <p className="text-gray-400">
-              Send automatic messages to channels (embeds coming)
+              Send automatic messages to your channels on a schedule.
+              Perfect for announcements, server updates, or community engagement.
+              Embeds and advanced customization are coming soon!
             </p>
           </div>
           <div className="rounded-lg overflow-hidden shadow-lg">
