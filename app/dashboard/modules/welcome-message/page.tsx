@@ -27,7 +27,7 @@ export default function Page() {
 
         setMessage(data.message != null ? data.message : "");
         setChannel(data.channel != null ? data.channel : "");
-        setEnabled(data.enabled != null ? data.enabledd : false);
+        setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
       }
