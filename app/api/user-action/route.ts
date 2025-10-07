@@ -31,12 +31,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No such session" });
   }
 
-  const {  guildId,  } = data;
+  const { guildId, action, userId } = data;
 
   const updatedUser = await prisma.user_action.create({
     data: {
       userId: userId,
-
+      guildId: guildId,
+      action: action
     }
   })
 }
