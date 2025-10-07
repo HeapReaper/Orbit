@@ -12,8 +12,8 @@ import MessagePreview from "@/app/dashboard/components/previews/Message";
 
 export default function Page() {
   const [enabled, setEnabled] = useState<boolean>(true);
-  const [message, setMessage] = useState<string>();
-  const [time, setTime] = useState<string>();
+  const [message, setMessage] = useState<string>("");
+  const [time, setTime] = useState<string>("");
   const [selectedChannel, setSelectedChannel] = useState<string>("");
   const { selectedGuild, channels } = useGuild();
 
@@ -27,19 +27,14 @@ export default function Page() {
         const res = await fetch(`/api/birthday?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        const formattedTime = new Date(data.time).toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false
-        });
-
         setMessage(data.message);
-        setTime(formattedTime);
+        setTime(data.time);
         setSelectedChannel(data.channel);
         setEnabled(data.enabled);
       } catch (err) {
         console.error(err);
       }
+
     };
 
     void fetchGuildData();
@@ -47,7 +42,7 @@ export default function Page() {
 
   const handleSave = async () => {
     try {
-      const resp = await fetch(`/api/birthday`, {
+      const resp = await fetch("/api/birthday", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
     const data = await prisma.birthday_settings.findFirst({
       where: { guild_id },
     });
+
     return NextResponse.json(data);
   } catch (err) {
     console.error(err);
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "Please authenticate first" });
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { guild_id, channel, message, time, enabled } = data;
-
+  console.log(time);
   const updated = await prisma.birthday_settings.upsert({
     where: { guild_id },
     update: { channel, message, time, enabled },
