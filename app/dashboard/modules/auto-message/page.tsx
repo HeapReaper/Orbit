@@ -144,9 +144,10 @@ export default function Page() {
       ))}
 
       <div className="flex flex-col gap-4">
+        {/* @ts-ignore */}
         <button
           onClick={addAutoMessage}
-          className="bg-[var(--primary-color)] text-white px-4 py-2 rounded"
+          className="bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg"
         >
           Add Auto Message
         </button>
