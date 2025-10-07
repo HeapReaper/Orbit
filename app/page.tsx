@@ -48,7 +48,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="px-6 md:px-20 py-16">
+      <section className="px-6 md:px-20 py-16 bg-[#101218]">
         <h2 className="text-3xl font-bold text-white mb-8">Features</h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition">
@@ -139,6 +139,25 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold">Auto message</h3>
+            <p className="text-gray-400">
+              Send automatic messages to channels (embeds coming)
+            </p>
+          </div>
+          <div className="rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/screenshots/auto_message_2.png"
+              alt="Bot Settings Screenshot"
+              width={600}
+              height={350}
+              className="rounded-lg border border-gray-700"
+            />
+          </div>
+        </div>
+
       </section>
 
       {/* Footer */}
