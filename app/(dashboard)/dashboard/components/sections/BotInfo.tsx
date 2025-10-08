@@ -6,8 +6,16 @@ async function getBotInfo() {
   return await res.json();
 }
 
+async function getRepoInfo() {
+  const res = await fetch("https://api.github.com/repos/HeapReaper/Orbit-bot/releases/latest")
+
+  return await res.json();
+}
+
+
 export default async function BotInfo() {
   const data = await getBotInfo();
+  const repoInfo = await getRepoInfo();
 
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
@@ -34,7 +42,7 @@ export default async function BotInfo() {
           <span className="font-semibold text-white">Users: </span>  <InlineCode text={data.users} />
         </p>
         <p>
-          <span className="font-semibold text-white">Version:</span> <InlineCode text="1.6.9" />
+          <span className="font-semibold text-white">Version:</span> <InlineCode text={repoInfo.tag_name.replace("v", "")} />
         </p>
       </div>
     </section>
