@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { ClipboardClock, RefreshCw, Server, Bot } from "lucide-react";
-import IconButton from "@/app/dashboard/components/inputs/IconButton";
-import SelectInput from "@/app/dashboard/components/inputs/Select";
+import IconButton from "@/app/(dashboard)/dashboard/components/inputs/IconButton";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useNotification } from "@/app/context/NotificationContext";
 
 export default function BotLogs() {
@@ -16,7 +16,6 @@ export default function BotLogs() {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      // Simulated fetch — replace with actual API endpoint
       await new Promise((r) => setTimeout(r, 1000));
       const fetchedLogs =
         logType === "bot"
