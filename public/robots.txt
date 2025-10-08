@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# Googlebot
+User-agent: Googlebot
+Disallow: /dashboard
+
+# Host
+Host: https://botinorbit.com
+
+# Sitemaps
+Sitemap: https://botinorbit.com/sitemap.xml
