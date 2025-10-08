@@ -1,14 +1,14 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import SaveButton from "@/app/dashboard/components/buttons/Save";
+import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/dashboard/components/inputs/Text";
-import NumberInput from "@/app/dashboard/components/inputs/Number";
-import SelectInput from "@/app/dashboard/components/inputs/Select";
+import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
+import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
-import MarkdownEditor from "@/app/dashboard/components/MarkdownEditor";
-import MessagePreview from "@/app/dashboard/components/previews/Message";
+import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
+import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 
 export default function BumpReminderPage() {
   const [enabled, setEnabled] = useState(false);

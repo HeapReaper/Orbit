@@ -1,3 +1,4 @@
+import "./global.css";
 import Sidebar from "@/app/(dashboard)/dashboard/components/Sidebar";
 import { NotificationProvider } from "@/app/context/NotificationContext";
 import { getServerSession } from "next-auth";

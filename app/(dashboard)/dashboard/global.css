@@ -1,0 +1,100 @@
+@import "../../../node_modules/tailwindcss/dist/lib.d.mts";
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --primary-color: #9B30FF;
+    --hover-color: #8A29E6;
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
+
+body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Sets all inputs to the same focus ring */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px var(--primary-color) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+@keyframes spin-slow {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 10s linear infinite;
+}
+
+.mdxeditor-toolbar {
+    background-color: #20242e !important;
+    color: white;
+    border-bottom: 1px solid #2e3442 !important;
+}
+
+.mdxeditor-toolbar button {
+    fill: #f3f4f6 !important;  /* SVGs */
+}
+
+.mdxeditor-toolbar button:hover {
+    background-color: #2d3343 !important;
+    color: var(--primary-color, #60a5fa) !important;
+    fill: var(--primary-color, #60a5fa) !important;
+}
+
+.mdxeditor-toolbar button:active {
+    opacity: 0.8 !important;
+}
+
+.mdxeditor-toolbar .mdxeditor-toolbar-dropdown {
+    background-color: #1f2330 !important;
+    color: #fff !important;
+}
+
+.mdxeditor-content {
+    background-color: #1f2330 !important;
+    color: #ffffff !important;
+}
+
+.mdxeditor-content code {
+    background-color: #2a2f3f !important;
+    color: #f3f4f6 !important;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+._contentEditable_1e2ox_380 {
+    color: white !important;
+}
+.mdxeditor-toolbar button,
+.mdxeditor-toolbar button svg {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+.mdxeditor-toolbar select {
+    background-color: black !important;
+}
+._selectTrigger_1e2ox_308 {
+    background-color: #0a0a0a !important;

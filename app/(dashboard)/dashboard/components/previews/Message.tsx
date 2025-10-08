@@ -26,9 +26,7 @@ export default function MessagePreview( { username, message }: MessagePreviewPro
               {new Date().toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit"})} {/* nl-NL */}
             </span>
           </div>
-          <p className="text-gray-200 mt-1">
-            <Markdown rehypePlugins={[rehypeRaw]} >{message}</Markdown>
-          </p>
+          <Markdown rehypePlugins={[rehypeRaw]} >{message}</Markdown>
         </div>
       </div>
     </div>

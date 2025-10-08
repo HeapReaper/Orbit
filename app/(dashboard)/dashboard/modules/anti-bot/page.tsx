@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import SaveButton from "@/app/dashboard/components/buttons/Save";
+import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/dashboard/components/inputs/Text";
-import NumberInput from "@/app/dashboard/components/inputs/Number";
-import SelectInput from "@/app/dashboard/components/inputs/Select";
-import InlineCode from "@/app/dashboard/components/ui/InlineCode";
-import DeleteButton from "@/app/dashboard/components/buttons/Delete";
+import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
+import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
+import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
+import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
 
 export default function AntiBotPage() {
   const [enabled, setEnabled] = useState(true);

@@ -158,7 +158,7 @@ export default function Sidebar() {
                 {filteredModules.map((module, index: number) => (
                   <Link
                     key={index}
-                    href={`/app/(dashboard)/dashboard/modules/${module.url}`}
+                    href={`/dashboard/modules/${module.url}`}
                     className="hover:text-white px-2 py-1 rounded-md"
                   >
                     {module.name}
