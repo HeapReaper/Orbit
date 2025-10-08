@@ -10,7 +10,7 @@ const modules = [
     name: "Anti Bot",
     url: "anti-bot",
     description: "Prevent spammers and bots from taking over your guild.",
-    type: "Free",
+    type: "Premium",
     enabled: false,
   },
   {

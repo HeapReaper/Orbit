@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import modules from "@/app/(dashboard)/dashboard/data/modules";
+import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
+import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
 export default function Home() {
   return (
@@ -85,7 +87,14 @@ export default function Home() {
                 mod.enabled ? "border-green-500" : "border-gray-700"
               } bg-[#14171f]`}
             >
-              <h3 className="text-xl font-semibold mb-2">{mod.name}</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold ">{mod.name}</h3>
+                {mod.type === "Free" ? (
+                  <FreeLabel />
+                ) : (
+                  <PremiumLabel />
+                )}
+              </div>
               <p className="text-gray-400 mb-4">{mod.description}</p>
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -94,7 +103,7 @@ export default function Home() {
                     : "bg-gray-700 text-gray-300"
                 }`}
               >
-                {mod.enabled ? "Enabled" : "Disabled"}
+                {mod.enabled ? "Available" : "In development"}
               </span>
             </div>
           ))}
