@@ -1,4 +1,4 @@
-import "./global.css";
+import "../dashboard/global.css";
 import Sidebar from "@/app/(dashboard)/dashboard/components/Sidebar";
 import { NotificationProvider } from "@/app/context/NotificationContext";
 import { getServerSession } from "next-auth";
@@ -19,7 +19,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <Provider>
       <NotificationProvider>
         <GuildProvider>
-          {/* content mag hier */}
           <div className="flex min-h-screen">
             <Script
               defer

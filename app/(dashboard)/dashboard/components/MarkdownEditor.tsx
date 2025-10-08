@@ -23,6 +23,7 @@ import {
   Separator,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
+import "./../global.css";
 import { useRef, useEffect } from "react";
 
 interface MarkdownEditorProps {
