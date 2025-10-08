@@ -20,7 +20,7 @@ export default function SubscriptionsPage() {
       name: "Premium",
       description:
         "Unlock advanced tools like the Anti Bot module and extended logs for better moderation.",
-      price: "€1.99 / month",
+      price: "€1.99 / month or € 14.99 / year",
       features: [
         "Premium modules",
         "8 weeks logs",
