@@ -161,10 +161,8 @@ export default function Home() {
             />
           </div>
         </div>
-
       </section>
 
-      {/* Footer */}
       <footer className="bg-[#14171f] text-gray-500 text-center py-6 mt-auto">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4">
           <p>&copy; {new Date().getFullYear()} Orbit. By HeapReaper.</p>

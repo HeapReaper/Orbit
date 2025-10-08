@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import Navbar from "@/components/Nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
       </Script>
       <link rel="icon" href="/favicon.ico" />
+
       <body className="bg-[#0d0f13] text-gray-200">{children}</body>
+
     </html>
   );
 }
