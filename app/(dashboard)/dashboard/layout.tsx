@@ -1,11 +1,11 @@
-import Sidebar from "@/app/dashboard/components/Sidebar";
+import Sidebar from "@/app/(dashboard)/dashboard/components/Sidebar";
 import { NotificationProvider } from "@/app/context/NotificationContext";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Provider from "@/app/providers/SessionProvider";
 import { redirect } from "next/navigation";
 import { GuildProvider } from "@/app/context/GuildContext";
-import Script from "next/script"; // ← hier importeren
+import Script from "next/script";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -18,20 +18,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <Provider>
       <NotificationProvider>
         <GuildProvider>
+          {/* content mag hier */}
           <div className="flex min-h-screen">
-            {/* Plausible analytics */}
             <Script
               defer
               data-domain="orbit.heapreaper.nl"
               src="https://analytics.heapreaper.nl/js/script.outbound-links.js"
             />
-            <Script id="plausible-init">
-              {`
-                window.plausible = window.plausible || function() { 
-                  (window.plausible.q = window.plausible.q || []).push(arguments) 
-                }
-              `}
-            </Script>
+            <Script id="plausible-init">{`
+              window.plausible = window.plausible || function() { 
+                (window.plausible.q = window.plausible.q || []).push(arguments) 
+              }
+            `}</Script>
 
             <Sidebar />
 

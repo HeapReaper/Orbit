@@ -1,8 +1,8 @@
 "use client";
 
-import IconButton from "@/app/dashboard/components/inputs/IconButton";
+import IconButton from "@/app/(dashboard)/dashboard/components/inputs/IconButton";
 import { Settings } from "lucide-react";
-import ToggleSwitch from "@/app/dashboard/components/inputs/Switch";
+import ToggleSwitch from "@/app/(dashboard)/dashboard/components/inputs/Switch";
 
 interface Props {
   name: string;

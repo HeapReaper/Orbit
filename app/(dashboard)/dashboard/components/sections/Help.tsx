@@ -1,5 +1,5 @@
 import { BookOpen } from "lucide-react";
-import helpData from "@/app/dashboard/data/helpData";
+import helpData from "@/app/(dashboard)/dashboard/data/helpData";
 
 export default function HelpArticles() {
   return (

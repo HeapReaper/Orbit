@@ -1,10 +1,10 @@
 "use client";
 
-import ModuleCard from "@/app/dashboard/components/cards/ModuleCard";
-import modules from "@/app/dashboard/data/modules";
+import ModuleCard from "@/app/(dashboard)/dashboard/components/cards/ModuleCard";
+import modules from "@/app/(dashboard)/dashboard/data/modules";
 import { Package } from "lucide-react";
 import {useState} from "react";
-import TextInput from "@/app/dashboard/components/inputs/Text";
+import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 
 export default function ModuleSection() {
   const [search, setSearch] = useState("");

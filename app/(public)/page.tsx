@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import modules from "../app/dashboard/data/modules";
+import modules from "@/app/(dashboard)/dashboard/data/modules";
 
 export default function Home() {
   return (

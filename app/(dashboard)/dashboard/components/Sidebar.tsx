@@ -5,12 +5,12 @@ import Image from "next/image";
 import { Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
-import SelectInput from "@/app/dashboard/components/inputs/Select";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import Link from "next/link";
 import { useGuild } from "@/app/context/GuildContext";
-import AddBot from "@/app/dashboard/components/buttons/AddBot";
-import FreeLabel from "@/app/dashboard/components/labels/Free";
-import PremiumLabel from "@/app/dashboard/components/labels/Premium";
+import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
+import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
+import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
@@ -159,7 +159,7 @@ export default function Sidebar() {
                 {filteredModules.map((module, index: number) => (
                   <Link
                     key={index}
-                    href={`/dashboard/modules/${module.url}`}
+                    href={`/app/(dashboard)/dashboard/modules/${module.url}`}
                     className="hover:text-white px-2 py-1 rounded-md"
                   >
                     {module.name}

@@ -88,7 +88,7 @@ export default function MarkdownEditor({
       />
       <style jsx global>{`
         .mdx-editor-wrapper .mdxeditor {
-          color: #1e90ff; /* Overwrite text color */
+          color: #1e90ff;
         }
       `}</style>
     </div>
