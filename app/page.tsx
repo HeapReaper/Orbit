@@ -142,7 +142,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+        <div className="grid md:grid-cols-2 gap-10 items-center mt-16">
           <div className="space-y-4">
             <h3 className="text-2xl font-semibold">Auto message</h3>
             <p className="text-gray-400">

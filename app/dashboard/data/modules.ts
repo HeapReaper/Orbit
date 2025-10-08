@@ -69,13 +69,6 @@ const modules = [
     type: "Free",
     enabled: false,
   },
-  {
-    name: "Announcements",
-    url: "announcements",
-    description: "Send announcements to specific channels when things happen like new member join.",
-    type: "Free",
-    enabled: false,
-  },
 ];
 
 export default modules;
