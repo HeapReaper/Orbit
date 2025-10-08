@@ -1,4 +1,5 @@
 import { Bot } from "lucide-react";
+import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 
 async function getBotInfo() {
   const res = await fetch("https://lumix.heapreaper.nl/api/bot-info")
@@ -18,22 +19,22 @@ export default async function BotInfo() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
         <p>
-          <span className="font-semibold text-white">Status: </span> {data.status}
+          <span className="font-semibold text-white">Status: </span> <InlineCode text={data.status} />
         </p>
         <p>
-          <span className="font-semibold text-white">Uptime: </span> {data.uptime}
+          <span className="font-semibold text-white">Uptime: </span> <InlineCode text={data.uptime} />
         </p>
         <p>
-          <span className="font-semibold text-white">Ping: </span> {data.ping}ms
+          <span className="font-semibold text-white">Ping: </span> <InlineCode text={data.ping} />ms
         </p>
         <p>
-          <span className="font-semibold text-white">Guilds: </span> {data.guilds}
+          <span className="font-semibold text-white">Guilds: </span> <InlineCode text={data.guilds} />
         </p>
         <p>
-          <span className="font-semibold text-white">Users: </span> {data.users}
+          <span className="font-semibold text-white">Users: </span>  <InlineCode text={data.users} />
         </p>
         <p>
-          <span className="font-semibold text-white">Version:</span> v1.6.9 {/* TODO: add Gb version */}
+          <span className="font-semibold text-white">Version:</span> <InlineCode text="1.6.9" />
         </p>
       </div>
     </section>
