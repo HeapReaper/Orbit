@@ -21,6 +21,13 @@ const modules = [
     enabled: true,
   },
   {
+    name: "Analytics",
+    url: "analytics",
+    description: "Get insight on what time your server is active, which channels are the most populair and more.",
+    type: "Premium",
+    enabled: false,
+  },
+  {
     name: "Tickets",
     url: "tickets",
     description: "A nice ticket control system to let members contact staff.",

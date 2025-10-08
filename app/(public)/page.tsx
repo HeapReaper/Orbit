@@ -15,8 +15,8 @@ export default function Home() {
             Welcome to Orbit
           </h1>
           <p className="text-gray-400 text-lg md:text-xl">
-            Take full control of your servers and Discord bot with ease.
-            Enable, configure, and monitor modules, manage members, and keep everything running smoothly.
+            Take your Discord server to Orbit.
+            Enable, configure, and monitor features,
             All from one clean dashboard.
           </p>
 
@@ -83,7 +83,7 @@ export default function Home() {
           {modules.map((mod) => (
             <div
               key={mod.url}
-              className={`p-6 rounded-lg hover:shadow-lg transition border  bg-[#14171f]  hover:border-blue-600 border border-gray-900`}
+              className={`p-6 rounded-lg hover:shadow-lg transition bg-[#14171f]  hover:border-blue-600 border border-gray-900`}
             >
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xl font-semibold ">{mod.name}</h3>
