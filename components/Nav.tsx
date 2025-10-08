@@ -10,15 +10,13 @@ export default function Navbar() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Dashboard", href: "/dashboard" },
-    { name: "Modules", href: "/dashboard/modules" },
     { name: "ToS", href: "/terms" },
     { name: "Privacy", href: "/privacy" },
   ];
 
   return (
-    <nav className="bg-[#14171f] text-white px-6 md:px-20 py-4 shadow-md fixed w-full z-50">
+    <nav className="bg-[#14171f] text-white px-6 md:px-20 py-4 shadow-md  w-full z-50">
       <div className="flex justify-between items-center">
-        {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"

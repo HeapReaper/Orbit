@@ -9,7 +9,7 @@ export default function TermsOfService() {
         </h1>
 
         <p className="text-gray-400 mb-10">
-          Last updated: {new Date().toLocaleDateString()}
+          Last updated: 09/08/2025
         </p>
 
         <section className="space-y-8">

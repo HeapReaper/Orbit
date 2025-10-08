@@ -32,7 +32,6 @@ export default function Sidebar() {
     }
   }, [guilds, selectedGuild]);
 
-  // Check premium status
   useEffect(() => {
     const checkPremium = async () => {
       if (!selectedGuild) return;
