@@ -114,7 +114,7 @@ export default function Home() {
           </div>
           <div className="rounded-lg overflow-hidden shadow-lg">
             <Image
-              src="/screenshots/bot_settings.png"
+              src="/screenshots/dashboard.png"
               alt="Bot Settings Screenshot"
               width={600}
               height={350}
