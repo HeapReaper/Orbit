@@ -1,9 +1,9 @@
 "use client";
 
-import IconButton from "@/app/dashboard/components/inputs/IconButton";
+import IconButton from "@/app/(dashboard)/dashboard/components/inputs/IconButton";
 import { Bot, Save } from "lucide-react";
-import SelectInput from "@/app/dashboard/components/inputs/Select";
-import TextInput from "@/app/dashboard/components/inputs/Text";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
+import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
 import {useEffect, useState} from "react";
 import { useGuild } from "@/app/context/GuildContext";
