@@ -2,7 +2,7 @@ import "../dashboard/global.css";
 import Sidebar from "@/app/(dashboard)/dashboard/components/Sidebar";
 import { NotificationProvider } from "@/app/context/NotificationContext";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import Provider from "@/app/providers/SessionProvider";
 import { redirect } from "next/navigation";
 import { GuildProvider } from "@/app/context/GuildContext";
