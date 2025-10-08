@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Script from "next/script";
 import Navbar from "@/components/Nav";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,9 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="flex flex-col md:flex-row justify-center items-center gap-4">
           <p>&copy; {new Date().getFullYear()} Orbit. By HeapReaper.</p>
           <div className="flex gap-4 text-sm">
-            <a href="/terms" className="hover:text-white transition">Terms of Service</a>
+            <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
             <span>|</span>
-            <a href="/privacy" className="hover:text-white transition">Privacy Policy</a>
+            <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
           </div>
         </div>
       </footer>
