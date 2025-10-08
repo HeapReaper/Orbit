@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Markdown from 'react-markdown'
+import rehypeRaw from "rehype-raw";
 
 interface MessagePreviewProps {
   username: string;
@@ -26,7 +27,7 @@ export default function MessagePreview( { username, message }: MessagePreviewPro
             </span>
           </div>
           <p className="text-gray-200 mt-1">
-            <Markdown>{message}</Markdown>
+            <Markdown rehypePlugins={[rehypeRaw]} >{message}</Markdown>
           </p>
         </div>
       </div>
