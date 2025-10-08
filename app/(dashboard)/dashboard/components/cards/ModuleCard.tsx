@@ -14,7 +14,7 @@ export default function ModuleCard({ name, description, type }: Props) {
   const color = type === "Premium" ? "bg-red-600" : "bg-green-700";
 
   return (
-    <div className="bg-[#0d0f13] p-4 rounded-lg flex flex-col">
+    <div className="bg-[#0d0f13] p-4 rounded-lg flex flex-col hover:border-blue-600 border border-gray-900">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-white font-semibold">{name}</h3>
         <span className={`text-xs ${color} px-2 py-1 rounded`}>{type}</span>
