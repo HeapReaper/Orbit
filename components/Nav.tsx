@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <nav className="bg-[#14171f] text-white px-6 md:px-20 py-4 shadow-md  w-full z-50">
       <div className="flex justify-between items-center">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center ">
           <Image
             src="/logo.png"
             alt="Orbit Logo"
@@ -25,7 +25,7 @@ export default function Navbar() {
             height={40}
             className="mr-2"
           />
-          <span className="font-bold text-xl">Orbit</span>
+          <span className="font-bold text-xl hover:text-[var(--primary-color)]">Orbit</span>
         </Link>
 
         <ul className="hidden md:flex gap-6 items-center">
