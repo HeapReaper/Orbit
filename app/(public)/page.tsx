@@ -34,7 +34,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-block px-6 py-3 bg-[var(--primary-color)] hover:bg-[var(--hover-color)] text-white font-semibold rounded-lg transition text-center"
             >
-              Add bot to your server
+              Add to your server
             </a>
           </div>
         </div>
@@ -55,19 +55,19 @@ export default function Home() {
       <section className="px-6 md:px-20 py-16 bg-[#101218]">
         <h2 className="text-3xl font-bold text-white mb-8">Features</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition">
+          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition hover:border-blue-600 border border-gray-900 ">
             <h3 className="text-xl font-semibold mb-2">Dashboard</h3>
             <p className="text-gray-400">
               Access a clean dashboard to manage your servers and bot modules.
             </p>
           </div>
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition">
+          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
             <h3 className="text-xl font-semibold mb-2">Server Management</h3>
             <p className="text-gray-400">
               View and configure only the servers where your bot is present.
             </p>
           </div>
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition">
+          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
             <h3 className="text-xl font-semibold mb-2">Modules</h3>
             <p className="text-gray-400">
               Enable, disable, or configure bot modules directly from Orbit.
@@ -83,9 +83,7 @@ export default function Home() {
           {modules.map((mod) => (
             <div
               key={mod.url}
-              className={`p-6 rounded-lg hover:shadow-lg transition border ${
-                mod.enabled ? "border-green-500" : "border-gray-700"
-              } bg-[#14171f]`}
+              className={`p-6 rounded-lg hover:shadow-lg transition border  bg-[#14171f]  hover:border-blue-600 border border-gray-900`}
             >
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xl font-semibold ">{mod.name}</h3>
