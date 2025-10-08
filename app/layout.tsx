@@ -21,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}</Script>
 
     {children}
+
     </body>
     </html>
   );

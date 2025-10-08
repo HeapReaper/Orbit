@@ -162,17 +162,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <footer className="bg-[#14171f] text-gray-500 text-center py-6 mt-auto">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-          <p>&copy; {new Date().getFullYear()} Orbit. By HeapReaper.</p>
-          <div className="flex gap-4 text-sm">
-            <a href="/terms" className="hover:text-white transition">Terms of Service</a>
-            <span>|</span>
-            <a href="/privacy" className="hover:text-white transition">Privacy Policy</a>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
