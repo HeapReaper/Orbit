@@ -122,29 +122,30 @@ export default function Sidebar() {
 
         {/* Links */}
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
+
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
           >
-            <Home className="w-6 h-6 text-[var(--primary-color)]" />
+            <Home className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
             Dashboard
           </Link>
 
           <Link
             href="/dashboard/bot"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
           >
-            <Bot className="w-6 h-6 text-[var(--primary-color)]" />
+            <Bot className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
             Bot
           </Link>
 
           <div>
             <button
               onClick={() => setModulesOpen(!modulesOpen)}
-              className="flex justify-between items-center w-full px-2 py-1 hover:text-[var(--hover-color)] rounded-md"
+              className="group flex justify-between items-center w-full px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
             >
               <div className="flex items-center gap-2">
-                <Package className="w-6 h-6 text-[var(--primary-color)]" />
+                <Package className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
                 <span>Modules</span>
               </div>
               <span
@@ -152,8 +153,8 @@ export default function Sidebar() {
                   modulesOpen ? "rotate-90" : ""
                 }`}
               >
-                <Play className="w-6 h-6 text-[var(--primary-color)]" />
-              </span>
+        <Play className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+      </span>
             </button>
 
             {modulesOpen && (
@@ -162,7 +163,7 @@ export default function Sidebar() {
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
-                    className="hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+                    className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
                   >
                     {module.name}
                   </Link>
@@ -173,21 +174,20 @@ export default function Sidebar() {
 
           <Link
             href="#"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
           >
-            <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
+            <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
             Commands
           </Link>
 
           <Link
             href="/dashboard/logs"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
           >
-            <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
+            <ClipboardClock className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
             Logs
           </Link>
         </nav>
-
 
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 w-full px-2">
           <div className="w-full">
