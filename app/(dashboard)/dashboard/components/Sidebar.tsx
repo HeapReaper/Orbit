@@ -14,6 +14,8 @@ import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium"
 
 const botGuildIds = ["1373949549495844954", "1332406393105289236"];
 
+// TODO: Add loop for navitems
+
 export default function Sidebar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
@@ -118,10 +120,11 @@ export default function Sidebar() {
           }
         />
 
+        {/* Links */}
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
@@ -129,7 +132,7 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/bot"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
@@ -138,7 +141,7 @@ export default function Sidebar() {
           <div>
             <button
               onClick={() => setModulesOpen(!modulesOpen)}
-              className="flex justify-between items-center w-full px-2 py-1 hover:text-white rounded-md"
+              className="flex justify-between items-center w-full px-2 py-1 hover:text-[var(--hover-color)] rounded-md"
             >
               <div className="flex items-center gap-2">
                 <Package className="w-6 h-6 text-[var(--primary-color)]" />
@@ -154,12 +157,12 @@ export default function Sidebar() {
             </button>
 
             {modulesOpen && (
-              <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
+              <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-400">
                 {filteredModules.map((module, index: number) => (
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
-                    className="hover:text-white px-2 py-1 rounded-md"
+                    className="hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
                   >
                     {module.name}
                   </Link>
@@ -170,7 +173,7 @@ export default function Sidebar() {
 
           <Link
             href="#"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
@@ -178,7 +181,7 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/logs"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
