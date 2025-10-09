@@ -61,10 +61,10 @@ export default async function ReleasesPage() {
                 <ul className="list-disc list-inside mt-2">
                   {release.body
                     .split("\n")
-                    .map((line) => line.trim())  // remove extra spaces
-                    .filter((line) => line.length > 0)  // skip empty lines
-                    .map((line, idx) => (
-                      <li key={idx}>{line}</li>
+                    .map((line) => line.trim())
+                    .filter((line) => line.length > 0)
+                    .map((line: string, idx) => (
+                      <li key={idx}>{line.replace("*", "")}</li>
                     ))}
                 </ul>
               </div>
