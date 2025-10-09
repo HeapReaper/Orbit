@@ -31,6 +31,7 @@ interface GuildContextType {
   channels: Channel[];
   roles: Role[];
   guilds: Guild[];
+  setGuilds: (guilds: Guild[]) => void; // added to allow Sidebar to set guilds
 }
 
 const GuildContext = createContext<GuildContextType | undefined>(undefined);
@@ -42,9 +43,10 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
-    const fetchGuilds = async () => {
+    const fetchUserGuilds = async () => {
       try {
-        const res = await fetch("https://lumix.heapreaper.nl/api/expose-guild-channels-and-roles");
+        const res = await fetch("/api/discord/guilds");
+        console.log(res);
         const data = await res.json();
         setGuilds(data.guilds || []);
       } catch (err) {
@@ -52,17 +54,20 @@ export function GuildProvider({ children }: { children: ReactNode }) {
         setGuilds([]);
       }
     };
-    void fetchGuilds();
+
+    void fetchUserGuilds();
   }, []);
 
   useEffect(() => {
-    const guild = guilds.find(g => g.id === selectedGuild);
+    const guild = guilds.find((g) => g.id === selectedGuild);
     setChannels(guild?.channels || []);
     setRoles(guild?.roles || []);
   }, [selectedGuild, guilds]);
 
   return (
-    <GuildContext.Provider value={{ selectedGuild, setSelectedGuild, channels, roles, guilds }}>
+    <GuildContext.Provider
+      value={{ selectedGuild, setSelectedGuild, channels, roles, guilds, setGuilds }}
+    >
       {children}
     </GuildContext.Provider>
   );

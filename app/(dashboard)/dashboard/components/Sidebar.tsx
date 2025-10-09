@@ -12,26 +12,51 @@ import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
-const botGuildIds = ["1373949549495844954", "1332406393105289236"];
-
 export default function Sidebar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { selectedGuild, setSelectedGuild, guilds } = useGuild();
+  const { selectedGuild, setSelectedGuild, guilds, setGuilds } = useGuild();
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
 
   const filteredModules = modules.filter((module) => module.enabled);
 
-  // Select first guild
+  // Fetch only the guilds the user is in
+  useEffect(() => {
+    const fetchUserGuilds = async () => {
+      try {
+        const token = localStorage.getItem("next-auth.session-token");
+        if (!token) return;
+
+        const res = await fetch("https://discord.com/api/users/@me/guilds", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userGuilds = await res.json();
+        //const filteredGuilds = userGuilds.filter((g: any) => botGuildIds.includes(g.id));
+        console.log(userGuilds);
+        setGuilds(userGuilds);
+      } catch (err) {
+        console.error(err);
+        setGuilds([]);
+      }
+    };
+
+    void fetchUserGuilds();
+  }, [setGuilds]);
+
+  // Select first guild if none selected
   useEffect(() => {
     if (guilds.length > 0 && !selectedGuild) {
       setSelectedGuild(guilds[0].id);
     }
-  }, [guilds, selectedGuild]);
+  }, [guilds, selectedGuild, setSelectedGuild]);
 
+  // Check if the selected guild is premium
   useEffect(() => {
     const checkPremium = async () => {
       if (!selectedGuild) return;
@@ -111,11 +136,7 @@ export default function Sidebar() {
           label=""
           value={selectedGuild}
           onChange={setSelectedGuild}
-          options={
-            guilds
-              .filter((g) => botGuildIds.includes(g.id))
-              .map((g) => ({ value: g.id, label: g.name }))
-          }
+          options={guilds.map((g) => ({ value: g.id, label: g.name }))}
         />
 
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
@@ -185,10 +206,8 @@ export default function Sidebar() {
           </Link>
         </nav>
 
-
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 w-full px-2">
           <div className="w-full">
-
             <div className="w-full flex justify-center mt-2">
               <div className="px-2 py-1 rounded-md text-sm font-medium">
                 {isPremium === null ? (
@@ -200,7 +219,6 @@ export default function Sidebar() {
                 )}
               </div>
             </div>
-
           </div>
 
           <div className="w-full">
