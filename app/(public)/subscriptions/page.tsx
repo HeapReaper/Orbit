@@ -1,16 +1,18 @@
 "use client";
 
-export default function SubscriptionsPage() {
+export default function Page() {
   const plans = [
     {
       name: "Free",
       description:
         "Perfect for trying out basic features and managing smaller servers.",
       price: "€0 / month",
+      nonFeatures: [
+        "No support"
+      ],
       features: [
         "Free modules",
         "1 week log",
-        "Public support",
       ],
       buttonText: "Current plan",
       buttonClass:
@@ -56,11 +58,19 @@ export default function SubscriptionsPage() {
               <p className="text-gray-300 font-medium mb-4">{plan.price}</p>
 
               <ul className="mb-6 space-y-2">
-                {plan.features.map((feature, i) => (
+                {plan.features.map((feature: string, i: number) => (
                   <li key={i} className="flex items-center">
                     <span className="mr-2 text-[var(--primary-color)]">✔</span> {feature}
                   </li>
                 ))}
+
+                {plan.nonFeatures && (
+                  plan.nonFeatures.map((nonFeature: string, i: number) => (
+                    <li key={i} className="flex items-center">
+                      <span className="mr-2 text-[var(--primary-color)]">✗</span> {nonFeature}
+                    </li>
+                  ))
+                )}
               </ul>
 
               <button
