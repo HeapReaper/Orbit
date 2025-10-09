@@ -32,7 +32,7 @@ const modules = [
     url: "tickets",
     description: "A nice ticket control system to let members contact staff.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Logging",
