@@ -45,8 +45,8 @@ export default function Page() {
         },
         body: JSON.stringify({
           guild_id: selectedGuild,
-          message: message,
-          channel: channel,
+          message: message?.trim(),
+          channel: channel?.trim(),
           enabled: enabled ? 1 : 0,
         })
       });
