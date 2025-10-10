@@ -29,7 +29,7 @@ export default function Page() {
         setLoading(false);
 
         setChannel(data.channel);
-        setChannelConfidential(data.channelConf);
+        setChannelConfidential(data.channel_conf);
         setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
