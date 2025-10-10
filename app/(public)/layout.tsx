@@ -26,11 +26,11 @@ export const metadata: Metadata = {
     type: "website",
     title: "Orbit – Dashboard and bot for Your Discord Server",
     description: "Orbit is a powerful Discord bot with a sleek web panel that lets you manage your server effortlessly. Send automated messages, handle support tickets, send birthday notifications, track server analytics, and more. Perfect for keeping your community engaged and organized.",
-    url: "https://orbit.heapreaper.nl",
+    url: "https://botinorbit.com",
     siteName: "Orbit",
     images: [
       {
-        url: "",
+        url: "https://botinorbit.com/banner.png",
         width: 1200,
         height: 630,
         alt: "Orbit Dashboard",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Orbit – Dashboard and bot for Your Discord Server",
     description: "Orbit is a powerful Discord bot with a sleek web panel that lets you manage your server effortlessly. Send automated messages, handle support tickets, send birthday notifications, track server analytics, and more. Perfect for keeping your community engaged and organized.",
     creator: "@HeapReaper",
-    // images: ["https://orbit.heapreaper.nl/og-image.png"],
+    images: ["https://botinorbit.com/banner.png"],
   },
   robots: {
     index: true,
