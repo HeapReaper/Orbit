@@ -25,7 +25,7 @@ const modules = [
     url: "analytics",
     description: "Get insight on what time your server is active, which channels are the most populair and more.",
     type: "Premium",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Tickets",
