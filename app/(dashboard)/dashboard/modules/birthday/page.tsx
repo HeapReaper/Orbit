@@ -10,6 +10,7 @@ import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import cleanMessage from "@/app/lib/cleanMessage";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,7 +58,7 @@ export default function Page() {
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
-          message: message,
+          message: cleanMessage(message),
           time: time,
           enabled: enabled,
         }),

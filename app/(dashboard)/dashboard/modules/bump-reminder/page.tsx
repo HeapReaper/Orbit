@@ -10,6 +10,7 @@ import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import cleanMessage from "@/app/lib/cleanMessage";
 
 export default function BumpReminderPage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,7 +55,7 @@ export default function BumpReminderPage() {
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
-          message: message,
+          message: cleanMessage(message),
           interval: intervalHours,
           enabled: enabled ? 1 : 0,
         })

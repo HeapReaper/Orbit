@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
-import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import cleanMessage from "@/app/lib/cleanMessage";
 
 type AutoMessage = {
   id: string;
@@ -68,7 +67,7 @@ export default function Page() {
     try {
       const cleanedAutoMessages = autoMessages.map(msg => ({
         ...msg,
-        message: msg.message.replace(/\s*"link"/g, ''),
+        message: cleanMessage(msg.message)
       }));
 
       const resp = await fetch(`/api/auto-message`, {
