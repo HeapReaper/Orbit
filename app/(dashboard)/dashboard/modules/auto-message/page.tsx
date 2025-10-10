@@ -66,10 +66,15 @@ export default function Page() {
 
   const handleSave = async () => {
     try {
+      const cleanedAutoMessages = autoMessages.map(msg => ({
+        ...msg,
+        message: msg.message.replace(/\s*"link"/g, ''),
+      }));
+
       const resp = await fetch(`/api/auto-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guild_id: selectedGuild, autoMessages }),
+        body: JSON.stringify({ guild_id: selectedGuild, autoMessages: cleanedAutoMessages }),
       });
 
       if (!resp.ok) return notify("Error", `${resp.statusText}`, "error");
