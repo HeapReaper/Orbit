@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   const updated = await prisma.welcome_message_settings.upsert({
     where: { guild_id },
-    update: { guild_id, message, channel, enabled },
+    update: {message, channel, enabled },
     create: { guild_id, message, channel, enabled },
   });
 
