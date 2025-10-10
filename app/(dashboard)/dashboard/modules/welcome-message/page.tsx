@@ -9,11 +9,14 @@ import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import {useGuild} from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 export default function Page() {
-  const [enabled, setEnabled] = useState<boolean>();
-  const [message, setMessage] = useState<string>();
-  const [channel, setChannel] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [channel, setChannel] = useState<string>("");
   const { notify } = useNotification();
   const { selectedGuild, channels } = useGuild();
 
@@ -21,9 +24,12 @@ export default function Page() {
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
+      setLoading(true);
+
       try {
         const res = await fetch(`/api/welcome-message?guild_id=${selectedGuild}`);
         const data = await res.json();
+        setLoading(false);
 
         setMessage(data.message != null ? data.message : "");
         setChannel(data.channel != null ? data.channel : "");
@@ -62,7 +68,9 @@ export default function Page() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+      {loading && <PageLoader />}
+
       <h1 className="text-2xl font-semibold mb-4 text-white">Welcome message Settings</h1>
 
       <div className="flex items-center justify-between mb-4">

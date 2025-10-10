@@ -7,10 +7,12 @@ import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
 import {useEffect, useState} from "react";
 import { useGuild } from "@/app/context/GuildContext";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 export default function BotSettings() {
-  const { notify } = useNotification();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const { notify } = useNotification();
   const [nickname, setNickname] = useState<string>("Orbit");
   const [language, setLanguage] = useState<string>("");
   const [updatesChannel, setUpdatesChannel] = useState<string>("");
@@ -23,15 +25,19 @@ export default function BotSettings() {
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
+      setLoading(true);
+
       try {
         const res = await fetch(`/api/bot-settings?guild_id=${selectedGuild}`);
         const data = await res.json();
+        setLoading(false);
 
         setNickname(data.nickname ?? "");
         setUpdatesChannel(data.updates_channel  ?? "");
         setTimezone(data.timezone  ?? "");
         setPrimaryColor(data.primary_color);
         setSecondaryColor(data.secondary_color);
+
       } catch (err) {
         console.error(err);
       }
@@ -41,7 +47,6 @@ export default function BotSettings() {
   }, [selectedGuild]);
 
   const handleSave = async () => {
-    console.log(primaryColor)
     try {
       const resp = await fetch("/api/bot-settings", {
         method: "POST",
@@ -70,7 +75,9 @@ export default function BotSettings() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg space-y-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg space-y-6">
+      {loading && <PageLoader />}
+
       <div className="flex items-center gap-2 mb-3">
         <Bot className="w-6 h-6 text-[var(--primary-color)]" />
         <h2 className="text-lg font-semibold">Bot Settings</h2>

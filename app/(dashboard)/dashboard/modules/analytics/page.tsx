@@ -9,6 +9,7 @@ import TopChannelsChart from "@/app/(dashboard)/dashboard/components/charts/Most
 import MostActiveUsersChart from "@/app/(dashboard)/dashboard/components/charts/MostActiveUsers";
 import JoinsOverTimeChart from "@/app/(dashboard)/dashboard/components/charts/JoinsOverTime";
 import ActiveVsInactiveChart from "@/app/(dashboard)/dashboard/components/charts/ActiveVsInactiveMembers";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 import {
   fakeCommandData,
@@ -24,10 +25,8 @@ import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium"
 
 const TIME_RANGES = ["today", "last_week", "last_month", "last_year"] as const;
 
-export default function BumpReminderPage() {
-  const { selectedGuild } = useGuild();
-  const { notify } = useNotification();
-  const [selectedChannel, setSelectedChannel] = useState<string>("");
+export default function Page() {
+  const [loading, setLoading] = useState<boolean>(false);
   const [timeRange, setTimeRange] = useState<typeof TIME_RANGES[number]>("today");
 
   const [commandData, setCommandData] = useState(fakeCommandData);
@@ -61,7 +60,9 @@ export default function BumpReminderPage() {
   // }, [selectedGuild, timeRange, notify]);
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-4xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-4xl mx-auto mt-6">
+      {loading && <PageLoader />}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-white">Analytics</h1>
