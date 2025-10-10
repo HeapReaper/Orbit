@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { guild_id, channel, message, time, enabled } = data;
-  console.log(time);
+
   const updated = await prisma.birthday_settings.upsert({
     where: { guild_id },
     update: { channel, message, time, enabled },
