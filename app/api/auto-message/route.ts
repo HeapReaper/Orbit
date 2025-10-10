@@ -34,9 +34,7 @@ export async function POST(req: NextRequest) {
       time: msg.time,
       enabled: msg.enabled,
     }));
-
-    console.log(createData);
-
+    
     await prisma.auto_message.createMany({ data: createData });
 
     return NextResponse.json({ success: true });
