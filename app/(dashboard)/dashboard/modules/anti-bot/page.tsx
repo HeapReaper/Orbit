@@ -11,15 +11,15 @@ import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete"
 
 export default function AntiBotPage() {
   const [enabled, setEnabled] = useState(true);
-  const [timeWindow, setTimeWindow] = useState(10); // seconds
-  const [channelLimit, setChannelLimit] = useState(3); // number of channels
-  const [punishment, setPunishment] = useState(""); // selected punishment
-  const [forbiddenWords, setForbiddenWords] = useState<string[]>([""]); // list of forbidden words/sentences
+  const [timeWindow, setTimeWindow] = useState(10);
+  const [channelLimit, setChannelLimit] = useState(3);
+  const [punishment, setPunishment] = useState("");
+  const [forbiddenWords, setForbiddenWords] = useState<string[]>([""]);
 
   const { notify } = useNotification();
 
   const handleSave = () => {
-    notify("Anti-Bot settings saved!", "", "success");
+    notify("Saved!", "", "success");
   };
 
   const addForbiddenWord = () => {
@@ -39,7 +39,7 @@ export default function AntiBotPage() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-xl mx-auto mt-6">
+    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       <h1 className="text-2xl font-semibold mb-4 text-white">Anti-Bot Settings</h1>
 
       <div className="flex items-center justify-between mb-6">

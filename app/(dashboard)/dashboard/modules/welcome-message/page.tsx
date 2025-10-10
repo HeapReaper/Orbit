@@ -62,7 +62,7 @@ export default function Page() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-xl mx-auto mt-6">
+    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       <h1 className="text-2xl font-semibold mb-4 text-white">Welcome message Settings</h1>
 
       <div className="flex items-center justify-between mb-4">
