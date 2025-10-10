@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import { useGuild } from "@/app/context/GuildContext";
@@ -11,6 +11,10 @@ export default function Page() {
   const [result, setResult] = useState<string | null>(null);
   const { notify } = useNotification();
   const { selectedGuild, guilds } = useGuild();
+
+  useEffect(() => {
+
+  })
 
   const handleRefresh = async (guildId?: string) => {
     setLoading(true);
