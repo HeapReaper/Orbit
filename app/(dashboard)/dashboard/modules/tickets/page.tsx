@@ -13,6 +13,26 @@ export default function Page() {
   const { notify } = useNotification();
   const { selectedGuild, channels } = useGuild();
 
+  useEffect(() => {
+    if (!selectedGuild) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/tickets-settings?guild_id=${selectedGuild}`);
+        const data = await res.json();
+        console.log(data);
+        setChannel(data.channel);
+        setChannelConfidential(data.channelConf);
+        setEnabled(data.enabled != null ? data.enabled : false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void fetchData();
+  }, [selectedGuild]);
+
+
   const handleSave = async () => {
     try {
       const resp = await fetch("/api/tickets-settings", {

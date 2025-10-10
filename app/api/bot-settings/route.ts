@@ -40,27 +40,24 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    console.log("1")
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
   if (!data.guild_id) {
-    console.log("2")
     return NextResponse.json({ error: "guild_id is required" });
   }
 
   // @ts-ignore
   if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
-    console.log("3")
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
-  const { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color } = data;
+  const { guild_id, nickname, language, updates_channel, timezone, primary_color, secondary_color } = data;
 
   const updated = await prisma.bot_settings.upsert({
     where: { guild_id },
-    update: { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color },
-    create: { guild_id, nickname, manager_roles, updates_channel, timezone, primary_color, secondary_color },
+    update: { guild_id, nickname, language, updates_channel, timezone, primary_color, secondary_color },
+    create: { guild_id, nickname, language, updates_channel, timezone, primary_color, secondary_color },
   });
 
   return NextResponse.json(updated);

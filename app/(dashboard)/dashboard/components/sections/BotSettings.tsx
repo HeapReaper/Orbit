@@ -11,13 +11,13 @@ import { useGuild } from "@/app/context/GuildContext";
 export default function BotSettings() {
   const { notify } = useNotification();
 
-  const [nickname, setNickname] = useState<string>("");
-  const [managerRoles, setManagerRoles] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("Orbit");
+  const [language, setLanguage] = useState<string>("");
   const [updatesChannel, setUpdatesChannel] = useState<string>("");
-  const [timezone, setTimezone] = useState<string>("");
+  const [timezone, setTimezone] = useState<string>("Europe/Amsterdam");
   const [primaryColor, setPrimaryColor] = useState<string>("");
   const [secondaryColor, setSecondaryColor] = useState<string>("");
-  const { selectedGuild, channels, roles } = useGuild();
+  const { selectedGuild, channels } = useGuild();
 
   useEffect(() => {
     if (!selectedGuild) return;
@@ -27,9 +27,9 @@ export default function BotSettings() {
         const res = await fetch(`/api/bot-settings?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        setNickname(data.nickname);
-        setUpdatesChannel(data.updates_channel);
-        setTimezone(data.timezone);
+        setNickname(data.nickname ?? "");
+        setUpdatesChannel(data.updates_channel  ?? "");
+        setTimezone(data.timezone  ?? "");
         setPrimaryColor(data.primary_color);
         setSecondaryColor(data.secondary_color);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function BotSettings() {
         body: JSON.stringify({
           guild_id: selectedGuild,
           nickname: nickname,
-          manager_roles: managerRoles,
+          language: language,
           updates_channel: updatesChannel,
           timezone: timezone,
           primary_color: primaryColor,
@@ -81,13 +81,12 @@ export default function BotSettings() {
           <TextInput label="Nickname" value={nickname ?? ""} onChange={setNickname} />
 
           <SelectInput
-            label="Manager Roles (Owner/Administrator Only)"
-            value={managerRoles ?? ""}
-            onChange={setManagerRoles}
-            options={roles.map(role => ({
-              value: role.id,
-              label: role.name,
-            }))}
+            label="Language"
+            value={language ?? ""}
+            onChange={setLanguage}
+            options={[
+              { value: "en", label: "English" },
+            ]}
           />
         </div>
 
