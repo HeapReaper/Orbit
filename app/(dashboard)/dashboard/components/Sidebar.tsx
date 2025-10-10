@@ -12,28 +12,51 @@ import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
-const botGuildIds = ["1373949549495844954", "1332406393105289236"];
-
-// TODO: Add loop for navitems
-
 export default function Sidebar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [modulesOpen, setModulesOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { selectedGuild, setSelectedGuild, guilds } = useGuild();
+  const { selectedGuild, setSelectedGuild, guilds, setGuilds } = useGuild();
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
 
   const filteredModules = modules.filter((module) => module.enabled);
 
-  // Select first guild
+  // Fetch only the guilds the user is in
+  useEffect(() => {
+    const fetchUserGuilds = async () => {
+      try {
+        const token = localStorage.getItem("next-auth.session-token");
+        if (!token) return;
+
+        const res = await fetch("https://discord.com/api/users/@me/guilds", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userGuilds = await res.json();
+        //const filteredGuilds = userGuilds.filter((g: any) => botGuildIds.includes(g.id));
+        console.log(userGuilds);
+        setGuilds(userGuilds);
+      } catch (err) {
+        console.error(err);
+        setGuilds([]);
+      }
+    };
+
+    void fetchUserGuilds();
+  }, [setGuilds]);
+
+  // Select first guild if none selected
   useEffect(() => {
     if (guilds.length > 0 && !selectedGuild) {
       setSelectedGuild(guilds[0].id);
     }
-  }, [guilds, selectedGuild]);
+  }, [guilds, selectedGuild, setSelectedGuild]);
 
+  // Check if the selected guild is premium
   useEffect(() => {
     const checkPremium = async () => {
       if (!selectedGuild) return;
@@ -113,39 +136,33 @@ export default function Sidebar() {
           label=""
           value={selectedGuild}
           onChange={setSelectedGuild}
-          options={
-            guilds
-              .filter((g) => botGuildIds.includes(g.id))
-              .map((g) => ({ value: g.id, label: g.name }))
-          }
+          options={guilds.map((g) => ({ value: g.id, label: g.name }))}
         />
 
-        {/* Links */}
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
-
           <Link
             href="/dashboard"
-            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
-            <Home className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+            <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
           </Link>
 
           <Link
             href="/dashboard/bot"
-            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
-            <Bot className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+            <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
           </Link>
 
           <div>
             <button
               onClick={() => setModulesOpen(!modulesOpen)}
-              className="group flex justify-between items-center w-full px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+              className="flex justify-between items-center w-full px-2 py-1 hover:text-white rounded-md"
             >
               <div className="flex items-center gap-2">
-                <Package className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+                <Package className="w-6 h-6 text-[var(--primary-color)]" />
                 <span>Modules</span>
               </div>
               <span
@@ -153,17 +170,17 @@ export default function Sidebar() {
                   modulesOpen ? "rotate-90" : ""
                 }`}
               >
-        <Play className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
-      </span>
+                <Play className="w-6 h-6 text-[var(--primary-color)]" />
+              </span>
             </button>
 
             {modulesOpen && (
-              <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-400">
+              <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
                 {filteredModules.map((module, index: number) => (
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
-                    className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+                    className="hover:text-white px-2 py-1 rounded-md"
                   >
                     {module.name}
                   </Link>
@@ -174,24 +191,23 @@ export default function Sidebar() {
 
           <Link
             href="#"
-            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
-            <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+            <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
           </Link>
 
           <Link
             href="/dashboard/logs"
-            className="group flex items-center gap-2 px-2 py-1 rounded-md hover:text-[var(--hover-color)] transition"
+            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
-            <ClipboardClock className="w-6 h-6 text-[var(--primary-color)] group-hover:text-[var(--hover-color)] transition" />
+            <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
           </Link>
         </nav>
 
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 w-full px-2">
           <div className="w-full">
-
             <div className="w-full flex justify-center mt-2">
               <div className="px-2 py-1 rounded-md text-sm font-medium">
                 {isPremium === null ? (
@@ -203,7 +219,6 @@ export default function Sidebar() {
                 )}
               </div>
             </div>
-
           </div>
 
           <div className="w-full">

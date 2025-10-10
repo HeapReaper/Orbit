@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
           username: token.username as string,
           discriminator: token.discriminator as string,
         },
+        accessToken: token.accessToken,
       };
     },
   },
