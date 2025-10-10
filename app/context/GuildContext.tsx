@@ -31,7 +31,7 @@ interface GuildContextType {
   channels: Channel[];
   roles: Role[];
   guilds: Guild[];
-  setGuilds: (guilds: Guild[]) => void; // added to allow Sidebar to set guilds
+  setGuilds: (guilds: Guild[]) => void;
 }
 
 const GuildContext = createContext<GuildContextType | undefined>(undefined);
