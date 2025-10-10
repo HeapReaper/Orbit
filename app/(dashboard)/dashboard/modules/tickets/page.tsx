@@ -17,6 +17,8 @@ export default function Page() {
   const { selectedGuild, channels } = useGuild();
 
   useEffect(() => {
+    document.title = "Tickets settings";
+
     if (!selectedGuild) return;
 
     const fetchData = async () => {

@@ -26,6 +26,8 @@ export default function Page() {
   const [autoMessages, setAutoMessages] = useState<AutoMessage[]>([]);
 
   useEffect(() => {
+    document.title = "Auto message settings";
+
     if (!selectedGuild) return;
 
     const fetchAutoMessages = async () => {

@@ -22,6 +22,8 @@ export default function Page() {
   const { selectedGuild, channels } = useGuild();
 
   useEffect(() => {
+    document.title = "Welcome message Settings";
+
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {

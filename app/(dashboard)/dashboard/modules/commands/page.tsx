@@ -12,7 +12,7 @@ export default function Page() {
   const { selectedGuild, guilds } = useGuild();
 
   useEffect(() => {
-
+    document.title = "Commands";
   })
 
   const handleRefresh = async (guildId?: string) => {
