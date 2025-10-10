@@ -9,8 +9,11 @@ import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 export default function BumpReminderPage() {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [enabled, setEnabled] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [intervalHours, setIntervalHours] = useState<number>(1);
@@ -22,10 +25,13 @@ export default function BumpReminderPage() {
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
+      setLoading(true);
+
       try {
         const res = await fetch(`/api/bumpreminders?guild_id=${selectedGuild}`);
         const data = await res.json();
 
+        setLoading(false);
         setMessage(data.message != null ? data.message : "");
         setIntervalHours(data.interval != null ? data.interval : "");
         setSelectedChannel(data.channel != null ? data.channel : "");
@@ -65,7 +71,9 @@ export default function BumpReminderPage() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+      {loading && <PageLoader />}
+
       <h1 className="text-2xl font-semibold mb-4 text-white">Bump Reminder Settings</h1>
 
       <div className="flex items-center justify-between mb-4">

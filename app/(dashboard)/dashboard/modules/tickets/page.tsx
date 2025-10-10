@@ -5,8 +5,11 @@ import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import {useGuild} from "@/app/context/GuildContext";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 export default function Page() {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [enabled, setEnabled] = useState<boolean>(false);
   const [channel, setChannel] = useState<string>("");
   const [channelConfidential, setChannelConfidential] = useState<string>("");
@@ -17,10 +20,14 @@ export default function Page() {
     if (!selectedGuild) return;
 
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const res = await fetch(`/api/tickets-settings?guild_id=${selectedGuild}`);
         const data = await res.json();
-        console.log(data);
+
+        setLoading(false);
+
         setChannel(data.channel);
         setChannelConfidential(data.channelConf);
         setEnabled(data.enabled != null ? data.enabled : false);
@@ -31,7 +38,6 @@ export default function Page() {
 
     void fetchData();
   }, [selectedGuild]);
-
 
   const handleSave = async () => {
     try {
@@ -59,7 +65,9 @@ export default function Page() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+      {loading && <PageLoader />}
+
       <h1 className="text-2xl font-semibold mb-4 text-white">Tickets Settings</h1>
 
       <div className="flex items-center justify-between mb-4">

@@ -1,10 +1,9 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import { useGuild } from "@/app/context/GuildContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -46,7 +45,9 @@ export default function Page() {
   };
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+      {loading && <PageLoader />}
+
       <h1 className="text-2xl font-semibold mb-4 text-white">
         Slash Command Management
       </h1>
