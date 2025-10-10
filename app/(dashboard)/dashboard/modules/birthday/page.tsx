@@ -24,6 +24,8 @@ export default function Page() {
   const { notify } = useNotification();
 
   useEffect(() => {
+    document.title = "Birthday settings";
+
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {

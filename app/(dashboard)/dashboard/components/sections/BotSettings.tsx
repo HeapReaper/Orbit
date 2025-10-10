@@ -22,6 +22,8 @@ export default function BotSettings() {
   const { selectedGuild, channels } = useGuild();
 
   useEffect(() => {
+    document.title = "Bot settings";
+
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {

@@ -16,8 +16,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Orbit",
-  description: "The dashboard for Orbit",
+  title: "Orbit – Dashboard and bot for Your Discord Server",
+  description: "Orbit is a powerful Discord bot with a sleek web panel that lets you manage your server effortlessly. Send automated messages, handle support tickets, send birthday notifications, track server analytics, and more. Perfect for keeping your community engaged and organized.",
+  keywords: ["Discord", "Dashboard", "Server management", "Orbit", "Automation", "Bots", "Analytics", "Tickets", "Notifications"],
+  authors: [{ name: "HeapReaper", url: "https://heapreaper.nl" }],
+  creator: "HeapReaper",
+  publisher: "HeapReaper",
+  openGraph: {
+    type: "website",
+    title: "Orbit – Dashboard and bot for Your Discord Server",
+    description: "Orbit is a powerful Discord bot with a sleek web panel that lets you manage your server effortlessly. Send automated messages, handle support tickets, send birthday notifications, track server analytics, and more. Perfect for keeping your community engaged and organized.",
+    url: "https://orbit.heapreaper.nl",
+    siteName: "Orbit",
+    images: [
+      {
+        url: "",
+        width: 1200,
+        height: 630,
+        alt: "Orbit Dashboard",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Orbit – Dashboard and bot for Your Discord Server",
+    description: "Orbit is a powerful Discord bot with a sleek web panel that lets you manage your server effortlessly. Send automated messages, handle support tickets, send birthday notifications, track server analytics, and more. Perfect for keeping your community engaged and organized.",
+    creator: "@HeapReaper",
+    // images: ["https://orbit.heapreaper.nl/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

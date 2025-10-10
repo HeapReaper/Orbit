@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useNotification } from "@/app/context/NotificationContext";
-import { useGuild } from "@/app/context/GuildContext";
+// import { useNotification } from "@/app/context/NotificationContext";
+// import { useGuild } from "@/app/context/GuildContext";
 import CommandUsageChart from "@/app/(dashboard)/dashboard/components/charts/CommandUsageChart";
 import MessageFlowChart from "@/app/(dashboard)/dashboard/components/charts/MessageFlowOverTime";
 import TopChannelsChart from "@/app/(dashboard)/dashboard/components/charts/MostActiveChannels";
@@ -22,54 +22,29 @@ import {
 } from "@/app/(dashboard)/dashboard/data/analytics";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
-
 const TIME_RANGES = ["today", "last_week", "last_month", "last_year"] as const;
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [timeRange, setTimeRange] = useState<typeof TIME_RANGES[number]>("today");
 
-  const [commandData, setCommandData] = useState(fakeCommandData);
-  const [hourlyData, setHourlyData] = useState(fakeHourlyData);
-  const [channelsData, setChannelsData] = useState(topChannels);
+  const [commandData] = useState(fakeCommandData);
+  const [hourlyData] = useState(fakeHourlyData);
+  const [channelsData] = useState(topChannels);
 
-
-
-  // // Fetch analyics based on time range
-  // useEffect(() => {
-  //   if (!selectedGuild) return;
-  //
-  //   const fetchAnalytics = async () => {
-  //     try {
-  //       const res = await fetch(
-  //         `/api/analytics?guild_id=${selectedGuild}&range=${timeRange}`
-  //       );
-  //       const data = await res.json();
-  //
-  //       // Replace with your real data from API
-  //       setCommandData(data.commandUsage ?? fakeCommandData);
-  //       setHourlyData(data.hourlyMessages ?? fakeHourlyData);
-  //       setChannelsData(data.topChannels ?? topChannels);
-  //     } catch (err) {
-  //       console.error(err);
-  //       notify("Failed to fetch analytics");
-  //     }
-  //   };
-  //
-  //   void fetchAnalytics();
-  // }, [selectedGuild, timeRange, notify]);
+  useEffect(() => {
+    document.title = "Analytics";
+  }, []);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-4xl mx-auto mt-6">
       {loading && <PageLoader />}
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-white">Analytics</h1>
         <PremiumLabel />
       </div>
 
-      {/* Time Range Switcher */}
       <div className="flex gap-2 mb-6">
         {TIME_RANGES.map((range) => (
           <button

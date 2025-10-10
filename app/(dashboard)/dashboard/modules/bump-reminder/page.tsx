@@ -23,6 +23,8 @@ export default function BumpReminderPage() {
   const { notify } = useNotification();
 
   useEffect(() => {
+    document.title = "Bump reminder settings";
+
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
