@@ -190,7 +190,7 @@ export default function Sidebar() {
           </div>
 
           <Link
-            href="#"
+            href="/dashboard/modules/commands"
             className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
