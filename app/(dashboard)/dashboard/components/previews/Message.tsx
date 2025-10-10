@@ -21,8 +21,8 @@ export default function MessagePreview( { username, message }: MessagePreviewPro
         <div>
           <div className="flex items-center gap-2">
             <span className="font-semibold text-white">{username}</span>
-            <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded">BOT</span>
-            <span className="text-xs text-gray-400">Today at{" "}
+            <span className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded font-bold">APP</span>
+            <span className="text-xs text-gray-400">{" "}
               {new Date().toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit"})} {/* nl-NL */}
             </span>
           </div>
