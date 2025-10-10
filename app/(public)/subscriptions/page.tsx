@@ -1,16 +1,28 @@
 "use client";
 
-export default function SubscriptionsPage() {
-  const plans = [
+interface PlansProps {
+  name: string;
+  description: string;
+  price: string;
+  nonFeatures?: string[];
+  features?: string[];
+  buttonText: string;
+  buttonClass: string;
+}
+
+export default function Page() {
+  const plans: PlansProps[] = [
     {
       name: "Free",
       description:
         "Perfect for trying out basic features and managing smaller servers.",
-      price: "€0 / month",
+      price: "€ 0 / month",
+      nonFeatures: [
+        "No support"
+      ],
       features: [
         "Free modules",
         "1 week log",
-        "Public support",
       ],
       buttonText: "Current plan",
       buttonClass:
@@ -19,10 +31,11 @@ export default function SubscriptionsPage() {
     {
       name: "Premium",
       description:
-        "Unlock advanced tools like the Anti Bot module and extended logs for better moderation.",
-      price: "€1.99 / month or € 14.99 / year",
+        "Unlock advanced tools like the Anti Bot module and server analytics.",
+      price: "€ 1.99 / month or € 14.99 / year",
       features: [
         "Premium modules",
+        "Guild statistics",
         "8 weeks logs",
         "Support"
       ],
@@ -56,11 +69,21 @@ export default function SubscriptionsPage() {
               <p className="text-gray-300 font-medium mb-4">{plan.price}</p>
 
               <ul className="mb-6 space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center">
-                    <span className="mr-2 text-[var(--primary-color)]">✔</span> {feature}
-                  </li>
-                ))}
+                {plan.features && (
+                  plan.features.map((nonFeature: string, i: number) => (
+                    <li key={i} className="flex items-center">
+                      <span className="mr-2 text-[var(--primary-color)]">✔</span> {nonFeature}
+                    </li>
+                  ))
+                )}
+
+                {plan.nonFeatures && (
+                  plan.nonFeatures.map((nonFeature: string, i: number) => (
+                    <li key={i} className="flex items-center">
+                      <span className="mr-2 text-[var(--primary-color)]">✗</span> {nonFeature}
+                    </li>
+                  ))
+                )}
               </ul>
 
               <button
