@@ -2,7 +2,7 @@ import { Bot } from "lucide-react";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 
 async function getBotInfo() {
-  const res = await fetch("https://lumix.heapreaper.nl/api/bot-info")
+  const res = await fetch("https://bot.botinorbit.com/api/bot-info")
   return await res.json();
 }
 
