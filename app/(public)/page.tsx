@@ -64,9 +64,9 @@ export default function Home() {
             </p>
           </div>
           <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
-            <h3 className="text-xl font-semibold mb-2">Server Management</h3>
+            <h3 className="text-xl font-semibold mb-2">Analytics (premium)</h3>
             <p className="text-gray-400">
-              View and configure only the servers where your bot is present.
+              Get insight on what time your server is the most active, how many people have joined over time, active vs inactive members and more.
             </p>
           </div>
           <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
@@ -151,6 +151,7 @@ export default function Home() {
           </div>
         </div>
 
+
         <div className="grid md:grid-cols-2 gap-10 items-center mt-16">
           <div className="space-y-4">
             <h3 className="text-2xl font-semibold">Auto message</h3>
@@ -168,6 +169,24 @@ export default function Home() {
               height={350}
               className="rounded-lg border border-gray-700"
             />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-10 items-center mt-16">
+          <div className="order-2 md:order-1 rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/screenshots/analytics.png"
+              alt="Bump Reminder Screenshot"
+              width={600}
+              height={350}
+              className="rounded-lg border border-gray-700"
+            />
+          </div>
+          <div className="order-1 md:order-2 space-y-4">
+            <h3 className="text-2xl font-semibold">Analytics</h3>
+            <p className="text-gray-400">
+              Get insight on what time your server is the most active, how many people have joined over time, active vs inactive members and more.
+            </p>
           </div>
         </div>
       </section>
