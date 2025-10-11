@@ -1,9 +1,8 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
@@ -11,69 +10,84 @@ import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEdito
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
-import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import { addDashboardLog } from "@/app/lib/addDashboardLog";
 
 export default function BumpReminderPage() {
   const [loading, setLoading] = useState<boolean>(false);
-
   const [enabled, setEnabled] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [intervalHours, setIntervalHours] = useState<number>(1);
-  const { selectedGuild, setSelectedGuild, channels } = useGuild();
   const [selectedChannel, setSelectedChannel] = useState<string>("");
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     document.title = "Bump reminder settings";
-
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
-
       try {
         const res = await fetch(`/api/bumpreminders?guild_id=${selectedGuild}`);
         const data = await res.json();
-
-        setLoading(false);
-        setMessage(data.message != null ? data.message : "");
-        setIntervalHours(data.interval != null ? data.interval : "");
-        setSelectedChannel(data.channel != null ? data.channel : "");
-        setEnabled(data.enabled != null ? data.enabled : false);
+        setMessage(data.message ?? "");
+        setIntervalHours(data.interval ?? 1);
+        setSelectedChannel(data.channel ?? "");
+        setEnabled(data.enabled ?? false);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     void fetchGuildData();
   }, [selectedGuild]);
 
-  const handleSave = async () => {
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
+  };
+
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
     try {
       const resp = await fetch("/api/bumpreminders", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
           message: cleanMessage(message),
           interval: intervalHours,
           enabled: enabled ? 1 : 0,
-        })
+        }),
       });
 
       if (!resp.ok) {
-        return notify("Oeps", "Could not save settings", "error");
+        if (!auto) notify("Oeps", "Could not save settings", "error");
+      } else {
+        void addDashboardLog(selectedGuild, "INFO", "Updated the bump reminder settings");
+        if (!auto) notify("Saved", "", "success");
       }
-
-      void addDashboardLog(selectedGuild, "INFO", "Updated the bump reminder settings");
-      notify("Saved", "", "success");
     } catch (error) {
-      notify("Error", `${error}`, "error");
+      if (!auto) notify("Error", `${error}`, "error");
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!selectedGuild) return;
+    triggerAutoSave();
+  }, [message, intervalHours, enabled, selectedChannel]);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -120,17 +134,19 @@ export default function BumpReminderPage() {
       <SelectInput
         label="Select channel"
         value={selectedChannel || ""}
-        onChange={(val) => setSelectedChannel(val)}
-        options={channels.filter(c => c.type === 0).map(channel => ({
-          value: channel.id,
-          label: channel.name,
-        }))}
+        onChange={setSelectedChannel}
+        options={channels
+          .filter(c => c.type === 0)
+          .map(channel => ({ value: channel.id, label: channel.name }))}
       />
-
 
       <MessagePreview username="Orbit" message={message} />
 
-      <SaveButton onClick={handleSave} />
+      <div className="text-right text-gray-400 text-sm mt-3">
+        {isSaving ? "Saving..." : "Auto saved!"}
+      </div>
+
+      <SaveButton onClick={() => handleSave(false)} />
     </section>
   );
 }

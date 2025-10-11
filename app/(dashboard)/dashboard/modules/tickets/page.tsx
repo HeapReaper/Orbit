@@ -1,72 +1,87 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
-import {useGuild} from "@/app/context/GuildContext";
+import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
-import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import { addDashboardLog } from "@/app/lib/addDashboardLog";
 
-export default function Page() {
+export default function TicketsSettingsPage() {
   const [loading, setLoading] = useState<boolean>(false);
-
   const [enabled, setEnabled] = useState<boolean>(false);
   const [channel, setChannel] = useState<string>("");
   const [channelConfidential, setChannelConfidential] = useState<string>("");
-  const { notify } = useNotification();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   const { selectedGuild, channels } = useGuild();
+  const { notify } = useNotification();
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    document.title = "Tickets settings";
-
+    document.title = "Tickets Settings";
     if (!selectedGuild) return;
 
     const fetchData = async () => {
       setLoading(true);
-
       try {
         const res = await fetch(`/api/tickets-settings?guild_id=${selectedGuild}`);
         const data = await res.json();
 
-        setLoading(false);
-
-        setChannel(data.channel);
-        setChannelConfidential(data.channel_conf);
+        setChannel(data.channel ?? "");
+        setChannelConfidential(data.channel_conf ?? "");
         setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     void fetchData();
   }, [selectedGuild]);
 
-  const handleSave = async () => {
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
+  };
+
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
     try {
       const resp = await fetch("/api/tickets-settings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: channel,
           channel_conf: channelConfidential,
           enabled: enabled ? 1 : 0,
-        })
+        }),
       });
 
       if (!resp.ok) {
-        return notify("Oops", "Could not save settings", "error");
+        if (!auto) notify("Oops", "Could not save settings", "error");
+      } else {
+        void addDashboardLog(selectedGuild, "INFO", "Updated tickets settings");
+        if (!auto) notify("Saved", "", "success");
       }
-
-      void addDashboardLog(selectedGuild, "INFO", "Updated tickets settings");
-      notify("Saved", "", "success");
     } catch (error) {
-      notify("Error", `${error}`, "error");
+      if (!auto) notify("Error", `${error}`, "error");
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!selectedGuild) return;
+    triggerAutoSave();
+  }, [enabled, channel, channelConfidential]);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -94,29 +109,29 @@ export default function Page() {
       <SelectInput
         label="Ticket channel"
         value={channel || ""}
-        onChange={(val) => setChannel(val)}
-        options={channels.filter(c => c.type === 0).map(channel => ({
-          value: channel.id,
-          label: channel.name,
-        }))}
+        onChange={setChannel}
+        options={channels
+          .filter(c => c.type === 0)
+          .map(ch => ({ value: ch.id, label: ch.name }))}
       />
 
       <SelectInput
         label="Tickets confidential channel"
         value={channelConfidential || ""}
-        onChange={(val) => setChannelConfidential(val)}
+        onChange={setChannelConfidential}
         options={[
           { value: "not-necessary", label: "Not necessary" },
           ...channels
             .filter(c => c.type === 0)
-            .map(channel => ({
-              value: channel.id,
-              label: channel.name,
-            }))
+            .map(ch => ({ value: ch.id, label: ch.name })),
         ]}
       />
 
-      <SaveButton onClick={handleSave} />
+      <div className="text-right text-gray-400 text-sm mt-3">
+        {isSaving ? "Saving..." : "Auto saved!"}
+      </div>
+
+      <SaveButton onClick={() => handleSave(false)} />
     </section>
   );
 }
