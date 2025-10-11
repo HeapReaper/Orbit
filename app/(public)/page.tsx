@@ -41,8 +41,8 @@ export default function Home() {
           </h1>
           <p className="text-gray-400 text-lg md:text-xl">
             Take your Discord server to Orbit.
-            Enable, configure, and monitor features,
-            All from one clean dashboard.
+            Enable, configure, and monitor features from the dashboard.
+            With Features like tickets, birthdays, Logging and analytics, all in one bot.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-4">

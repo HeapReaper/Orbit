@@ -1,12 +1,13 @@
 # Orbit
 
-Orbit is a powerfull bot management tool for the Discord bot Lumix.
+Take your Discord server to Orbit.
+Enable, configure, and monitor features from the dashboard.  
+With Features like tickets, birthdays, Logging and analytics, all in one bot.
 ---
 
 ## Features
 - **Dashboard**: Nice view of the bot, help articles.
-- **Modules Management**: Manage modules and configure them.
-- **Guild Selector**: Select different guilds where you're admin of.
+- **Discord bot**: Have one bot to handle everything.
 ---
 
 ## Tech Stack
@@ -15,9 +16,6 @@ Orbit is a powerfull bot management tool for the Discord bot Lumix.
 - **Authentication**: NextAuth.js (Discord OAuth)
 - **State Management**: React Context API
 - **Hosting**: Hetzner hosted Coolify
-- **Icons**: Lucide React
-- **Analytics**: Plausible Analytics
-
 ---
 
 ## Installation
@@ -27,8 +25,14 @@ This project is not intended for you to self host.
 **Dashboard**
 ![Dashboard Screenshot](./public/screenshots/dashboard.png)
 
+**Analytics**
+![Analytics Screenshot](./public/screenshots/analytics.png)
+
 **Bump reminder**
 ![Bump Reminder Screenshot](./public/screenshots/bump_reminder.png)
 
-**Auto messsages**
-![Auto Messages Screenshot](./public/screenshots/auto_message_2.png)
+**Auto messages**
+![Auto Messages Screenshot](./public/screenshots/auto_message_3.png)
+
+**Logs**
+![Auto Messages Screenshot](./public/screenshots/logs.png)
