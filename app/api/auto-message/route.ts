@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       message: msg.message,
       channel: msg.channel,
       time: msg.time,
+      days: msg.days ?? [],
       enabled: msg.enabled,
     }));
     
