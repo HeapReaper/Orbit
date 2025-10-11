@@ -68,6 +68,7 @@ export default function BumpReminderPage() {
         return notify("Oeps", "Could not save settings", "error");
       }
 
+      void addDashboardLog(selectedGuild, "INFO", "Updated the bump reminder settings");
       notify("Saved", "", "success");
     } catch (error) {
       notify("Error", `${error}`, "error");

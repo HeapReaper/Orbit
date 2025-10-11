@@ -70,6 +70,8 @@ export default function Page() {
       if (!resp.ok) {
         return notify("Error", `${resp.statusText}`, "error");
       }
+      void addDashboardLog(selectedGuild, "INFO", "Updated birthday settings");
+      notify("Saved", "", "success");
     } catch (error) {
       return notify("Error", `${error}`, "error");
     }

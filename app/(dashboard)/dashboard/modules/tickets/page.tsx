@@ -61,6 +61,7 @@ export default function Page() {
         return notify("Oops", "Could not save settings", "error");
       }
 
+      void addDashboardLog(selectedGuild, "INFO", "Updated tickets settings");
       notify("Saved", "", "success");
     } catch (error) {
       notify("Error", `${error}`, "error");

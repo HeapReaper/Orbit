@@ -40,7 +40,6 @@ export default function Page() {
         const data: AutoMessage[] = await res.json();
 
         setLoading(false);
-
         setAutoMessages(data);
       } catch (err) {
         console.error(err);
@@ -81,6 +80,8 @@ export default function Page() {
       });
 
       if (!resp.ok) return notify("Error", `${resp.statusText}`, "error");
+
+      void addDashboardLog(selectedGuild, "INFO", "Updated the auto messages module");
       notify("Saved!", "", "success");
     } catch (err) {
       notify("Error", `${err}`, "error");

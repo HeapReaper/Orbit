@@ -64,7 +64,7 @@ export default function Page() {
       if (!resp.ok) {
         return notify("Oeps", "Could not save settings", "error");
       }
-
+      void addDashboardLog(selectedGuild, "INFO", "Updated welcome message settings");
       notify("Saved", "", "success");
     } catch (error) {
       notify("Error", `${error}`, "error");
