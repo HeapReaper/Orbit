@@ -5,9 +5,34 @@ import modules from "@/app/(dashboard)/dashboard/data/modules";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import helpData from "@/app/(dashboard)/dashboard/data/helpData";
-import {BookOpen} from "lucide-react";
+import {useEffect, useState} from "react";
 
 export default function Home() {
+  const [totalServers, setTotalServers] = useState<number[]>([]);
+  const [premiumServers, setPremiumServers] = useState<number[]>([]);
+  const [totalUsers, setTotalUsers] = useState<number[]>([]);
+  const [activeModules, setActiveModules] = useState<number[]>([]);
+
+  // TODO: Add caching
+  useEffect(() => {
+    const fetchData = async () => {
+
+      try {
+        const res = await fetch("/api/stats");
+        const data = await res.json();
+
+        setTotalServers(data.totalGuilds);
+        setPremiumServers(data.premiumGuilds);
+        setTotalUsers(data.totalUsers);
+        setActiveModules(data.enabledModules);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void fetchData();
+  }, []);
+
   return (
     <main className="flex flex-col min-h-screen bg-[#0d0f13] text-white">
       {/* Hero Section */}
@@ -53,30 +78,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Statistics */}
       <section className="px-6 md:px-20 py-16 bg-[#101218]">
-        <h2 className="text-3xl font-bold text-white mb-8">Features</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition hover:border-blue-600 border border-gray-900 ">
-            <h3 className="text-xl font-semibold mb-2">Dashboard</h3>
-            <p className="text-gray-400">
-              Access a clean dashboard to manage your servers and bot modules.
-            </p>
+        <h2 className="text-3xl font-bold text-white mb-8">Statistics</h2>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="bg-[#14171f] p-6 rounded-lg text-center hover:shadow-lg hover:border-blue-600 border border-gray-900 transition">
+            <h3 className="text-4xl font-bold text-[var(--primary-color)]">{totalServers}</h3>
+            <p className="text-gray-400 mt-2">Total Servers</p>
           </div>
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
-            <h3 className="text-xl font-semibold mb-2">Analytics (premium)</h3>
-            <p className="text-gray-400">
-              Get insight on what time your server is the most active, how many people have joined over time, active vs inactive members and more.
-            </p>
+
+          <div className="bg-[#14171f] p-6 rounded-lg text-center hover:shadow-lg hover:border-blue-600 border border-gray-900 transition">
+            <h3 className="text-4xl font-bold text-[var(--primary-color)]">{premiumServers}</h3>
+            <p className="text-gray-400 mt-2">Premium Guilds</p>
           </div>
-          <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg transition  hover:border-blue-600 border border-gray-900">
-            <h3 className="text-xl font-semibold mb-2">Modules</h3>
-            <p className="text-gray-400">
-              Enable, disable, or configure bot modules directly from Orbit.
-            </p>
+
+          <div className="bg-[#14171f] p-6 rounded-lg text-center hover:shadow-lg hover:border-blue-600 border border-gray-900 transition">
+            <h3 className="text-4xl font-bold text-[var(--primary-color)]">{totalUsers}</h3>
+            <p className="text-gray-400 mt-2">Users</p>
+          </div>
+
+          <div className="bg-[#14171f] p-6 rounded-lg text-center hover:shadow-lg hover:border-blue-600 border border-gray-900 transition">
+            <h3 className="text-4xl font-bold text-[var(--primary-color)]">{activeModules}</h3>
+            <p className="text-gray-400 mt-2">Active Modules</p>
           </div>
         </div>
       </section>
+
 
       {/* Bot Modules */}
       <section className="px-6 md:px-20 py-16">
