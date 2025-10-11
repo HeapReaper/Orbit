@@ -46,12 +46,6 @@ export default function Page() {
   }, [selectedGuild]);
 
   const handleSave = async () => {
-    console.log({
-      guild_id: selectedGuild,
-      message: cleanMessage(message),
-      channel,
-      enabled,
-    });
     try {
       const resp = await fetch("/api/welcome-message", {
         method: "POST",
