@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
@@ -26,6 +26,9 @@ export default function Page() {
   const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
   const [autoMessages, setAutoMessages] = useState<AutoMessage[]>([]);
+
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     document.title = "Auto message settings";
@@ -66,7 +69,17 @@ export default function Page() {
     setAutoMessages(prev => prev.filter(msg => msg.id !== id));
   };
 
-  const handleSave = async () => {
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
+  };
+
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
     try {
       const cleanedAutoMessages = autoMessages.map(msg => ({
         ...msg,
@@ -79,14 +92,22 @@ export default function Page() {
         body: JSON.stringify({ guild_id: selectedGuild, autoMessages: cleanedAutoMessages }),
       });
 
-      if (!resp.ok) return notify("Error", `${resp.statusText}`, "error");
+      if (!resp.ok) throw new Error(resp.statusText);
 
       void addDashboardLog(selectedGuild, "INFO", "Updated the auto messages module");
-      notify("Saved!", "", "success");
+
+      if (!auto) notify("Saved!", "", "success");
     } catch (err) {
-      notify("Error", `${err}`, "error");
+      if (!auto) notify("Error", `${err}`, "error");
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!selectedGuild) return;
+    triggerAutoSave();
+  }, [autoMessages, selectedGuild]);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -200,7 +221,12 @@ export default function Page() {
           Add Auto Message
         </button>
 
+        <div className="text-right text-gray-400 text-sm mt-3">
+          {isSaving ? "Saving..." : "Auto saved!"}
+        </div>
+
         <SaveButton onClick={handleSave} />
+
       </div>
     </section>
   );

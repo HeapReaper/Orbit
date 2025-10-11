@@ -1,9 +1,8 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
@@ -11,73 +10,87 @@ import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEdito
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
-import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import { addDashboardLog } from "@/app/lib/addDashboardLog";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
-
   const [enabled, setEnabled] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const [time, setTime] = useState<string>("");
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-  const { selectedGuild, channels } = useGuild();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
+  const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
+
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     document.title = "Birthday settings";
-
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
-
       try {
         const res = await fetch(`/api/birthday?guild_id=${selectedGuild}`);
         const data = await res.json();
-
-        setLoading(false);
-
-        setMessage(data.message != null ? data.message : "");
-        setTime(data.time != null ? data.time : "");
-        setSelectedChannel(data.channel != null ? data.channel : "");
-        setEnabled(data.enabled != null ? data.enabled : false);
+        setMessage(data.message ?? "");
+        setTime(data.time ?? "");
+        setSelectedChannel(data.channel ?? "");
+        setEnabled(data.enabled ?? false);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
-
     };
 
     void fetchGuildData();
   }, [selectedGuild]);
 
-  const handleSave = async () => {
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
+  };
+
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
     try {
       const resp = await fetch("/api/birthday", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
           message: cleanMessage(message),
-          time: time,
-          enabled: enabled,
+          time,
+          enabled,
         }),
       });
 
       if (!resp.ok) {
-        return notify("Error", `${resp.statusText}`, "error");
+        notify("Could not save", "", "error")
       }
-      void addDashboardLog(selectedGuild, "INFO", "Updated birthday settings");
-      notify("Saved", "", "success");
-    } catch (error) {
-      return notify("Error", `${error}`, "error");
-    }
 
-    notify("Settings saved!", "", "success");
+      void addDashboardLog(selectedGuild, "INFO", "Updated birthday settings");
+
+      if (!auto) notify("Saved", "", "success");
+    } catch (error) {
+      if (!auto) notify("Error", String(error), "error");
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  // Triggers auto save
+  useEffect(() => {
+    if (!selectedGuild) return;
+    triggerAutoSave();
+  }, [message, time, enabled, selectedChannel]);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -102,18 +115,18 @@ export default function Page() {
         </button>
       </div>
 
-
       <div className="mb-6">
-        <label className="block text-gray-400 mb-2">Bump Message</label>
+        <label className="block text-gray-400 mb-2">Birthday Message</label>
         <div className="rounded-lg border border-gray-700 bg-[#1f2330]">
           <MarkdownEditor
             value={message}
-            onChange={setMessage}
+            onChange={(v) => setMessage(v)}
             placeholder=""
           />
         </div>
         <p className="text-sm text-gray-500 mb-4 mt-1">
-          You can use <InlineCode text={"{user}"}/> to mention the user in the message and <InlineCode text={"{age}"}/> to display his age.
+          You can use <InlineCode text="{user}" /> to mention the user and{" "}
+          <InlineCode text="{age}" /> to display their age.
         </p>
       </div>
 
@@ -131,10 +144,9 @@ export default function Page() {
         label="Select channel"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
-        options={channels.filter(c => c.type === 0).map(channel => ({
-          value: channel.id,
-          label: channel.name,
-        }))}
+        options={channels
+          .filter((c) => c.type === 0)
+          .map((ch) => ({ value: ch.id, label: ch.name }))}
       />
 
       <MessagePreview
@@ -142,7 +154,11 @@ export default function Page() {
         message={message.replace("{age}", "24").replace("{user}", "@HeapReaper")}
       />
 
-      <SaveButton onClick={handleSave} />
+      <div className="text-right text-gray-400 text-sm mt-3">
+        {isSaving ? "Saving..." : "Auto saved!"}
+      </div>
+
+      <SaveButton onClick={() => handleSave(false)} />
     </section>
   );
 }
