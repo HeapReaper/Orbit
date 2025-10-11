@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const session = await getServerSession(authOptions);
-
+  console.log("Incoming data:", data);
   if (!session) {
     return NextResponse.json({ error: "Please authenticate first" });
   }
