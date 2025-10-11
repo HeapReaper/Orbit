@@ -97,6 +97,7 @@ export default function BotSettings() {
             onChange={setLanguage}
             options={[
               { value: "en", label: "English" },
+              { value: "nl", label: "Dutch" },
             ]}
           />
         </div>
