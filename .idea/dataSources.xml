@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://192.168.1.143:3306/lumix</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="orbit@192.168.1.48" uuid="ed1e898b-2fa1-48df-bb02-7c783d572efc">
+      <driver-ref>clickhouse</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.clickhouse.jdbc.ClickHouseDriver</jdbc-driver>
+      <jdbc-url>jdbc:clickhouse://192.168.1.48:8123/orbit</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
