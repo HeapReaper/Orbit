@@ -10,6 +10,7 @@ import MostActiveUsersChart from "@/app/(dashboard)/dashboard/components/charts/
 import JoinsOverTimeChart from "@/app/(dashboard)/dashboard/components/charts/JoinsOverTime";
 import ActiveVsInactiveChart from "@/app/(dashboard)/dashboard/components/charts/ActiveVsInactiveMembers";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 import {
   fakeCommandData,

@@ -8,6 +8,7 @@ import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function AntiBotPage() {
   const [enabled, setEnabled] = useState(true);

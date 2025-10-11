@@ -11,6 +11,7 @@ import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEdito
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +64,7 @@ export default function Page() {
       if (!resp.ok) {
         return notify("Oeps", "Could not save settings", "error");
       }
-
+      void addDashboardLog(selectedGuild, "INFO", "Updated welcome message settings");
       notify("Saved", "", "success");
     } catch (error) {
       notify("Error", `${error}`, "error");

@@ -8,6 +8,7 @@ import { useNotification } from "@/app/context/NotificationContext";
 import {useEffect, useState} from "react";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -66,6 +67,7 @@ export default function BotSettings() {
         }),
       });
 
+      void addDashboardLog(selectedGuild, "INFO", "Updated the bot settings");
       if (!resp.ok) {
         return notify("Error", `${resp.statusText}`, "error");
       }

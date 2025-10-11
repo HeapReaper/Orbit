@@ -6,6 +6,7 @@ import { useNotification } from "@/app/context/NotificationContext";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import {useGuild} from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,6 +61,7 @@ export default function Page() {
         return notify("Oops", "Could not save settings", "error");
       }
 
+      void addDashboardLog(selectedGuild, "INFO", "Updated tickets settings");
       notify("Saved", "", "success");
     } catch (error) {
       notify("Error", `${error}`, "error");
