@@ -5,6 +5,7 @@ import { useNotification } from "@/app/context/NotificationContext";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -52,14 +53,11 @@ export default function Page() {
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
-      <h1 className="text-2xl font-semibold mb-4 text-white">
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
         Slash Command Management
+        <InfoTooltip text="Use this tool to refresh Discord slash commands for your bot.
+        You can refresh them for A specific guild." />
       </h1>
-
-      <p className="text-gray-400 mb-6">
-        Use this tool to refresh Discord slash commands for your bot.
-        You can refresh them for A specific guild.
-      </p>
 
       <div className="mb-6">
         <label className="block text-gray-400 mb-2">Selected Guild</label>

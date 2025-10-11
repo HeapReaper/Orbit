@@ -10,6 +10,7 @@ import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Mess
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
 import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
 type AutoMessage = {
   id: string;
@@ -113,7 +114,10 @@ export default function Page() {
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
-      <h1 className="text-2xl font-semibold mb-4 text-white">Auto Messages</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
+        Automatic Messages Settings
+        <InfoTooltip text="Work in progress" />
+      </h1>
 
       {autoMessages.map((msg, i) => (
         <div key={msg.id} className="mb-6 border border-gray-700 rounded p-4 bg-[#1f2330]">
