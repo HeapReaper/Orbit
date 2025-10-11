@@ -10,10 +10,10 @@ Orbit is a powerfull bot management tool for the Discord bot Lumix.
 ---
 
 ## Tech Stack
-- **Frontend**: Next.js v15.5.4, React, TailwindCSS
+- **Frontend/backend**: Next.js v15.5.4, React, TailwindCSS
+- **Databases**: MariaDB with Prisma, Clickhouse, Redis (caching)
 - **Authentication**: NextAuth.js (Discord OAuth)
 - **State Management**: React Context API
-- **Database**: MariaDB with Prisma
 - **Hosting**: Hetzner hosted Coolify
 - **Icons**: Lucide React
 - **Analytics**: Plausible Analytics
