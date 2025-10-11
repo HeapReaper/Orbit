@@ -36,6 +36,7 @@ export default function BotSettings() {
         setLoading(false);
 
         setNickname(data.nickname ?? "");
+        setLanguage(data.language ?? "");
         setUpdatesChannel(data.updates_channel  ?? "");
         setTimezone(data.timezone  ?? "");
         setPrimaryColor(data.primary_color);
