@@ -79,6 +79,25 @@ export default function BotSettings() {
     notify("Settings saved!", "", "success");
   };
 
+  const timezones = Intl.supportedValuesOf("timeZone").map((tz) => {
+    const now = new Date();
+
+    const tzName = now.toLocaleTimeString("en-US", {
+      timeZone: tz,
+      timeZoneName: "short",
+    });
+
+    const parts = tzName.split(" ");
+    const rawOffset = parts.length > 1 ? parts.pop() : "UTC";
+
+    const offset = rawOffset?.replace("GMT", "UTC") ?? "UTC";
+
+    return {
+      value: tz,
+      label: `${tz} (${offset})`,
+    };
+  });
+
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg space-y-6">
       {loading && <PageLoader />}
@@ -114,7 +133,12 @@ export default function BotSettings() {
             }))}
           />
 
-          <TextInput label="Timezone" value={timezone ?? ""} onChange={setTimezone} />
+          <SelectInput
+            label="Timezone"
+            value={timezone || ""}
+            onChange={(val) => setTimezone(val)}
+            options={timezones}
+          />
         </div>
 
         <div className="border-t border-gray-700 pt-4 space-y-4 mb-3">
