@@ -13,10 +13,8 @@ export default function Home() {
   const [totalUsers, setTotalUsers] = useState<number[]>([]);
   const [activeModules, setActiveModules] = useState<number[]>([]);
 
-  // TODO: Add caching
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         const res = await fetch("/api/stats");
         const data = await res.json();
