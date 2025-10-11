@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       totalUsers: botData.totalUsers,
     };
 
-    await redis.set(req.url, JSON.stringify(response), "EX", 60);
+    await redis.set(req.url, JSON.stringify(response), "EX", 600);
 
     return NextResponse.json(response);
   } catch (err) {
