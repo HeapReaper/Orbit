@@ -16,9 +16,9 @@ export default function ModuleSection() {
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
-        <Package className="w-6 h-6 text-[var(--primary-color)]" />
+        <Package className="w-8 h-8 text-[var(--primary-color)]" />
 
-        <h2 className="text-lg font-semibold">Modules</h2>
+        <h2 className="text-2xl font-semibold">Modules</h2>
       </div>
 
       <TextInput

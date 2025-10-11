@@ -7,6 +7,7 @@ import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
 export default function TicketsSettingsPage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,7 +88,10 @@ export default function TicketsSettingsPage() {
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
-      <h1 className="text-2xl font-semibold mb-4 text-white">Tickets Settings</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
+        Tickets Settings
+        <InfoTooltip text="Work in progress" />
+      </h1>
 
       <div className="flex items-center justify-between mb-4">
         <span className="text-gray-400">Enable</span>

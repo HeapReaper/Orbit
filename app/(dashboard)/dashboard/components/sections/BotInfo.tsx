@@ -19,10 +19,10 @@ export default async function BotInfo() {
 
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
-      <div className="flex items-center gap-2 mb-3">
-        <Bot className="w-6 h-6 text-[var(--primary-color)]" />
+      <div className="flex items-center gap-2 mb-3 text-2xl">
+        <Bot className="w-8 h-8 text-[var(--primary-color)]" />
 
-        <h2 className="text-lg font-semibold">Bot info</h2>
+        <h2 className="font-semibold">Bot info</h2>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">

@@ -9,6 +9,7 @@ import { useEffect, useState, useRef } from "react";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -108,10 +109,10 @@ export default function BotSettings() {
     <section className="relative bg-[#181b25] p-6 rounded-lg space-y-6">
       {loading && <PageLoader />}
 
-      <div className="flex items-center gap-2 mb-3">
-        <Bot className="w-6 h-6 text-[var(--primary-color)]" />
-        <h2 className="text-lg font-semibold">Bot Settings</h2>
-      </div>
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
+        Bot Settings
+        <InfoTooltip text="Work in progress" />
+      </h1>
 
       <form className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">

@@ -5,8 +5,8 @@ export default function HelpArticles() {
   return (
     <section className="bg-[#181b25] p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-4">
-        <BookOpen className="w-6 h-6 text-[var(--primary-color)]" />
-        <h2 className="text-lg font-semibold">Help Articles</h2>
+        <BookOpen className="w-8 h-8 text-[var(--primary-color)]" />
+        <h2 className="text-2xl font-semibold">Help Articles</h2>
       </div>
 
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
