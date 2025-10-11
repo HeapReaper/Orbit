@@ -9,6 +9,7 @@ import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEdito
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 type AutoMessage = {
   id: string;

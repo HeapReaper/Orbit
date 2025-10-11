@@ -115,7 +115,21 @@ export default function BotLogs() {
           ) : logs.length > 0 ? (
             logs.map((log, i: number) => (
               <div key={log.id} className="whitespace-pre-wrap">
-                {i + 1}: ({new Date(log.timestamp).toLocaleString()}) [{log.type}] {log.message}
+                {new Date(log.timestamp).toLocaleString()} {" "}
+                <span
+                  className={
+                    log.type === "ERROR"
+                      ? "text-red-500"
+                      : log.type === "INFO"
+                        ? "text-green-500"
+                        : log.type === "WARN"
+                          ? "text-orange-500"
+                          : "text-gray-500"
+                  }
+                >
+                  [{log.type}]
+                </span>{" "}
+                {log.message}
               </div>
             ))
           ) : (

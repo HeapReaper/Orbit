@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import { useNotification } from "@/app/context/NotificationContext";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -29,12 +30,15 @@ export default function Page() {
       const data = await res.json();
 
       if (!res.ok) {
+        void addDashboardLog(selectedGuild, "ERROR", `Error refreshing slash commands: ${data.error}`);
         notify("Error", data.error || "Failed to refresh commands", "error");
         setResult("Error");
       } else {
+        void addDashboardLog(selectedGuild, "INFO", "Refreshed slash commands");
         notify("Success", data.message, "success");
         setResult(data.message);
       }
+
     } catch (err) {
       console.error(err);
       notify("Error", "Something went wrong", "error");
