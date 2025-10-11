@@ -5,97 +5,103 @@ import { Bot, Save } from "lucide-react";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
-import {useEffect, useState} from "react";
+import { useEffect, useState, useRef } from "react";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
-import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import { addDashboardLog } from "@/app/lib/addDashboardLog";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
-
   const { notify } = useNotification();
+  const { selectedGuild, channels } = useGuild();
+
   const [nickname, setNickname] = useState<string>("Orbit");
   const [language, setLanguage] = useState<string>("");
   const [updatesChannel, setUpdatesChannel] = useState<string>("");
   const [timezone, setTimezone] = useState<string>("Europe/Amsterdam");
   const [primaryColor, setPrimaryColor] = useState<string>("");
   const [secondaryColor, setSecondaryColor] = useState<string>("");
-  const { selectedGuild, channels } = useGuild();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     document.title = "Bot settings";
-
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
-
       try {
         const res = await fetch(`/api/bot-settings?guild_id=${selectedGuild}`);
         const data = await res.json();
-        setLoading(false);
-
         setNickname(data.nickname ?? "");
         setLanguage(data.language ?? "");
-        setUpdatesChannel(data.updates_channel  ?? "");
-        setTimezone(data.timezone  ?? "");
-        setPrimaryColor(data.primary_color);
-        setSecondaryColor(data.secondary_color);
-
+        setUpdatesChannel(data.updates_channel ?? "");
+        setTimezone(data.timezone ?? "Europe/Amsterdam");
+        setPrimaryColor(data.primary_color ?? "");
+        setSecondaryColor(data.secondary_color ?? "");
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     void fetchGuildData();
   }, [selectedGuild]);
 
-  const handleSave = async () => {
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
+  };
+
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
     try {
       const resp = await fetch("/api/bot-settings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
-          nickname: nickname,
-          language: language,
+          nickname,
+          language,
           updates_channel: updatesChannel,
-          timezone: timezone,
+          timezone,
           primary_color: primaryColor,
           secondary_color: secondaryColor,
         }),
       });
 
-      void addDashboardLog(selectedGuild, "INFO", "Updated the bot settings");
       if (!resp.ok) {
-        return notify("Error", `${resp.statusText}`, "error");
+        if (!auto) notify("Error", `${resp.statusText}`, "error");
+      } else {
+        void addDashboardLog(selectedGuild, "INFO", "Updated the bot settings");
+        if (!auto) notify("Settings saved!", "", "success");
       }
     } catch (error) {
-      return notify("Error", `${error}`, "error");
+      if (!auto) notify("Error", `${error}`, "error");
+    } finally {
+      setIsSaving(false);
     }
-
-    notify("Settings saved!", "", "success");
   };
+
+  // Watch changes for auto-save
+  useEffect(() => {
+    if (!selectedGuild) return;
+    triggerAutoSave();
+  }, [nickname, language, updatesChannel, timezone, primaryColor, secondaryColor]);
 
   const timezones = Intl.supportedValuesOf("timeZone").map((tz) => {
     const now = new Date();
-
-    const tzName = now.toLocaleTimeString("en-US", {
-      timeZone: tz,
-      timeZoneName: "short",
-    });
-
+    const tzName = now.toLocaleTimeString("en-US", { timeZone: tz, timeZoneName: "short" });
     const parts = tzName.split(" ");
     const rawOffset = parts.length > 1 ? parts.pop() : "UTC";
-
     const offset = rawOffset?.replace("GMT", "UTC") ?? "UTC";
-
-    return {
-      value: tz,
-      label: `${tz} (${offset})`,
-    };
+    return { value: tz, label: `${tz} (${offset})` };
   });
 
   return (
@@ -126,17 +132,14 @@ export default function BotSettings() {
           <SelectInput
             label="Updates channel"
             value={updatesChannel || ""}
-            onChange={(val) => setUpdatesChannel(val)}
-            options={channels.filter(c => c.type === 0).map(channel => ({
-              value: channel.id,
-              label: channel.name,
-            }))}
+            onChange={setUpdatesChannel}
+            options={channels.filter(c => c.type === 0).map(ch => ({ value: ch.id, label: ch.name }))}
           />
 
           <SelectInput
             label="Timezone"
             value={timezone || ""}
-            onChange={(val) => setTimezone(val)}
+            onChange={setTimezone}
             options={timezones}
           />
         </div>
@@ -163,7 +166,11 @@ export default function BotSettings() {
           </div>
         </div>
 
-        <IconButton icon={Save} label="Save Settings" size={24} onClick={handleSave} />
+        <div className="text-right text-gray-400 text-sm mt-3">
+          {isSaving ? "Saving..." : "Auto saved!"}
+        </div>
+
+        <IconButton icon={Save} label="Save Settings" size={24} onClick={() => handleSave(false)} />
       </form>
     </section>
   );
