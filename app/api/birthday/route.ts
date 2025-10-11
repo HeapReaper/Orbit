@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const guild_id = searchParams.get("guild_id");
+
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
@@ -20,7 +21,9 @@ export async function GET(req: NextRequest) {
   }
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, guild_id)) {
+  const isAdmin = await isUserGuildAdmin(session.user.id, guild_id);
+
+  if (!isAdmin) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
@@ -49,17 +52,24 @@ export async function POST(req: NextRequest) {
   }
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+  const isAdmin = await isUserGuildAdmin(session.user.id, data.guild_id);
+
+  if (!isAdmin) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
   const { guild_id, channel, message, time, enabled } = data;
 
-  const updated = await prisma.birthday_settings.upsert({
-    where: { guild_id },
-    update: { channel, message, time, enabled },
-    create: { guild_id, channel, message, time, enabled },
-  });
+  try {
+    const updated = await prisma.birthday_settings.upsert({
+      where: { guild_id },
+      update: { channel, message, time, enabled },
+      create: { guild_id, channel, message, time, enabled },
+    });
 
-  return NextResponse.json(updated);
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to update birthday settings" }, { status: 500 });
+  }
 }
