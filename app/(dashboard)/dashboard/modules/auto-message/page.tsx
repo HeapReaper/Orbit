@@ -15,6 +15,7 @@ type AutoMessage = {
   message: string;
   channel: string;
   time: string;
+  days: string[];
   enabled: boolean;
 };
 
@@ -51,7 +52,7 @@ export default function Page() {
   const addAutoMessage = () => {
     setAutoMessages(prev => [
       ...prev,
-      { id: crypto.randomUUID(), message: "", channel: "", time: "", enabled: true },
+      { id: crypto.randomUUID(), message: "", channel: "", time: "", days: [], enabled: true },
     ]);
   };
 
@@ -79,7 +80,7 @@ export default function Page() {
       });
 
       if (!resp.ok) return notify("Error", `${resp.statusText}`, "error");
-      notify("Settings saved!", "", "success");
+      notify("Saved!", "", "success");
     } catch (err) {
       notify("Error", `${err}`, "error");
     }
@@ -136,6 +137,35 @@ export default function Page() {
               onChange={(e) => updateAutoMessage(msg.id, "time", e.target.value)}
               className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
             />
+          </div>
+
+          <div className="mb-3 mt-3">
+            <label className="block text-gray-400 mb-1">Days</label>
+            <div className="flex flex-wrap gap-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => (
+                <label
+                  key={day}
+                  className={`cursor-pointer px-2 py-1 rounded border text-sm ${
+                    msg.days?.includes(day)
+                      ? "bg-[var(--primary-color)] border-[var(--primary-color)] text-white"
+                      : "bg-[#0f1117] border-gray-700 text-gray-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={msg.days?.includes(day)}
+                    onChange={(e) => {
+                      const newDays = e.target.checked
+                        ? [...(msg.days || []), day]
+                        : (msg.days || []).filter(d => d !== day);
+                      updateAutoMessage(msg.id, "days", newDays);
+                    }}
+                    className="hidden"
+                  />
+                  {day}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="flex items-center">
