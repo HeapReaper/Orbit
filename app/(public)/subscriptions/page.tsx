@@ -22,7 +22,7 @@ export default function Page() {
       ],
       features: [
         "Free modules",
-        "1 week log",
+        "1 week logs",
       ],
       buttonText: "Current plan",
       buttonClass:
@@ -36,7 +36,7 @@ export default function Page() {
       features: [
         "Premium modules",
         "Guild statistics",
-        "8 weeks logs",
+        "1 month logs",
         "Support"
       ],
       buttonText: "Upgrade to premium",

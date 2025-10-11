@@ -23,6 +23,7 @@ interface Guild {
   name: string;
   channels: Channel[];
   roles: Role[];
+  isPremium?: boolean;
 }
 
 interface GuildContextType {

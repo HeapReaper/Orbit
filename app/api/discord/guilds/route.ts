@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const DISCORD_API = "https://discord.com/api";
 const ADMINISTRATOR = 0x00000008;
@@ -40,6 +43,13 @@ export async function GET() {
       return hasAdmin && botGuildIds.has(g.id);
     });
 
+    // Fetch premium guilds in bulk from DB
+    const premiumGuilds = await prisma.premium_guilds.findMany({
+      // @ts-ignore
+      where: { guild_id: { in: manageableGuilds.map(g => g.id) } },
+    });
+    const premiumMap = new Map(premiumGuilds.map(p => [p.guild_id, p.premium]));
+
     // Get roles with channels
     const detailedGuilds = await Promise.all(
       manageableGuilds.map(async (g: any) => {
@@ -74,6 +84,7 @@ export async function GET() {
             isAdmin: true,
             channels,
             roles,
+            isPremium: premiumMap.get(g.id) || false,
           };
         } catch (err) {
           console.warn(`Skipping guild ${g.id} due to fetch error:`, err);
