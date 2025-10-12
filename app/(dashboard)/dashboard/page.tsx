@@ -7,6 +7,7 @@ import HelpArticles from "@/app/(dashboard)/dashboard/components/sections/Help";
 export default async function DashboardPage() {
   return (
     <div className="space-y-8">
+      <title>Dashboard</title>
       <BotInfo />
 
       <HelpArticles />

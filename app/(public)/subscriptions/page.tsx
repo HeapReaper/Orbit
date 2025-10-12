@@ -50,11 +50,15 @@ export default function Page() {
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-1">
           Subscriptions
         </h1>
-        <p className="text-gray-400 mb-10">
-          <strong>(Coming soon)</strong> {" "}
-          Choose the plan that fits your needs and unlock additional features
+        <p className="text-gray-400 mb-2">
+          <strong>(Coming soon)</strong> Choose the plan that fits your needs and unlock additional features
           for your server.
         </p>
+
+        {/* Nieuwe banner voor nieuwe servers */}
+        <div className="mb-6 p-4 bg-[#1f2330] border border-gray-700 rounded text-gray-200">
+          🚀 Every new server gets a 1-week free Premium trial, no setup needed.
+        </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {plans.map((plan) => (
@@ -70,9 +74,9 @@ export default function Page() {
 
               <ul className="mb-6 space-y-2">
                 {plan.features && (
-                  plan.features.map((nonFeature: string, i: number) => (
+                  plan.features.map((feature: string, i: number) => (
                     <li key={i} className="flex items-center">
-                      <span className="mr-2 text-[var(--primary-color)]">✔</span> {nonFeature}
+                      <span className="mr-2 text-[var(--primary-color)]">✔</span> {feature}
                     </li>
                   ))
                 )}
