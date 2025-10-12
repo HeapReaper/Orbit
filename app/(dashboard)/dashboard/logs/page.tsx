@@ -53,6 +53,7 @@ export default function BotLogs() {
   };
 
   useEffect(() => {
+    document.title = "Logs";
     if (!selectedGuild) return;
     void fetchLogs();
   }, [selectedGuild, logType, timeRange]);
