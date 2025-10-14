@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
           AND guild_id = '${guild_id}'
         GROUP BY channel_id
         ORDER BY message_count DESC
-        LIMIT 10
+        LIMIT 5
     `;
     const topChannelsResult = await clickhouseClient.query({ query: topChannelsQuery, format: "JSONEachRow" });
     const topChannels = await topChannelsResult.json();
