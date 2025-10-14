@@ -26,9 +26,9 @@ export default function TopChannelsChart({ data }: TopChannelsChartProps) {
         <BarChart data={data} layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis type="number" />
-          <YAxis dataKey="channel" type="category" />
+          <YAxis dataKey="channel_id" type="category" />
           <Tooltip />
-          <Bar dataKey="messages" fill="var(--primary-color)" />
+          <Bar dataKey="message_count" fill="var(--primary-color)" />
         </BarChart>
       </ResponsiveContainer>
     </div>

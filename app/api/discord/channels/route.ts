@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { getRedisClient } from "@/app/lib/redis";
+
+const redis = getRedisClient();
+const CACHE_TTL: number = 60 * 10; // 10 minutes
 
 export async function GET(req: Request) {
-  console.log("I got called")
   const url = new URL(req.url);
   const guildId = url.searchParams.get("guildId");
 
@@ -12,6 +15,15 @@ export async function GET(req: Request) {
   const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
   if (!BOT_TOKEN) {
     return NextResponse.json({ error: "Bot token not set" }, { status: 500 });
+  }
+
+  const cacheKey = `guild:${guildId}:textChannels`;
+
+  // First try Redis
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log(`Returning cached channels for guild ${guildId}`);
+    return NextResponse.json(JSON.parse(cached));
   }
 
   try {
@@ -25,12 +37,17 @@ export async function GET(req: Request) {
 
     const data = await res.json();
 
-    const textChannels = data.filter((c: any) => c.type === 0).map((c: any) => ({
-      id: c.id,
-      name: c.name,
-    }));
+    const textChannels = data
+      .filter((c: any) => c.type === 0) // 0 = text channel
+      .map((c: any) => ({
+        id: c.id,
+        name: c.name,
+      }));
+
+    // Store in Redis
+    await redis.set(cacheKey, JSON.stringify(textChannels), "EX", CACHE_TTL);
+
     console.log("Fetching channels for guild:", guildId);
-    console.log("Bot token length:", BOT_TOKEN?.length);
     return NextResponse.json(textChannels);
   } catch (err) {
     console.error(err);
