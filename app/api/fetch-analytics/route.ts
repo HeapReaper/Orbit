@@ -86,13 +86,36 @@ export async function GET(req: NextRequest) {
     // Member counts over time
     const memberQuery = `
         SELECT
-            toDate(joined_at) AS day,
-            countIf(left_at IS NULL OR left_at > day) AS member_count
-        FROM discord_membership
-        WHERE guild_id = '${guild_id}'
-          AND joined_at >= now() - INTERVAL ${days} DAY
-        GROUP BY day
-        ORDER BY day
+            period_start,
+            member_count,
+            member_count - lagInFrame(member_count) OVER (ORDER BY period_start) AS member_change
+        FROM (
+                 SELECT
+                     CASE
+                         WHEN ${days} <= 30 THEN toDate(joined_at)
+                         WHEN ${days} <= 180 THEN toStartOfWeek(joined_at)
+                         ELSE toStartOfMonth(joined_at)
+                         END AS period_start,
+                     countIf(left_at IS NULL OR left_at > period_start) AS member_count
+                 FROM discord_membership
+                 WHERE guild_id = '${guild_id}'
+                   AND joined_at >= now() - INTERVAL ${days} DAY
+                 GROUP BY period_start
+
+                 UNION ALL
+
+                 SELECT
+                     CASE
+                         WHEN ${days} <= 30 THEN toDate(now())
+                         WHEN ${days} <= 180 THEN toStartOfWeek(now())
+                         ELSE toStartOfMonth(now())
+                         END AS period_start,
+                     countIf(left_at IS NULL OR left_at > now()) AS member_count
+                 FROM discord_membership
+                 WHERE guild_id = '${guild_id}'
+             )
+        ORDER BY period_start
+
     `;
     const memberResult = await clickhouseClient.query({ query: memberQuery, format: "JSONEachRow" });
     const memberCounts = await memberResult.json();
@@ -122,6 +145,7 @@ export async function GET(req: NextRequest) {
     const activeInactiveResult = await clickhouseClient.query({ query: activeInactiveQuery, format: "JSONEachRow" });
     const [activeVsInactive] = await activeInactiveResult.json();
 
+    console.log(memberCounts);
     const result = {
       messageFlowHourly,
       topChannels,
