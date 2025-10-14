@@ -45,9 +45,10 @@ export default function Page() {
         messages: item.avg_messages,
       }));
 
-      const memberChartData = data.memberCounts.map((item: any) => ({
-        date: item.day,
-        joins: item.member_count,
+      const memberChartData = data.memberCounts.map((row: any) => ({
+        date: row.period_start,
+        count: row.member_count,
+        change: row.member_change ?? 0
       }));
 
       setMessageFlow(chartData);
