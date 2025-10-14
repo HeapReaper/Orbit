@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 import { clickhouseClient } from "@/app/lib/clickhouse";
+import { getRedisClient } from "@/app/lib/redis";
+
+const redis = getRedisClient();
 
 const TIME_RANGES = {
   last_week: 7,
@@ -27,6 +30,12 @@ export async function GET(req: NextRequest) {
 
   try {
     const days: 7 | 30 | 365 = TIME_RANGES[range];
+
+    const cacheKey = `analytics:${guild_id}:${range}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(JSON.parse(cached));
+    }
 
     // Message flow hourly
     const hourlyQuery = `
@@ -88,7 +97,7 @@ export async function GET(req: NextRequest) {
     const memberResult = await clickhouseClient.query({ query: memberQuery, format: "JSONEachRow" });
     const memberCounts = await memberResult.json();
 
-    // Active vs Inactive members based on recent messages
+    // Active vs Inactive members
     const activeInactiveQuery = `
         WITH current_members AS (
             SELECT user_id
@@ -113,15 +122,18 @@ export async function GET(req: NextRequest) {
     const activeInactiveResult = await clickhouseClient.query({ query: activeInactiveQuery, format: "JSONEachRow" });
     const [activeVsInactive] = await activeInactiveResult.json();
 
-    console.log("Active vs inactive: ", activeVsInactive);
-
-    return NextResponse.json({
+    const result = {
       messageFlowHourly,
       topChannels,
       topUsers,
       memberCounts,
       activeVsInactive,
-    });
+    };
+
+    // 3 minute cache
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 180);
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error querying ClickHouse:", error);
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
