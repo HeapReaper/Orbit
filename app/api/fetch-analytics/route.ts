@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 import { clickhouseClient } from "@/app/lib/clickhouse";
+import { getRedisClient } from "@/app/lib/redis";
+
+const redis = getRedisClient();
 
 const TIME_RANGES = {
   last_week: 7,
@@ -28,7 +31,13 @@ export async function GET(req: NextRequest) {
   try {
     const days: 7 | 30 | 365 = TIME_RANGES[range];
 
-    // 1️⃣ Message flow hourly
+    const cacheKey = `analytics:${guild_id}:${range}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return NextResponse.json(JSON.parse(cached));
+    }
+
+    // Message flow hourly
     const hourlyQuery = `
         SELECT
             hour_of_day,
@@ -48,7 +57,7 @@ export async function GET(req: NextRequest) {
     const hourlyResult = await clickhouseClient.query({ query: hourlyQuery, format: "JSONEachRow" });
     const messageFlowHourly = await hourlyResult.json();
 
-    // 2️⃣ Top channels
+    // Top channels
     const topChannelsQuery = `
         SELECT channel_id, count() AS message_count
         FROM discord_messages
@@ -56,12 +65,12 @@ export async function GET(req: NextRequest) {
           AND guild_id = '${guild_id}'
         GROUP BY channel_id
         ORDER BY message_count DESC
-        LIMIT 10
+        LIMIT 5
     `;
     const topChannelsResult = await clickhouseClient.query({ query: topChannelsQuery, format: "JSONEachRow" });
     const topChannels = await topChannelsResult.json();
 
-    // 3️⃣ Top 4 most active users
+    // Top 4 most active users
     const topUsersQuery = `
         SELECT user_id, count() AS message_count
         FROM discord_messages
@@ -74,7 +83,7 @@ export async function GET(req: NextRequest) {
     const topUsersResult = await clickhouseClient.query({ query: topUsersQuery, format: "JSONEachRow" });
     const topUsers = await topUsersResult.json();
 
-    // 4️⃣ Member counts over time
+    // Member counts over time
     const memberQuery = `
         SELECT
             toDate(joined_at) AS day,
@@ -88,7 +97,7 @@ export async function GET(req: NextRequest) {
     const memberResult = await clickhouseClient.query({ query: memberQuery, format: "JSONEachRow" });
     const memberCounts = await memberResult.json();
 
-    // 5️⃣ Active vs Inactive members based on recent messages
+    // Active vs Inactive members
     const activeInactiveQuery = `
         WITH current_members AS (
             SELECT user_id
@@ -113,15 +122,18 @@ export async function GET(req: NextRequest) {
     const activeInactiveResult = await clickhouseClient.query({ query: activeInactiveQuery, format: "JSONEachRow" });
     const [activeVsInactive] = await activeInactiveResult.json();
 
-    console.log("Active vs inactive: ", activeVsInactive);
-
-    return NextResponse.json({
+    const result = {
       messageFlowHourly,
       topChannels,
       topUsers,
       memberCounts,
       activeVsInactive,
-    });
+    };
+
+    // 3 minute cache
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 180);
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error querying ClickHouse:", error);
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });

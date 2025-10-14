@@ -107,13 +107,13 @@ export default function Page() {
 
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-1">Message Flow Hourly</h3>
-        <p className="text-gray-400 mb-2">Shows the average messages send for each our of the day</p>
+        <p className="text-gray-400 mb-3">Shows the average messages send for each our of the day</p>
         <MessageFlowChart data={messageFlow} />
       </div>
 
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-1">Top Channels</h3>
-        <p className="text-gray-400 mb-2">Shows the top 5 channels where the most messages where send</p>
+        <p className="text-gray-400 mb-3">Shows the top 5 channels where the most messages where send</p>
         <TopChannelsChart data={mostPopulairChannels} />
       </div>
 
