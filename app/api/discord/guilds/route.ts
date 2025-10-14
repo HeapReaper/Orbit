@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { PrismaClient } from "@prisma/client";
+import { getRedisClient } from "@/app/lib/redis";
 
 const prisma = new PrismaClient();
+const redis = getRedisClient();
 
 const DISCORD_API = "https://discord.com/api";
 const ADMINISTRATOR = 0x00000008;
+
+const CACHE_TTL: number = 60 * 10; // 10 minutes
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -16,8 +20,13 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // First try cache
+  const cacheKey = `guilds:${session.user.id}`;
+  const cached = await redis.get(cacheKey);
+  if (cached) return NextResponse.json(JSON.parse(cached));
+
   try {
-    // Get users guilds
+    // Get user guilds
     const userRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
       // @ts-ignore
       headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -30,30 +39,35 @@ export async function GET() {
     const userGuilds = await userRes.json();
 
     // Get bot guilds
-    const botRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
-      headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` },
-    });
+    let botGuilds = await redis.get("bot:guilds");
+    if (!botGuilds) {
+      const botRes = await fetch(`${DISCORD_API}/users/@me/guilds`, {
+        headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` },
+      });
+      botGuilds = botRes.ok ? JSON.stringify(await botRes.json()) : "[]";
+      await redis.set("bot:guilds", botGuilds, "EX", CACHE_TTL); // 10 min cache
+    }
+    const botGuildIds = new Set(JSON.parse(botGuilds).map((g: any) => g.id));
 
-    const botGuilds = botRes.ok ? await botRes.json() : [];
-    const botGuildIds = new Set(botGuilds.map((g: any) => g.id));
-
-    // Only include where bot is in and where user has admin rights
+    // Only include where bot is in and user is admin off
     const manageableGuilds = userGuilds.filter((g: any) => {
       const hasAdmin = g.owner || (parseInt(g.permissions, 10) & ADMINISTRATOR) === ADMINISTRATOR;
       return hasAdmin && botGuildIds.has(g.id);
     });
 
-    // Fetch premium guilds in bulk from DB
     const premiumGuilds = await prisma.premium_guilds.findMany({
       // @ts-ignore
       where: { guild_id: { in: manageableGuilds.map(g => g.id) } },
     });
     const premiumMap = new Map(premiumGuilds.map(p => [p.guild_id, p.premium]));
 
-    // Get roles with channels
     const detailedGuilds = await Promise.all(
       manageableGuilds.map(async (g: any) => {
         try {
+          const cacheKeyGuild = `guild:${g.id}:details`;
+          const cachedGuild = await redis.get(cacheKeyGuild);
+          if (cachedGuild) return JSON.parse(cachedGuild);
+
           const [channelsRes, rolesRes] = await Promise.all([
             fetch(`${DISCORD_API}/guilds/${g.id}/channels`, {
               headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` },
@@ -63,20 +77,11 @@ export async function GET() {
             }),
           ]);
 
-          if (!channelsRes.ok || !rolesRes.ok) {
-            const errJson = !channelsRes.ok ? await channelsRes.json() : await rolesRes.json();
-            if (errJson?.code === 10004 || errJson?.code === 50001) {
-              console.warn(`Skipping guild ${g.name} (${g.id}) — bot not in guild or missing access`);
-              return null;
-            }
-          }
+          if (!channelsRes.ok || !rolesRes.ok) return null;
 
-          const [channels, roles] = await Promise.all([
-            channelsRes.ok ? channelsRes.json() : [],
-            rolesRes.ok ? rolesRes.json() : [],
-          ]);
+          const [channels, roles] = await Promise.all([channelsRes.json(), rolesRes.json()]);
 
-          return {
+          const guildDetails = {
             id: g.id,
             name: g.name,
             icon: g.icon,
@@ -86,16 +91,21 @@ export async function GET() {
             roles,
             isPremium: premiumMap.get(g.id) || false,
           };
+
+          await redis.set(cacheKeyGuild, JSON.stringify(guildDetails), "EX", CACHE_TTL);
+          return guildDetails;
         } catch (err) {
-          console.warn(`Skipping guild ${g.id} due to fetch error:`, err);
+          console.warn(`Skipping guild ${g.id} due to error:`, err);
           return null;
         }
       })
     );
 
     const validGuilds = detailedGuilds.filter(Boolean);
+    const resp = { guilds: validGuilds };
 
-    return NextResponse.json({ guilds: validGuilds });
+    await redis.set(cacheKey, JSON.stringify(resp), "EX", CACHE_TTL);
+    return NextResponse.json(resp);
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

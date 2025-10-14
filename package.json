@@ -12,6 +12,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@clickhouse/client": "^1.12.1",
     "@headlessui/react": "^2.2.9",
     "@mdxeditor/editor": "^3.47.0",
     "@prisma/client": "^6.16.3",

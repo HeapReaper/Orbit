@@ -26,9 +26,9 @@ export default function MostActiveUsersChart({ data }: Props) {
         <BarChart data={data} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis type="number" />
-          <YAxis dataKey="user" type="category" />
+          <YAxis dataKey="user_id" type="category" />
           <Tooltip />
-          <Bar dataKey="messages" fill="var(--primary-color)" />
+          <Bar dataKey="message_count" fill="var(--primary-color)" />
         </BarChart>
       </ResponsiveContainer>
     </div>
