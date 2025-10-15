@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
     const cached = await redis.get(cacheKey);
 
     if (cached) {
-      console.log("Returning cached data");
       return NextResponse.json(JSON.parse(cached));
     }
 
