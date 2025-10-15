@@ -1,30 +1,8 @@
 "use client";
 
-import {
-  MDXEditor,
-  MDXEditorMethods,
-  toolbarPlugin,
-  markdownShortcutPlugin,
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  codeBlockPlugin,
-  diffSourcePlugin,
-  thematicBreakPlugin,
-  frontmatterPlugin,
-  BoldItalicUnderlineToggles,
-  BlockTypeSelect,
-  CreateLink,
-  InsertCodeBlock,
-  ListsToggle,
-  UndoRedo,
-  Separator,
-} from "@mdxeditor/editor";
-import "@mdxeditor/editor/style.css";
-import "./../global.css";
-import { useRef, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import SimpleMdeReact from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 interface MarkdownEditorProps {
   value: string;
@@ -34,62 +12,81 @@ interface MarkdownEditorProps {
 }
 
 export default function MarkdownEditor({
-   value,
-   onChange,
-   placeholder = "Start typing...",
-   className = "",
+  value,
+  onChange,
+  placeholder = "Start typing...",
+  className = "",
 }: MarkdownEditorProps) {
-  const editorRef = useRef<MDXEditorMethods>(null);
 
-  useEffect(() => {
-    if (editorRef.current && editorRef.current.getMarkdown() !== value) {
-      editorRef.current.setMarkdown(value);
-    }
-  }, [value]);
+  const options = useMemo(() => {
+    return {
+      spellChecker: false,
+      placeholder,
+      status: false,
+      minHeight: "200px",
+      toolbar: [
+        "bold",
+        "italic",
+        "strikethrough",
+        "|",
+        "heading-smaller",
+        "heading-bigger",
+        "|",
+        "unordered-list",
+        "ordered-list",
+        "|",
+        "link",
+        "quote",
+        "code",
+        "preview",
+        "guide",
+      ],
+      // @ts-ignore
+    } as SimpleMDE.Options;
+  }, [placeholder]);
+
+  const handleChange = useCallback(
+    (val: string) => {
+      onChange(val);
+    },
+    [onChange]
+  );
 
   return (
-    <div
-      className={`rounded-lg border border-gray-700 bg-[#1f2330] ${className}`}
-    >
-      <MDXEditor
-        ref={editorRef}
-        markdown={value}
-        placeholder={placeholder}
-        contentEditableClassName="min-h-[200px] text-white p-4 focus:outline-none prose prose-invert"
-        onChange={() => onChange(editorRef.current?.getMarkdown() ?? "")}
-        plugins={[
-          toolbarPlugin({
-            toolbarContents: () => (
-              <>
-                <UndoRedo />
-                <Separator />
-                <BoldItalicUnderlineToggles />
-                <Separator />
-                <BlockTypeSelect />
-                <Separator />
-                <ListsToggle />
-                <Separator />
-                <CreateLink />
-                <Separator />
-                <InsertCodeBlock />
-              </>
-            ),
-          }),
-          markdownShortcutPlugin(),
-          headingsPlugin(),
-          listsPlugin(),
-          quotePlugin(),
-          linkPlugin(),
-          linkDialogPlugin(),
-          codeBlockPlugin(),
-          diffSourcePlugin(),
-          thematicBreakPlugin(),
-          frontmatterPlugin(),
-        ]}
+    <div className={`rounded-lg border border-gray-700 bg-[#1f2330] ${className}`}>
+      <SimpleMdeReact
+        value={value}
+        onChange={handleChange}
+        options={options}
       />
+
       <style jsx global>{`
-        .mdx-editor-wrapper .mdxeditor {
-          color: #1e90ff;
+        .EasyMDEContainer .editor-toolbar {
+          background-color: #1f2330;
+          border-color: #2a2d3a;
+        }
+
+        .EasyMDEContainer .CodeMirror {
+          background-color: #1f2330;
+          color: #fff;
+          border: none;
+        }
+
+        .EasyMDEContainer .CodeMirror-cursor {
+          border-left: 1px solid #fff;
+        }
+
+        .EasyMDEContainer .editor-toolbar button {
+          color: #bbb;
+        }
+
+        .EasyMDEContainer .editor-toolbar button.active,
+        .EasyMDEContainer .editor-toolbar button:hover {
+          color: #fff;
+        }
+
+        .EasyMDEContainer .CodeMirror-scroll {
+          min-height: 200px;
         }
       `}</style>
     </div>

@@ -16,6 +16,7 @@
     "@headlessui/react": "^2.2.9",
     "@mdxeditor/editor": "^3.47.0",
     "@prisma/client": "^6.16.3",
+    "easymde": "^2.20.0",
     "ioredis": "^5.8.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.544.0",
@@ -26,6 +27,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.64.0",
     "react-markdown": "^10.1.0",
+    "react-simplemde-editor": "^5.2.0",
     "recharts": "^3.2.1",
     "rehype-raw": "^7.0.0"
   },
