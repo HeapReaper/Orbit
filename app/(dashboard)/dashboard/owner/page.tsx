@@ -3,9 +3,9 @@
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import {useState} from "react";
 import {useSession} from "next-auth/react";
-import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
-import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
+import {Send} from "lucide-react";
+import {Button} from "@headlessui/react";
 
 export default function Page() {
   const [updateMessage, setUpdateMessage] = useState<string>("");
@@ -15,11 +15,14 @@ export default function Page() {
 
   if (session.data?.user.id !== "632677231113666601") return;
 
+  const handleSend = () => {
+    console.log("handleSend");
+  }
+
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        Bump Reminder Settings
-        <InfoTooltip text="Work in progress" />
+        Owner page
       </h1>
 
       <div className="mb-6">
@@ -35,6 +38,16 @@ export default function Page() {
 
       <MessagePreview username="Orbit" message={updateMessage} />
 
+      <button
+        onClick={handleSend}
+        className={`
+        flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary-color)] hover:bg-[var(--hover-color)]
+        text-white font-semibold transition-colors
+      `}
+      >
+        <Send size={16} />
+        Send
+      </button>
     </section>
   );
 }
