@@ -24,7 +24,7 @@ export default function Page() {
         "Free modules",
         "1 week logs",
       ],
-      buttonText: "Current plan",
+      buttonText: "Default plan",
       buttonClass:
         "bg-gray-700 cursor-not-allowed opacity-70 hover:bg-gray-700",
     },
@@ -32,10 +32,9 @@ export default function Page() {
       name: "Premium",
       description:
         "Unlock advanced tools like the Anti Bot module and server analytics.",
-      price: "€ 1.99 / month or € 14.99 / year",
+      price: "€ 3.99 / month or € 40 / year",
       features: [
         "Premium modules",
-        "Guild statistics",
         "1 month logs",
         "Support"
       ],
@@ -57,7 +56,7 @@ export default function Page() {
 
         {/* Nieuwe banner voor nieuwe servers */}
         <div className="mb-6 p-4 bg-[#1f2330] border border-gray-700 rounded text-gray-200">
-          🚀 Every new server gets a 1-week free Premium trial, no setup needed.
+          🚀 Every new server gets 1 month of Premium trial, no setup needed.
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
