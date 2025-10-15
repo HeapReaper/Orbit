@@ -39,6 +39,7 @@ export default function MessagePreview({ username, message }: MessagePreviewProp
                       {children}
                     </code>
                   ) : (
+                    // @ts-ignore
                     <pre className="bg-[#1e1f22] p-2 rounded text-sm font-mono text-gray-300 overflow-x-auto" {...props}>
                       <code>{children}</code>
                     </pre>
