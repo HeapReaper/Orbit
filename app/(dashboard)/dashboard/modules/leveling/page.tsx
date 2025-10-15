@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
@@ -13,25 +12,27 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-  const [urls, setUrls] = useState<string[]>([""]);
+  const [levelRoles, setLevelRoles] = useState<string[]>([]);
+  const [xpRate, setXpRate] = useState<number>(1);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { selectedGuild, channels } = useGuild();
+  const { selectedGuild, roles, channels } = useGuild();
   const { notify } = useNotification();
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    document.title = "YouTube Watcher Settings";
+    document.title = "Leveling Settings";
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/youtube-watcher?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/leveling?guild_id=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
+        setLevelRoles(data.level_roles ?? []);
+        setXpRate(data.xp_rate ?? 1);
         setSelectedChannel(data.channel ?? "");
-        setUrls(data.urls?.length ? data.urls : [""]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,14 +55,15 @@ export default function Page() {
     setIsSaving(true);
 
     try {
-      const resp = await fetch("/api/youtube-watcher", {
+      const resp = await fetch("/api/leveling", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
-          channel: selectedChannel,
           enabled,
-          urls: urls.filter((url) => url.trim() !== ""),
+          channel: selectedChannel,
+          level_roles: levelRoles,
+          xp_rate: xpRate,
         }),
       });
 
@@ -69,7 +71,7 @@ export default function Page() {
         notify("Could not save", "", "error");
       }
 
-      void addDashboardLog(selectedGuild, "INFO", "Updated YouTube Watcher settings");
+      void addDashboardLog(selectedGuild, "INFO", "Updated Leveling settings");
 
       if (!auto) notify("Saved", "", "success");
     } catch (error) {
@@ -79,27 +81,25 @@ export default function Page() {
     }
   };
 
-  // Auto-save on change
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
-  }, [enabled, selectedChannel, urls]);
+  }, [enabled, selectedChannel, levelRoles, xpRate]);
 
-  const handleUrlChange = (index: number, value: string) => {
-    const newUrls = [...urls];
-    newUrls[index] = value;
-    setUrls(newUrls);
+  const toggleRole = (roleId: string) => {
+    if (levelRoles.includes(roleId)) {
+      setLevelRoles(levelRoles.filter((r) => r !== roleId));
+    } else {
+      setLevelRoles([...levelRoles, roleId]);
+    }
   };
-
-  const addUrl = () => setUrls([...urls, ""]);
-  const removeUrl = (index: number) => setUrls(urls.filter((_, i) => i !== index));
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        YouTube Watcher Settings
+        Leveling Settings
         <InfoTooltip text="Work in progress" />
       </h1>
 
@@ -120,53 +120,50 @@ export default function Page() {
         </button>
       </div>
 
-      <SelectInput
-        label="Select Channel for YouTube Notifications"
-        value={selectedChannel || ""}
-        onChange={(val) => setSelectedChannel(val)}
-        options={channels
-          .filter((c) => c.type === 0)
-          .map((ch) => ({ value: ch.id, label: ch.name }))}
-      />
+      <div className="mb-4">
+        <label className="block text-sm text-gray-400 mb-2">Notification Channel</label>
+        <select
+          value={selectedChannel}
+          onChange={(e) => setSelectedChannel(e.target.value)}
+          className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
+        >
+          <option value="">Select channel</option>
+          {channels?.map((ch) => (
+            <option key={ch.id} value={ch.id}>
+              {ch.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">YouTube URLs</label>
-        {urls.map((url, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={url}
-              onChange={(e) => handleUrlChange(index, e.target.value)}
-              placeholder="https://www.youtube.com/channel/..."
-              className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
-            />
-            {urls.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeUrl(index)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
-                title="Remove message"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addUrl}
-          className="bg-[var(--primary-color)] hover:brightness-90 text-white px-3 py-1 rounded"
-        >
-          Add URL
-        </button>
+        <label className="block text-sm text-gray-400 mb-2">XP Rate</label>
+        <input
+          type="number"
+          min={0.1}
+          step={0.1}
+          value={xpRate}
+          onChange={(e) => setXpRate(Number(e.target.value))}
+          className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
+        />
+        <p className="text-sm text-gray-500 mt-1">The speed of how fast users earn XP</p>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm text-gray-400 mb-2">Level Roles</label>
+        <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-gray-700 p-2 rounded bg-[#1f2330]">
+          {roles?.map((role) => (
+            <label key={role.id} className="flex items-center gap-2 text-white">
+              <input
+                type="checkbox"
+                checked={levelRoles.includes(role.id)}
+                onChange={() => toggleRole(role.id)}
+                className="accent-[var(--primary-color)]"
+              />
+              {role.name}
+            </label>
+          ))}
+        </div>
       </div>
 
       <div className="text-right text-gray-400 text-sm mt-3">

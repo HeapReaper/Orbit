@@ -11,7 +11,7 @@ const modules = [
     url: "anti-bot",
     description: "Prevent spammers and bots from taking over your guild.",
     type: "Premium",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Birthday",
@@ -39,7 +39,7 @@ const modules = [
     url: "logging",
     description: "Log guild events like voice join and message delete to a log channel.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Introduction",
@@ -53,21 +53,21 @@ const modules = [
     url: "youtube-watcher",
     description: "Get notifications about your favorite channels.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Twitch Watcher",
     url: "twitch-watcher",
     description: "Get notifications in a channel when your favorite Twitch streamers go live.",
     type: "Premium",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Kick Watcher",
     url: "kick-watcher",
     description: "Get notifications in a channel when your favorite Kick streamers go live.",
     type: "Premium",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Auto Message",
@@ -88,21 +88,21 @@ const modules = [
     url: "leveling",
     description: "Bring a leveling system to your server.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Channel of Fame",
     url: "channel-of-fame",
     description: "Posts messages from members in a channel that got stars.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Giveaway",
     url: "giveaway",
     description: "Host giveaways and let members win prizes!",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
 ];
 

@@ -16,13 +16,13 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 export default function WelcomeMessagePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
+  const [messages, setMessages] = useState<string[]>([""]);
   const [channel, setChannel] = useState<string>("");
+  const [randomize, setRandomize] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
-
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -34,10 +34,10 @@ export default function WelcomeMessagePage() {
       try {
         const res = await fetch(`/api/welcome-message?guild_id=${selectedGuild}`);
         const data = await res.json();
-
-        setMessage(data.message ?? "");
+        setMessages(data.messages?.length ? data.messages : [""]);
         setChannel(data.channel ?? "");
         setEnabled(data.enabled ?? false);
+        setRandomize(data.randomize ?? false);
       } catch (err) {
         console.error(err);
       } finally {
@@ -65,9 +65,10 @@ export default function WelcomeMessagePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
-          message: cleanMessage(message),
-          channel: channel ? channel.trim() : null,
+          messages: messages.map((m) => cleanMessage(m)).filter((m) => m.trim() !== ""),
+          channel: channel || null,
           enabled: enabled ? 1 : 0,
+          randomize,
         }),
       });
 
@@ -87,7 +88,16 @@ export default function WelcomeMessagePage() {
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
-  }, [message, channel, enabled]);
+  }, [messages, channel, enabled, randomize]);
+
+  const handleMessageChange = (index: number, value: string) => {
+    const newMessages = [...messages];
+    newMessages[index] = value;
+    setMessages(newMessages);
+  };
+
+  const addMessage = () => setMessages([...messages, ""]);
+  const removeMessage = (index: number) => setMessages(messages.filter((_, i) => i !== index));
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -115,20 +125,6 @@ export default function WelcomeMessagePage() {
         </button>
       </div>
 
-      <div className="mb-6">
-        <label className="block text-gray-400 mb-2">Welcome Message</label>
-        <div className="rounded-lg border border-gray-700 bg-[#1f2330]">
-          <MarkdownEditor
-            value={message ?? ""}
-            onChange={setMessage}
-            placeholder=""
-          />
-        </div>
-        <p className="text-sm text-gray-500 mb-4 mt-2">
-          You can use <InlineCode text="{user}" /> to mention the user in the message.
-        </p>
-      </div>
-
       <SelectInput
         label="Announcement channel"
         value={channel || ""}
@@ -138,9 +134,64 @@ export default function WelcomeMessagePage() {
           .map(ch => ({ value: ch.id, label: ch.name }))}
       />
 
+      <div className="mb-4">
+        <label className="flex items-center gap-2 text-gray-400 mb-2">
+          <input
+            type="checkbox"
+            checked={randomize}
+            onChange={() => setRandomize(!randomize)}
+            className="accent-[var(--primary-color)]"
+          />
+          Pick messages randomly
+        </label>
+      </div>
+
+      <div className="mb-6">
+        {messages.map((msg, index) => (
+          <div key={index} className="mb-3">
+            <label className="block text-gray-400 mb-1">Message {index + 1}</label>
+            <div className="flex gap-2">
+              <div className="flex-1 rounded-lg border border-gray-700 bg-[#1f2330]">
+                <MarkdownEditor
+                  value={msg}
+                  onChange={(val) => handleMessageChange(index, val)}
+                  placeholder=""
+                />
+              </div>
+
+              {messages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeMessage(index)}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
+                  title="Remove message"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addMessage}
+          className="bg-[var(--primary-color)] hover:brightness-90 text-white px-3 py-1 rounded"
+        >
+          Add Message
+        </button>
+      </div>
+
       <MessagePreview
         username="Orbit"
-        message={message?.replace("{user}", "@HeapReaper") ?? ""}
+        message={messages[0]?.replace("{user}", "@HeapReaper") ?? ""}
       />
 
       <div className="text-right text-gray-400 text-sm mt-3">

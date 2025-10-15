@@ -13,7 +13,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-  const [urls, setUrls] = useState<string[]>([""]);
+  const [twitchUsers, setTwitchUsers] = useState<string[]>([""]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const { selectedGuild, channels } = useGuild();
@@ -21,17 +21,17 @@ export default function Page() {
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    document.title = "YouTube Watcher Settings";
+    document.title = "Twitch Watcher Settings";
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/youtube-watcher?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/twitch-watcher?guild_id=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setSelectedChannel(data.channel ?? "");
-        setUrls(data.urls?.length ? data.urls : [""]);
+        setTwitchUsers(data.users?.length ? data.users : [""]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,14 +54,14 @@ export default function Page() {
     setIsSaving(true);
 
     try {
-      const resp = await fetch("/api/youtube-watcher", {
+      const resp = await fetch("/api/twitch-watcher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
           enabled,
-          urls: urls.filter((url) => url.trim() !== ""),
+          users: twitchUsers.filter((u) => u.trim() !== ""),
         }),
       });
 
@@ -69,7 +69,7 @@ export default function Page() {
         notify("Could not save", "", "error");
       }
 
-      void addDashboardLog(selectedGuild, "INFO", "Updated YouTube Watcher settings");
+      void addDashboardLog(selectedGuild, "INFO", "Updated Twitch Watcher settings");
 
       if (!auto) notify("Saved", "", "success");
     } catch (error) {
@@ -79,27 +79,26 @@ export default function Page() {
     }
   };
 
-  // Auto-save on change
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
-  }, [enabled, selectedChannel, urls]);
+  }, [enabled, selectedChannel, twitchUsers]);
 
-  const handleUrlChange = (index: number, value: string) => {
-    const newUrls = [...urls];
-    newUrls[index] = value;
-    setUrls(newUrls);
+  const handleUserChange = (index: number, value: string) => {
+    const newUsers = [...twitchUsers];
+    newUsers[index] = value;
+    setTwitchUsers(newUsers);
   };
 
-  const addUrl = () => setUrls([...urls, ""]);
-  const removeUrl = (index: number) => setUrls(urls.filter((_, i) => i !== index));
+  const addUser = () => setTwitchUsers([...twitchUsers, ""]);
+  const removeUser = (index: number) => setTwitchUsers(twitchUsers.filter((_, i) => i !== index));
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        YouTube Watcher Settings
+        Twitch Watcher Settings
         <InfoTooltip text="Work in progress" />
       </h1>
 
@@ -121,7 +120,7 @@ export default function Page() {
       </div>
 
       <SelectInput
-        label="Select Channel for YouTube Notifications"
+        label="Select Channel for Twitch Notifications"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels
@@ -130,20 +129,20 @@ export default function Page() {
       />
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">YouTube URLs</label>
-        {urls.map((url, index) => (
+        <label className="block text-sm text-gray-400 mb-2">Twitch Users / Channels</label>
+        {twitchUsers.map((user, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
               type="text"
-              value={url}
-              onChange={(e) => handleUrlChange(index, e.target.value)}
-              placeholder="https://www.youtube.com/channel/..."
+              value={user}
+              onChange={(e) => handleUserChange(index, e.target.value)}
+              placeholder="twitch_username_or_channel"
               className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
             />
-            {urls.length > 1 && (
+            {twitchUsers.length > 1 && (
               <button
                 type="button"
-                onClick={() => removeUrl(index)}
+                onClick={() => removeUser(index)}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
                 title="Remove message"
               >
@@ -162,10 +161,10 @@ export default function Page() {
         ))}
         <button
           type="button"
-          onClick={addUrl}
+          onClick={addUser}
           className="bg-[var(--primary-color)] hover:brightness-90 text-white px-3 py-1 rounded"
         >
-          Add URL
+          Add User
         </button>
       </div>
 
