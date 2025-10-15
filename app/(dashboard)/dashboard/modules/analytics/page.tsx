@@ -32,7 +32,7 @@ export default function Page() {
     const fetchData = async () => {
       if (!selectedGuild) return;
 
-      const res = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+      const res = await fetch(`${process.env.API_URL}/api/premium?guild_id=${selectedGuild}`);
       const dataPremium = await res.json();
       setIsPremium(dataPremium?.premium ?? false);
 
