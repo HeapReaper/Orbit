@@ -85,38 +85,41 @@ export async function GET(req: NextRequest) {
 
     // Member counts over time
     const memberQuery = `
-        SELECT
-            period_start,
-            member_count,
-            member_count - lagInFrame(member_count) OVER (ORDER BY period_start) AS member_change
-        FROM (
-                 SELECT
-                     CASE
-                         WHEN ${days} <= 30 THEN toDate(joined_at)
-                         WHEN ${days} <= 180 THEN toStartOfWeek(joined_at)
-                         ELSE toStartOfMonth(joined_at)
-                         END AS period_start,
-                     countIf(left_at IS NULL OR left_at > period_start) AS member_count
-                 FROM discord_membership
-                 WHERE guild_id = '${guild_id}'
-                   AND joined_at >= now() - INTERVAL ${days} DAY
-                 GROUP BY period_start
-
-                 UNION ALL
-
-                 SELECT
-                     CASE
-                         WHEN ${days} <= 30 THEN toDate(now())
-                         WHEN ${days} <= 180 THEN toStartOfWeek(now())
-                         ELSE toStartOfMonth(now())
-                         END AS period_start,
-                     countIf(left_at IS NULL OR left_at > now()) AS member_count
-                 FROM discord_membership
-                 WHERE guild_id = '${guild_id}'
-             )
-        ORDER BY period_start
-
+      WITH
+        ${days} AS days,
+        CASE
+          WHEN ${days} = 7 THEN 'day'
+          WHEN ${days} = 30 THEN 'day'
+          ELSE 'month'
+        END AS period_type,
+        (
+          CASE
+            WHEN ${days} = 7 THEN 7
+            WHEN ${days} = 30 THEN 30
+            ELSE 12
+          END
+        ) AS points
+      SELECT
+        period_start,
+        COUNTIf(joined_at <= period_start AND (left_at IS NULL OR left_at > period_start)) AS member_count
+      FROM
+        discord_membership
+      ARRAY JOIN
+        arrayMap(i ->
+          CASE
+            WHEN period_type = 'day' THEN toDate(addDays(now(), -1 * (points - i)))
+            WHEN period_type = 'month' THEN toStartOfMonth(addMonths(now(), -1 * (points - i)))
+          END,
+          range(0, points)
+        ) AS period_start
+      WHERE
+        guild_id = '${guild_id}'
+      GROUP BY
+        period_start
+      ORDER BY
+        period_start
     `;
+
     const memberResult = await clickhouseClient.query({ query: memberQuery, format: "JSONEachRow" });
     const memberCounts = await memberResult.json();
 
@@ -145,7 +148,6 @@ export async function GET(req: NextRequest) {
     const activeInactiveResult = await clickhouseClient.query({ query: activeInactiveQuery, format: "JSONEachRow" });
     const [activeVsInactive] = await activeInactiveResult.json();
 
-    console.log(memberCounts);
     const result = {
       messageFlowHourly,
       topChannels,
@@ -155,7 +157,7 @@ export async function GET(req: NextRequest) {
     };
 
     // 3 minute cache
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 180);
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 180); // TODO: to 180
 
     return NextResponse.json(result);
   } catch (error) {
