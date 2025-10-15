@@ -29,7 +29,8 @@
     "react-markdown": "^10.1.0",
     "react-simplemde-editor": "^5.2.0",
     "recharts": "^3.2.1",
-    "rehype-raw": "^7.0.0"
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

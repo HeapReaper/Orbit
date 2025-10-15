@@ -61,33 +61,35 @@ export default function MarkdownEditor({
       />
 
       <style jsx global>{`
-        .EasyMDEContainer .editor-toolbar {
-          background-color: #1f2330;
-          border-color: #2a2d3a;
-        }
+          .EasyMDEContainer .editor-toolbar {
+              background-color: #1f2330;
+              border-color: #2a2d3a;
+          }
 
-        .EasyMDEContainer .CodeMirror {
-          background-color: #1f2330;
-          color: #fff;
-          border: none;
-        }
+          .EasyMDEContainer .CodeMirror {
+              background-color: #1f2330;
+              color: #fff;
+              border: none;
+          }
 
-        .EasyMDEContainer .CodeMirror-cursor {
-          border-left: 1px solid #fff;
-        }
+          .EasyMDEContainer .CodeMirror-cursor {
+              border-left: 1px solid #fff;
+          }
 
-        .EasyMDEContainer .editor-toolbar button {
-          color: #bbb;
-        }
+          .EasyMDEContainer .editor-toolbar button {
+              color: #bbb;
+              background-color: #1f2330;
+          }
 
-        .EasyMDEContainer .editor-toolbar button.active,
-        .EasyMDEContainer .editor-toolbar button:hover {
-          color: #fff;
-        }
+          .EasyMDEContainer .editor-toolbar button.active,
+          .EasyMDEContainer .editor-toolbar button:hover {
+              color: #fff;
+              background-color: #2a2d3a;
+          }
 
-        .EasyMDEContainer .CodeMirror-scroll {
-          min-height: 200px;
-        }
+          .EasyMDEContainer .CodeMirror-scroll {
+              min-height: 200px;
+          }
       `}</style>
     </div>
   );
