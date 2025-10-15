@@ -18,7 +18,6 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
 
   try {
     const url = new URL(`http://localhost:3144/api/fetch-info`);
-    console.log(url.toString());
     url.searchParams.set("type", type);
     url.searchParams.set("ids", ids.join(","));
 
@@ -29,14 +28,12 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
       next: { revalidate: 180 },
     });
 
-    console.log(res);
     if (!res.ok) {
       console.warn(`Failed to fetch ${type} names: ${res.status}`);
       return {};
     }
 
     const data = await res.json();
-    console.log(data);
     return data.results || {};
   } catch (err) {
     console.error(`Error fetching ${type} names:`, err);
