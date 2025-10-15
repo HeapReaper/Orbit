@@ -21,16 +21,38 @@ export default async function ReleasesPage() {
 
   const repos: RepoReleases[] = await Promise.all(
     repositories.map(async ({ owner, repo }) => {
-      const res = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/releases`,
-        { next: { revalidate: 600 } }
-      );
-      const data: Release[] = await res.json();
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/releases`,
+          {
+            headers: {
+              Authorization: `token ${process.env.GITHUB_TOKEN}`,
+            },
+            next: { revalidate: 600 },
+          }
+        );
 
-      return {
-        repoName: repo,
-        releases: data.slice(0, 3),
-      };
+        if (!res.ok) {
+          console.warn(`[GitHub] Failed to fetch releases for ${owner}/${repo}: ${res.status} ${res.statusText}`);
+          return {
+            repoName: repo,
+            releases: [],
+          };
+        }
+
+        const data: Release[] = await res.json();
+
+        return {
+          repoName: repo,
+          releases: Array.isArray(data) ? data.slice(0, 3) : [],
+        };
+      } catch (error) {
+        console.error(`[GitHub] Error fetching releases for ${owner}/${repo}:`, error);
+        return {
+          repoName: repo,
+          releases: [],
+        };
+      }
     })
   );
 
