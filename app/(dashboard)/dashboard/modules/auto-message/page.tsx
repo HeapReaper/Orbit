@@ -212,7 +212,11 @@ export default function Page() {
             </button>
           </div>
 
-          <MessagePreview username="Orbit" message={msg.message} />
+          <MessagePreview
+            username="Orbit"
+            message={msg.message}
+            channels={Object.fromEntries(channels.map(channel => [channel.id, channel.name]))}
+          />
         </div>
       ))}
 

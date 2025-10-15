@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -6,9 +7,31 @@ import remarkGfm from "remark-gfm";
 interface MessagePreviewProps {
   username: string;
   message: string;
+  channels?: Record<string, string>;
 }
 
-export default function MessagePreview({ username, message }: MessagePreviewProps) {
+export default function MessagePreview({ username, message, channels = {} }: MessagePreviewProps) {
+  // Function to replace <#> with channel name
+  const renderMessage = (text: string) => {
+    const parts = text.split(/(<#\d+>)/g);
+    return parts.map((part, i) => {
+      const match = part.match(/<#(\d+)>/);
+      if (match) {
+        const channelId = match[1];
+        const channelName = `# ${channels[channelId]}` || `#unknown`;
+        return (
+          <span
+            key={i}
+            className="bg-[#35363a] text-blue-400 px-1.5 py-0.5 rounded font-semibold"
+          >
+            {channelName}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="bg-[#2b2d31] p-6 rounded-lg shadow-md border border-[#202225] max-w-2xl mt-3 mb-3">
       <div className="flex items-start gap-3">
@@ -44,6 +67,10 @@ export default function MessagePreview({ username, message }: MessagePreviewProp
                       <code>{children}</code>
                     </pre>
                   );
+                },
+                p({ children }) {
+                  // Wrap normale tekst zodat <#ID> kan worden vervangen
+                  return <p>{renderMessage(children as string)}</p>;
                 },
                 h1({ children }) { return <h1 className="text-white text-xl font-semibold my-1">{children}</h1>; },
                 h2({ children }) { return <h2 className="text-white text-lg font-semibold my-1">{children}</h2>; },

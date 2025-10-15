@@ -192,6 +192,7 @@ export default function WelcomeMessagePage() {
       <MessagePreview
         username="Orbit"
         message={messages[0]?.replace("{user}", "@HeapReaper") ?? ""}
+        channels={Object.fromEntries(channels.map(channel => [channel.id, channel.name]))}
       />
 
       <div className="text-right text-gray-400 text-sm mt-3">
