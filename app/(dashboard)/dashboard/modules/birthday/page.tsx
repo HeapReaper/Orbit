@@ -155,6 +155,7 @@ export default function Page() {
       <MessagePreview
         username="Orbit"
         message={message.replace("{age}", "24").replace("{user}", "@HeapReaper")}
+        channels={Object.fromEntries(channels.map(channel => [channel.id, channel.name]))}
       />
 
       <div className="text-right text-gray-400 text-sm mt-3">

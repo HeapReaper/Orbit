@@ -144,7 +144,11 @@ export default function BumpReminderPage() {
           .map(channel => ({ value: channel.id, label: channel.name }))}
       />
 
-      <MessagePreview username="Orbit" message={message} />
+      <MessagePreview
+        username="Orbit"
+        message={message}
+        channels={Object.fromEntries(channels.map(channel => [channel.id, channel.name]))}
+      />
 
       <div className="text-right text-gray-400 text-sm mt-3">
         {isSaving ? "Saving..." : "Auto saved!"}
