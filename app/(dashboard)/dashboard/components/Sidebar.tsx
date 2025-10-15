@@ -22,6 +22,7 @@ export default function Sidebar() {
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
 
   const filteredModules = modules.filter((module) => module.enabled);
+  const sortedModules = filteredModules.sort((a, b) => a.name.localeCompare(b.name));
 
   // Fetch only the guilds the user is in
   useEffect(() => {
@@ -176,7 +177,7 @@ export default function Sidebar() {
 
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
-                {filteredModules.map((module, index: number) => (
+                {sortedModules.map((module, index: number) => (
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}

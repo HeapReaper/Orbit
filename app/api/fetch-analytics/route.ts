@@ -17,7 +17,7 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
   if (ids.length === 0) return {};
 
   try {
-    const url = new URL(`http://localhost:3144/api/fetch-info`);
+    const url = new URL(`${process.env.API_URL}/api/fetch-info`);
     url.searchParams.set("type", type);
     url.searchParams.set("ids", ids.join(","));
 
