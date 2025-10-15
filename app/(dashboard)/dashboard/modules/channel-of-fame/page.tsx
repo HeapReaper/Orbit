@@ -12,8 +12,8 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [emoji, setEmoji] = useState<string>("");
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-  const [urls, setUrls] = useState<string[]>([""]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const { selectedGuild, channels } = useGuild();
@@ -21,17 +21,17 @@ export default function Page() {
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    document.title = "YouTube Watcher Settings";
+    document.title = "Channel of Fame Settings";
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/youtube-watcher?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/channel-of-fame?guild_id=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
+        setEmoji(data.emoji ?? "");
         setSelectedChannel(data.channel ?? "");
-        setUrls(data.urls?.length ? data.urls : [""]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,14 +54,14 @@ export default function Page() {
     setIsSaving(true);
 
     try {
-      const resp = await fetch("/api/youtube-watcher", {
+      const resp = await fetch("/api/channel-of-fame", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guild_id: selectedGuild,
           channel: selectedChannel,
+          emoji,
           enabled,
-          urls: urls.filter((url) => url.trim() !== ""),
         }),
       });
 
@@ -69,7 +69,7 @@ export default function Page() {
         notify("Could not save", "", "error");
       }
 
-      void addDashboardLog(selectedGuild, "INFO", "Updated YouTube Watcher settings");
+      void addDashboardLog(selectedGuild, "INFO", "Updated Channel of Fame settings");
 
       if (!auto) notify("Saved", "", "success");
     } catch (error) {
@@ -79,27 +79,18 @@ export default function Page() {
     }
   };
 
-  // Auto-save on change
+  // Auto save on changes
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
-  }, [enabled, selectedChannel, urls]);
-
-  const handleUrlChange = (index: number, value: string) => {
-    const newUrls = [...urls];
-    newUrls[index] = value;
-    setUrls(newUrls);
-  };
-
-  const addUrl = () => setUrls([...urls, ""]);
-  const removeUrl = (index: number) => setUrls(urls.filter((_, i) => i !== index));
+  }, [enabled, emoji, selectedChannel]);
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        YouTube Watcher Settings
+        Channel of Fame Settings
         <InfoTooltip text="Work in progress" />
       </h1>
 
@@ -120,54 +111,26 @@ export default function Page() {
         </button>
       </div>
 
+      <div className="mb-4">
+        <label className="block text-sm text-gray-400 mb-2">Emoji</label>
+        <input
+          type="text"
+          value={emoji}
+          onChange={(e) => setEmoji(e.target.value)}
+          placeholder="🎉"
+          className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
+        />
+        <p className="text-sm text-gray-500 mt-1">The emoji that will trigger the Channel of Fame message.</p>
+      </div>
+
       <SelectInput
-        label="Select Channel for YouTube Notifications"
+        label="Select Channel"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels
           .filter((c) => c.type === 0)
           .map((ch) => ({ value: ch.id, label: ch.name }))}
       />
-
-      <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">YouTube URLs</label>
-        {urls.map((url, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={url}
-              onChange={(e) => handleUrlChange(index, e.target.value)}
-              placeholder="https://www.youtube.com/channel/..."
-              className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
-            />
-            {urls.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeUrl(index)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
-                title="Remove message"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addUrl}
-          className="bg-[var(--primary-color)] hover:brightness-90 text-white px-3 py-1 rounded"
-        >
-          Add URL
-        </button>
-      </div>
 
       <div className="text-right text-gray-400 text-sm mt-3">
         {isSaving ? "Saving..." : "Auto saved!"}
