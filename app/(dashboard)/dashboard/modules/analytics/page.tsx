@@ -66,10 +66,6 @@ export default function Page() {
     void fetchData();
   }, [selectedGuild, timeRange]);
 
-  if (!isPremium) return (
-    <p className="text-gray-500 italic">Not available for non-premium servers</p>
-  );
-
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-4xl mx-auto mt-6">
       {loading && <PageLoader />}

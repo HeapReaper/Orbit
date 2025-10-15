@@ -46,7 +46,7 @@ const modules = [
     url: "introduction",
     description: "Control how your introduction channel should behave.",
     type: "Free",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Youtube Watcher",

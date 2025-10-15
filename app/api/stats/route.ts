@@ -38,6 +38,6 @@ export async function GET(req: NextRequest) {
     console.error("Error in /api/stats:", err);
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
   } finally {
-    await prisma.$disconnect(); // Ensure Prisma disconnects
+    await prisma.$disconnect();
   }
 }

@@ -41,9 +41,6 @@ export default async function BotInfo() {
         <p>
           <span className="font-semibold text-white">Users: </span>  <InlineCode text={data.users} />
         </p>
-        <p>
-          <span className="font-semibold text-white">Version:</span> <InlineCode text={repoInfo.tag_name.replace("v", "")} />
-        </p>
       </div>
     </section>
   );
