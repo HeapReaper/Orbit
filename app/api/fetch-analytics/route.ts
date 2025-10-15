@@ -13,6 +13,37 @@ const TIME_RANGES = {
   last_year: 365,
 } as const;
 
+async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
+  if (ids.length === 0) return {};
+
+  try {
+    const url = new URL(`http://localhost:3144/api/fetch-info`);
+    console.log(url.toString());
+    url.searchParams.set("type", type);
+    url.searchParams.set("ids", ids.join(","));
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        "x-api-key": process.env.BOT_API_KEY || "",
+      },
+      next: { revalidate: 180 },
+    });
+
+    console.log(res);
+    if (!res.ok) {
+      console.warn(`Failed to fetch ${type} names: ${res.status}`);
+      return {};
+    }
+
+    const data = await res.json();
+    console.log(data);
+    return data.results || {};
+  } catch (err) {
+    console.error(`Error fetching ${type} names:`, err);
+    return {};
+  }
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const guild_id = searchParams.get("guild_id");
@@ -54,7 +85,10 @@ export async function GET(req: NextRequest) {
         GROUP BY hour_of_day
         ORDER BY hour_of_day
     `;
-    const hourlyResult = await clickhouseClient.query({ query: hourlyQuery, format: "JSONEachRow" });
+    const hourlyResult = await clickhouseClient.query({
+      query: hourlyQuery,
+      format: "JSONEachRow",
+    });
     const messageFlowHourly = await hourlyResult.json();
 
     // Top channels
@@ -67,7 +101,10 @@ export async function GET(req: NextRequest) {
         ORDER BY message_count DESC
         LIMIT 5
     `;
-    const topChannelsResult = await clickhouseClient.query({ query: topChannelsQuery, format: "JSONEachRow" });
+    const topChannelsResult = await clickhouseClient.query({
+      query: topChannelsQuery,
+      format: "JSONEachRow",
+    });
     const topChannels = await topChannelsResult.json();
 
     // Top 4 most active users
@@ -80,8 +117,30 @@ export async function GET(req: NextRequest) {
         ORDER BY message_count DESC
         LIMIT 4
     `;
-    const topUsersResult = await clickhouseClient.query({ query: topUsersQuery, format: "JSONEachRow" });
+    const topUsersResult = await clickhouseClient.query({
+      query: topUsersQuery,
+      format: "JSONEachRow",
+    });
     const topUsers = await topUsersResult.json();
+
+    // Fetch Discord names from bot API
+    const channelIds = topChannels.map((c: any) => c.channel_id);
+    const userIds = topUsers.map((u: any) => u.user_id);
+
+    const [channelNames, userNames] = await Promise.all([
+      fetchDiscordNames("channel", channelIds),
+      fetchDiscordNames("user", userIds),
+    ]);
+
+    const topChannelsWithNames = topChannels.map((c: any) => ({
+      ...c,
+      name: channelNames[c.channel_id] || "Unknown Channel",
+    }));
+
+    const topUsersWithNames = topUsers.map((u: any) => ({
+      ...u,
+      name: userNames[u.user_id] || "Unknown User",
+    }));
 
     // Member counts over time
     const memberQuery = `
@@ -119,8 +178,10 @@ export async function GET(req: NextRequest) {
       ORDER BY
         period_start
     `;
-
-    const memberResult = await clickhouseClient.query({ query: memberQuery, format: "JSONEachRow" });
+    const memberResult = await clickhouseClient.query({
+      query: memberQuery,
+      format: "JSONEachRow",
+    });
     const memberCounts = await memberResult.json();
 
     // Active vs Inactive members
@@ -145,19 +206,22 @@ export async function GET(req: NextRequest) {
             )) AS inactive
         FROM current_members
     `;
-    const activeInactiveResult = await clickhouseClient.query({ query: activeInactiveQuery, format: "JSONEachRow" });
+    const activeInactiveResult = await clickhouseClient.query({
+      query: activeInactiveQuery,
+      format: "JSONEachRow",
+    });
     const [activeVsInactive] = await activeInactiveResult.json();
 
     const result = {
       messageFlowHourly,
-      topChannels,
-      topUsers,
+      topChannels: topChannelsWithNames,
+      topUsers: topUsersWithNames,
       memberCounts,
       activeVsInactive,
     };
 
-    // 3 minute cache
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 180); // TODO: to 180
+    // Cache 3 minutes
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 180);
 
     return NextResponse.json(result);
   } catch (error) {
