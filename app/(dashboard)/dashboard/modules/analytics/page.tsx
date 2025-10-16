@@ -12,7 +12,7 @@ import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium"
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import TotalMessagesChart from "@/app/(dashboard)/dashboard/components/charts/TotalMessagesOverTime";
 
-const TIME_RANGES = ["last_week", "last_month", "last_year"] as const;
+const TIME_RANGES = ["last_week", "last_month", "last_year", "last_5_years"] as const;
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -105,7 +105,7 @@ export default function Page() {
               if (timeRange !== range) e.currentTarget.style.backgroundColor = "";
             }}
           >
-            {range.replace("_", " ").toUpperCase()}
+            {range.replace("_", " ").replace(/_/g, " ").toUpperCase()}
           </button>
         ))}
       </div>
@@ -127,7 +127,6 @@ export default function Page() {
         <p className="text-gray-400 mb-3">Shows the total messages send for each period over time</p>
         <TotalMessagesChart data={totalMessages} />
       </div>
-
 
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-1">Top channels</h3>
