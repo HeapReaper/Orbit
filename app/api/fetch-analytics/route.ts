@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
 
     // Top channels
     const topChannelsQuery = `
-        SELECT channel_id, count() AS message_count
+        Select channel_id, count() AS message_count
         FROM discord_messages
         WHERE created_at >= now() - INTERVAL ${days} DAY
           AND guild_id = '${guild_id}'
