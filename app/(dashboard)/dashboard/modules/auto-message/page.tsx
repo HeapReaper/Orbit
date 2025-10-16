@@ -2,6 +2,7 @@
 
 import {useEffect, useRef, useState} from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
+import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
 import { useNotification } from "@/app/context/NotificationContext";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
@@ -124,12 +125,9 @@ export default function Page() {
           <div className="flex justify-between mb-2">
             <span className="text-gray-400">Auto Message {i + 1}</span>
             {autoMessages.length > 1 && (
-              <button
+              <DeleteButton
                 onClick={() => removeAutoMessage(msg.id)}
-                className="text-red-500 hover:text-red-400"
-              >
-                Remove
-              </button>
+              />
             )}
           </div>
 
@@ -220,22 +218,19 @@ export default function Page() {
         </div>
       ))}
 
-      <div className="flex flex-col gap-4">
-        {/* @ts-ignore */}
-        <button
-          onClick={addAutoMessage}
-          className="bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg"
-        >
-          Add Auto Message
-        </button>
+      {/* @ts-ignore */}
+      <button
+        onClick={addAutoMessage}
+        className="bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg"
+      >
+        Add auto message
+      </button>
 
-        <div className="text-right text-gray-400 text-sm mt-3">
-          {isSaving ? "Saving..." : "Auto saved!"}
-        </div>
-
-        <SaveButton onClick={handleSave} />
-
+      <div className="text-right text-gray-400 text-sm mt-3">
+        {isSaving ? "Saving..." : "Auto saved!"}
       </div>
+
+      <SaveButton onClick={handleSave} />
     </section>
   );
 }
