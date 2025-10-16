@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, guild_id)) {
+  if (!(await isUserGuildAdmin(session.user.id, guild_id))) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
@@ -28,7 +28,9 @@ export async function GET(req: NextRequest) {
     const data = await prisma.welcome_message_settings.findFirst({
       where: { guild_id },
     });
-    return NextResponse.json(data);
+    return NextResponse.json(
+      data || { messages: [""], channel: null, enabled: 0, randomize: false }
+    );
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Failed to fetch welcome_message_settings" }, { status: 500 });
@@ -43,22 +45,38 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
-  if (!data.guild_id) {
+  const { guild_id, messages, channel, enabled, randomize } = data;
+
+  if (!guild_id) {
     return NextResponse.json({ error: "guild_id is required" });
   }
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+  if (!(await isUserGuildAdmin(session.user.id, guild_id))) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
-  const { guild_id, message, channel, enabled } = data;
+  try {
+    const updated = await prisma.welcome_message_settings.upsert({
+      where: { guild_id },
+      update: {
+        messages,
+        channel,
+        enabled,
+        randomize,
+      },
+      create: {
+        guild_id,
+        messages,
+        channel,
+        enabled,
+        randomize,
+      },
+    });
 
-  const updated = await prisma.welcome_message_settings.upsert({
-    where: { guild_id },
-    update: {message, channel, enabled },
-    create: { guild_id, message, channel, enabled },
-  });
-
-  return NextResponse.json(updated);
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to update welcome_message_settings" }, { status: 500 });
+  }
 }
