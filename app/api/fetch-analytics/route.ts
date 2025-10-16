@@ -58,7 +58,6 @@ export async function GET(req: NextRequest) {
 
   try {
     const days: 7 | 30 | 365 = TIME_RANGES[range];
-
     const cacheKey = `analytics:${guild_id}:${range}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
@@ -88,15 +87,53 @@ export async function GET(req: NextRequest) {
     });
     const messageFlowHourly = await hourlyResult.json();
 
+    // Total messages over period
+    let period: "day" | "month";
+    let points: number;
+    switch (days) {
+      case 7:
+      case 30:
+        period = "day";
+        points = days;
+        break;
+      case 365:
+        period = "month";
+        points = 12; // last 12 months
+        break;
+    }
+
+    const totalMessagesQuery = `
+      SELECT
+          period_start,
+          count() AS message_count
+      FROM (
+          SELECT
+              CASE
+                  WHEN '${period}' = 'day' THEN toDate(created_at)
+                  ELSE toStartOfMonth(created_at)
+              END AS period_start
+          FROM discord_messages
+          WHERE guild_id = '${guild_id}'
+            AND created_at >= now() - INTERVAL ${days} DAY
+      )
+      GROUP BY period_start
+      ORDER BY period_start
+    `;
+    const totalMessagesResult = await clickhouseClient.query({
+      query: totalMessagesQuery,
+      format: "JSONEachRow",
+    });
+    const totalMessages = await totalMessagesResult.json();
+
     // Top channels
     const topChannelsQuery = `
-        Select channel_id, count() AS message_count
-        FROM discord_messages
-        WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guild_id = '${guild_id}'
-        GROUP BY channel_id
-        ORDER BY message_count DESC
-        LIMIT 5
+      SELECT channel_id, count() AS message_count
+      FROM discord_messages
+      WHERE created_at >= now() - INTERVAL ${days} DAY
+        AND guild_id = '${guild_id}'
+      GROUP BY channel_id
+      ORDER BY message_count DESC
+      LIMIT 5
     `;
     const topChannelsResult = await clickhouseClient.query({
       query: topChannelsQuery,
@@ -106,13 +143,13 @@ export async function GET(req: NextRequest) {
 
     // Top 4 most active users
     const topUsersQuery = `
-        SELECT user_id, count() AS message_count
-        FROM discord_messages
-        WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guild_id = '${guild_id}'
-        GROUP BY user_id
-        ORDER BY message_count DESC
-        LIMIT 4
+      SELECT user_id, count() AS message_count
+      FROM discord_messages
+      WHERE created_at >= now() - INTERVAL ${days} DAY
+        AND guild_id = '${guild_id}'
+      GROUP BY user_id
+      ORDER BY message_count DESC
+      LIMIT 4
     `;
     const topUsersResult = await clickhouseClient.query({
       query: topUsersQuery,
@@ -123,7 +160,6 @@ export async function GET(req: NextRequest) {
     // Fetch Discord names from bot API
     const channelIds = topChannels.map((c: any) => c.channel_id);
     const userIds = topUsers.map((u: any) => u.user_id);
-
     const [channelNames, userNames] = await Promise.all([
       fetchDiscordNames("channel", channelIds),
       fetchDiscordNames("user", userIds),
@@ -133,7 +169,6 @@ export async function GET(req: NextRequest) {
       ...c,
       name: channelNames[c.channel_id] || "Unknown Channel",
     }));
-
     const topUsersWithNames = topUsers.map((u: any) => ({
       ...u,
       name: userNames[u.user_id] || "Unknown User",
@@ -183,25 +218,25 @@ export async function GET(req: NextRequest) {
 
     // Active vs Inactive members
     const activeInactiveQuery = `
-        WITH current_members AS (
-            SELECT user_id
-            FROM discord_membership
-            WHERE guild_id = '${guild_id}'
-              AND left_at IS NULL
-        )
-        SELECT
-            COUNTIf(user_id IN (
-                SELECT DISTINCT user_id
-                FROM discord_messages
-                WHERE guild_id = '${guild_id}'
-                  AND created_at >= now() - INTERVAL ${days} DAY
-            )) AS active,
-            COUNTIf(user_id NOT IN (
-                SELECT DISTINCT user_id
-                FROM discord_messages
-                WHERE guild_id = '${guild_id}'
-            )) AS inactive
-        FROM current_members
+      WITH current_members AS (
+          SELECT user_id
+          FROM discord_membership
+          WHERE guild_id = '${guild_id}'
+            AND left_at IS NULL
+      )
+      SELECT
+          COUNTIf(user_id IN (
+              SELECT DISTINCT user_id
+              FROM discord_messages
+              WHERE guild_id = '${guild_id}'
+                AND created_at >= now() - INTERVAL ${days} DAY
+          )) AS active,
+          COUNTIf(user_id NOT IN (
+              SELECT DISTINCT user_id
+              FROM discord_messages
+              WHERE guild_id = '${guild_id}'
+          )) AS inactive
+      FROM current_members
     `;
     const activeInactiveResult = await clickhouseClient.query({
       query: activeInactiveQuery,
@@ -211,6 +246,7 @@ export async function GET(req: NextRequest) {
 
     const result = {
       messageFlowHourly,
+      totalMessages,
       topChannels: topChannelsWithNames,
       topUsers: topUsersWithNames,
       memberCounts,

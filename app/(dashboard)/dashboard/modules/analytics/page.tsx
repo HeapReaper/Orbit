@@ -10,6 +10,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import TotalMessagesChart from "@/app/(dashboard)/dashboard/components/charts/TotalMessagesOverTime";
 
 const TIME_RANGES = ["last_week", "last_month", "last_year"] as const;
 
@@ -18,6 +19,7 @@ export default function Page() {
   const [isPremium, setIsPremium] = useState<boolean>(false);
   const [timeRange, setTimeRange] = useState<typeof TIME_RANGES[number]>("last_week");
   const [messageFlow, setMessageFlow] = useState<any[]>([]);
+  const [totalMessages, setTotalMessages] = useState<any[]>([]);
   const [mostPopulairChannels, setMostPopulairChannels] = useState<any[]>([]);
   const [topUsers, setTopUsers] = useState<any[]>([]);
   const {selectedGuild} = useGuild();
@@ -52,7 +54,9 @@ export default function Page() {
         change: row.member_change ?? 0
       }));
 
+      console.log(data.totalMessages);
       setMessageFlow(chartData);
+      setTotalMessages(data.totalMessages)
       setMostPopulairChannels(data.topChannels);
       setMemberCount(memberChartData);
       setTopUsers(data.topUsers);
@@ -113,19 +117,26 @@ export default function Page() {
       {/*</div>*/}
 
       <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-1">Message Flow Hourly</h3>
+        <h3 className="text-xl font-semibold mb-1">Message flow hourly</h3>
         <p className="text-gray-400 mb-3">Shows the average messages send for each our of the day</p>
         <MessageFlowChart data={messageFlow} />
       </div>
 
       <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-1">Top Channels</h3>
+        <h3 className="text-xl font-semibold mb-1">Message flow total</h3>
+        <p className="text-gray-400 mb-3">Shows the total messages send for each period over time</p>
+        <TotalMessagesChart data={totalMessages} />
+      </div>
+
+
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold mb-1">Top channels</h3>
         <p className="text-gray-400 mb-3">Shows the top 5 channels where the most messages where send</p>
         <TopChannelsChart data={mostPopulairChannels} />
       </div>
 
       <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-1">Most Active Users</h3>
+        <h3 className="text-xl font-semibold mb-1">Most active users</h3>
         <p className="text-gray-400 mb-2">Shows the top 4 users who have send the most messages</p>
         <MostActiveUsersChart data={topUsers} />
       </div>
@@ -137,7 +148,7 @@ export default function Page() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-xl font-semibold mb-1">Active vs Inactive Members</h3>
+        <h3 className="text-xl font-semibold mb-1">Active vs inactive members</h3>
         <p className="text-gray-400 mb-1">Count people inactive if they didnt send a message in the last X time</p>
         <ActiveVsInactiveChart
           active={activeInactiveMembers.active}
