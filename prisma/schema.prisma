@@ -84,9 +84,10 @@ model user_action {
 model welcome_message_settings {
   id         Int      @id @default(autoincrement())
   guild_id   String   @unique(map: "guild_id") @db.VarChar(22)
-  message    String?  @db.VarChar(255)
+  messages   Json?
   channel    String?  @db.VarChar(22)
   enabled    Int
+  randomize  Boolean  @default(false)
   created_at DateTime @default(now()) @db.DateTime(0)
 }
 
