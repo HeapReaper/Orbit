@@ -143,7 +143,7 @@ export default function Sidebar() {
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
@@ -151,7 +151,7 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/bot"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
@@ -160,7 +160,7 @@ export default function Sidebar() {
           <div>
             <button
               onClick={() => setModulesOpen(!modulesOpen)}
-              className="flex justify-between items-center w-full px-2 py-1 hover:text-white rounded-md"
+              className="flex justify-between items-center w-full px-2 py-1 hover:text-[var(--hover-color)] rounded-md"
             >
               <div className="flex items-center gap-2">
                 <Package className="w-6 h-6 text-[var(--primary-color)]" />
@@ -181,7 +181,7 @@ export default function Sidebar() {
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
-                    className="hover:text-white px-2 py-1 rounded-md"
+                    className="hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
                   >
                     {module.name}
                   </Link>
@@ -192,7 +192,7 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/modules/commands"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
@@ -200,7 +200,7 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/logs"
-            className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
@@ -209,7 +209,7 @@ export default function Sidebar() {
           {session?.user?.id === "632677231113666601" && (
             <Link
               href="/dashboard/owner"
-              className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+              className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
             >
               <Lock className="w-6 h-6 text-[var(--primary-color)]" />
               Owner Page
