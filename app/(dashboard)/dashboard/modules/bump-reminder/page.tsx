@@ -17,7 +17,7 @@ export default function BumpReminderPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState(false);
   const [message, setMessage] = useState<string>("");
-  const [intervalHours, setIntervalHours] = useState<number>(1);
+  const [intervalHours, setIntervalHours] = useState<number>(2);
   const [selectedChannel, setSelectedChannel] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
