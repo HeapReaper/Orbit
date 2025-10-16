@@ -84,6 +84,13 @@ const modules = [
     enabled: true,
   },
   {
+    name: "Leave Message",
+    url: "leave-message",
+    description: "Send automatic messages when someone leaves",
+    type: "Free",
+    enabled: true,
+  },
+  {
     name: "Leveling",
     url: "leveling",
     description: "Bring a leveling system to your server.",

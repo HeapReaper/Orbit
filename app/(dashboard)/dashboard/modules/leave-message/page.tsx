@@ -13,7 +13,7 @@ import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
-export default function WelcomeMessagePage() {
+export default function LeaveMessagePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [messages, setMessages] = useState<string[]>([""]);
@@ -26,13 +26,13 @@ export default function WelcomeMessagePage() {
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    document.title = "Welcome Message Settings";
+    document.title = "Leave Message Settings";
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/welcome-message?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/leave-message?guild_id=${selectedGuild}`);
         const data = await res.json();
         setMessages(data.messages?.length ? data.messages : [""]);
         setChannel(data.channel ?? "");
@@ -60,7 +60,7 @@ export default function WelcomeMessagePage() {
     setIsSaving(true);
 
     try {
-      const resp = await fetch("/api/welcome-message", {
+      const resp = await fetch("/api/leave-message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +75,7 @@ export default function WelcomeMessagePage() {
       if (!resp.ok) {
         if (!auto) notify("Oeps", "Could not save settings", "error");
       } else {
-        void addDashboardLog(selectedGuild, "INFO", "Updated welcome message settings");
+        void addDashboardLog(selectedGuild, "INFO", "Updated leave message settings");
         if (!auto) notify("Saved", "", "success");
       }
     } catch (error) {
@@ -104,7 +104,7 @@ export default function WelcomeMessagePage() {
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        Welcome Message Settings
+        Leave Message Settings
         <InfoTooltip text="Work in progress" />
       </h1>
 
