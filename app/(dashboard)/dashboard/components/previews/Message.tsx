@@ -33,7 +33,7 @@ export default function MessagePreview({ username, message, channels = {} }: Mes
   };
 
   return (
-    <div className="bg-[#2b2d31] p-6 rounded-lg shadow-md border border-[#202225] max-w-2xl mt-3 mb-3">
+    <div className="bg-[#2b2d31] p-6 rounded-lg shadow-md border border-[#202225] max-w-3xl mt-3 mb-3">
       <div className="flex items-start gap-3">
         <Image
           src="/logo-medium-.png"
