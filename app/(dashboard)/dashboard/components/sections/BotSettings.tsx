@@ -10,6 +10,7 @@ import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -171,7 +172,7 @@ export default function BotSettings() {
           {isSaving ? "Saving..." : "Auto saved!"}
         </div>
 
-        <IconButton icon={Save} label="Save Settings" size={24} onClick={() => handleSave(false)} />
+        <SaveButton onClick={() => handleSave(false)} />
       </form>
     </section>
   );
