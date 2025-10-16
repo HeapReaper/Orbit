@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
+import { Lock, Play, Package, Home, SquareChevronRight, ClipboardClock, Bot } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import modules from "../data/modules";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
@@ -205,6 +205,16 @@ export default function Sidebar() {
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
           </Link>
+
+          {session?.user?.id === "632677231113666601" && (
+            <Link
+              href="/dashboard/owner"
+              className="flex items-center gap-2 hover:text-white px-2 py-1 rounded-md"
+            >
+              <Lock className="w-6 h-6 text-[var(--primary-color)]" />
+              Owner Page
+            </Link>
+          )}
         </nav>
 
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 w-full px-2">
