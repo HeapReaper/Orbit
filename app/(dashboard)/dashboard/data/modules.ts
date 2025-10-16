@@ -111,6 +111,13 @@ const modules = [
     type: "Free",
     enabled: true,
   },
+  {
+    name: "Minecraft",
+    url: "minecraft",
+    description: "Monitor your Minecraft server and show online players.",
+    type: "Free",
+    enabled: true,
+  },
 ];
 
 export default modules;
