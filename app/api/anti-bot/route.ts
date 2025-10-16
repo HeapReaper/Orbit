@@ -11,16 +11,29 @@ export async function GET(req: NextRequest) {
   const guild_id = searchParams.get("guild_id");
   const session = await getServerSession(authOptions);
 
-  if (!session) return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!guild_id) return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!session)
+    return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
+  if (!guild_id)
+    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id))) return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
+  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+    return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    const data = await prisma.anti_bot_settings.findFirst({ where: { guild_id } });
-    return NextResponse.json(data);
+    const data = await prisma.anti_bot_settings.findUnique({ where: { guild_id } });
+    return NextResponse.json(
+      data ?? {
+        enabled: false,
+        time_window: 10,
+        channel_limit: 3,
+        punishment: "none",
+        forbidden_words: [],
+        notification_channel: null,
+        jail_role: null,
+      }
+    );
   } catch (err) {
-    console.error(err);
+    console.error("GET /api/anti-bot failed:", err);
     return NextResponse.json({ error: "Failed to fetch anti-bot settings" }, { status: 500 });
   }
 }
@@ -29,23 +42,52 @@ export async function POST(req: NextRequest) {
   const data = await req.json();
   const session = await getServerSession(authOptions);
 
-  if (!session) return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!data.guild_id) return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!session)
+    return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
+  if (!data.guild_id)
+    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, data.guild_id))) return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
+  if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
+    return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, enabled, time_window, channel_limit, punishment, forbidden_words } = data;
+  const {
+    guild_id,
+    enabled = false,
+    time_window = 10,
+    channel_limit = 3,
+    punishment = "none",
+    forbidden_words = [],
+    notification_channel = null,
+    jail_role = null,
+  } = data;
 
   try {
     const updated = await prisma.anti_bot_settings.upsert({
       where: { guild_id },
-      update: { enabled, time_window, channel_limit, punishment, forbidden_words },
-      create: { guild_id, enabled, time_window, channel_limit, punishment, forbidden_words },
+      update: {
+        enabled,
+        time_window,
+        channel_limit,
+        punishment,
+        forbidden_words,
+        notification_channel,
+        jail_role,
+      },
+      create: {
+        guild_id,
+        enabled,
+        time_window,
+        channel_limit,
+        punishment,
+        forbidden_words,
+        notification_channel,
+        jail_role,
+      },
     });
 
     return NextResponse.json(updated);
   } catch (err) {
-    console.error(err);
+    console.error("POST /api/anti-bot failed:", err);
     return NextResponse.json({ error: "Failed to save anti-bot settings" }, { status: 500 });
   }
 }
