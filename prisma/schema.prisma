@@ -200,3 +200,14 @@ model giveaway_settings {
   enabled    Boolean  @default(false)
   created_at DateTime @default(now())
 }
+
+model introduction_settings {
+  guild_id     String   @id
+  enabled      Boolean  @default(false)
+  channel      String?
+  max_messages Int      @default(1)
+  auto_reply   String?
+  auto_emoji   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

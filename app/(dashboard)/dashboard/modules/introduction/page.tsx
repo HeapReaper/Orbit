@@ -9,6 +9,8 @@ import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
+import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
+import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -147,6 +149,14 @@ export default function Page() {
             placeholder=""
           />
         </div>
+        <p className="text-sm text-gray-500 mb-4 mt-1">
+          You can use <InlineCode text="{user}" /> to mention the user.
+        </p>
+
+        <MessagePreview
+          username="Orbit"
+          message={autoReply.replace("{user}", "@HeapReaper")}
+        />
       </div>
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">Auto Emoji Reaction (optional)</label>
