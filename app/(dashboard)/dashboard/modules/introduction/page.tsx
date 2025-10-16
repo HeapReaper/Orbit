@@ -104,7 +104,7 @@ export default function Page() {
       </h1>
 
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400">Enable Module</span>
+        <span className="text-gray-400">Enable module</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}
@@ -130,7 +130,7 @@ export default function Page() {
       />
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">Max Messages per User</label>
+        <label className="block text-sm text-gray-400 mb-2">Max messages per user</label>
         <input
           type="number"
           min={1}
@@ -159,7 +159,7 @@ export default function Page() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">Auto Emoji Reaction (optional)</label>
+        <label className="block text-sm text-gray-400 mb-2">Auto emoji reaction (optional)</label>
         <input
           type="text"
           value={autoEmoji}
