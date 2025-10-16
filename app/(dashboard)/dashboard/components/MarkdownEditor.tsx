@@ -1,8 +1,12 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import SimpleMdeReact from "react-simplemde-editor";
+import dynamic from "next/dynamic";
 import "easymde/dist/easymde.min.css";
+
+const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 interface MarkdownEditorProps {
   value: string;
@@ -12,12 +16,11 @@ interface MarkdownEditorProps {
 }
 
 export default function MarkdownEditor({
-  value,
-  onChange,
-  placeholder = "Start typing...",
-  className = "",
-}: MarkdownEditorProps) {
-
+                                         value,
+                                         onChange,
+                                         placeholder = "Start typing...",
+                                         className = "",
+                                       }: MarkdownEditorProps) {
   const options = useMemo(() => {
     return {
       spellChecker: false,
@@ -54,42 +57,38 @@ export default function MarkdownEditor({
 
   return (
     <div className={`rounded-lg border border-gray-700 bg-[#1f2330] ${className}`}>
-      <SimpleMdeReact
-        value={value}
-        onChange={handleChange}
-        options={options}
-      />
+      <SimpleMdeReact value={value} onChange={handleChange} options={options} />
 
       <style jsx global>{`
-          .EasyMDEContainer .editor-toolbar {
-              background-color: #1f2330;
-              border-color: #2a2d3a;
-          }
+        .EasyMDEContainer .editor-toolbar {
+          background-color: #1f2330;
+          border-color: #2a2d3a;
+        }
 
-          .EasyMDEContainer .CodeMirror {
-              background-color: #1f2330;
-              color: #fff;
-              border: none;
-          }
+        .EasyMDEContainer .CodeMirror {
+          background-color: #1f2330;
+          color: #fff;
+          border: none;
+        }
 
-          .EasyMDEContainer .CodeMirror-cursor {
-              border-left: 1px solid #fff;
-          }
+        .EasyMDEContainer .CodeMirror-cursor {
+          border-left: 1px solid #fff;
+        }
 
-          .EasyMDEContainer .editor-toolbar button {
-              color: #bbb;
-              background-color: #1f2330;
-          }
+        .EasyMDEContainer .editor-toolbar button {
+          color: #bbb;
+          background-color: #1f2330;
+        }
 
-          .EasyMDEContainer .editor-toolbar button.active,
-          .EasyMDEContainer .editor-toolbar button:hover {
-              color: #fff;
-              background-color: #2a2d3a;
-          }
+        .EasyMDEContainer .editor-toolbar button.active,
+        .EasyMDEContainer .editor-toolbar button:hover {
+          color: #fff;
+          background-color: #2a2d3a;
+        }
 
-          .EasyMDEContainer .CodeMirror-scroll {
-              min-height: 200px;
-          }
+        .EasyMDEContainer .CodeMirror-scroll {
+          min-height: 200px;
+        }
       `}</style>
     </div>
   );

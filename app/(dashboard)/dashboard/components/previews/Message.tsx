@@ -12,20 +12,23 @@ interface MessagePreviewProps {
 
 export default function MessagePreview({ username, message, channels = {} }: MessagePreviewProps) {
   // Function to replace <#> with channel name
-  const renderMessage = (text: string) => {
+  const renderMessage = (text: unknown) => {
+    if (typeof text !== "string") return text;
+
     const parts = text.split(/(<#\d+>)/g);
+
     return parts.map((part, i) => {
       const match = part.match(/<#(\d+)>/);
       if (match) {
         const channelId = match[1];
-        const channelName = `# ${channels[channelId]}` || `#unknown`;
+        const channelName = channels[channelId] ? `#${channels[channelId]}` : "#unknown";
         return (
           <span
             key={i}
             className="bg-[#35363a] text-blue-400 px-1.5 py-0.5 rounded font-semibold"
           >
-            {channelName}
-          </span>
+          {channelName}
+        </span>
         );
       }
       return part;
@@ -69,7 +72,7 @@ export default function MessagePreview({ username, message, channels = {} }: Mes
                   );
                 },
                 p({ children }) {
-                  // Wrap normale tekst zodat <#ID> kan worden vervangen
+                  // @ts-ignore
                   return <p>{renderMessage(children as string)}</p>;
                 },
                 h1({ children }) { return <h1 className="text-white text-xl font-semibold my-1">{children}</h1>; },
