@@ -125,3 +125,78 @@ model guild_log {
 
   @@index([guild_id])
 }
+
+model kick_watcher {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique(map: "guild_id_kick") @db.VarChar(22)
+  channel    String   @db.VarChar(22)
+  users      Json     @default("[]")
+  enabled    Boolean
+  created_at DateTime @default(now()) @db.DateTime(0)
+}
+
+model twitch_watcher {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique(map: "guild_id_twitch") @db.VarChar(22)
+  channel    String   @db.VarChar(22)
+  users      Json     @default("[]")
+  enabled    Boolean
+  created_at DateTime @default(now()) @db.DateTime(0)
+}
+
+model youtube_watcher {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique(map: "guild_id_youtube") @db.VarChar(22)
+  channel    String   @db.VarChar(22)
+  users      Json     @default("[]")
+  enabled    Boolean
+  created_at DateTime @default(now()) @db.DateTime(0)
+}
+
+model anti_bot_settings {
+  id              Int      @id @default(autoincrement())
+  guild_id        String   @unique(map: "guild_id_antibot") @db.VarChar(22)
+  enabled         Boolean  @default(false)
+  time_window     Int      @default(10)
+  channel_limit   Int      @default(3)
+  punishment      String   @default("none") @db.VarChar(10)
+  forbidden_words Json?
+  created_at      DateTime @default(now()) @db.DateTime(0)
+  updated_at      DateTime @updatedAt @db.DateTime(0)
+}
+
+model channel_of_fame {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique
+  channel    String?  @db.VarChar(22)
+  emoji      String?  @db.VarChar(10)
+  enabled    Boolean  @default(false)
+  created_at DateTime @default(now())
+}
+
+model leveling_settings {
+  id          Int      @id @default(autoincrement())
+  guild_id    String   @unique
+  channel     String?  @db.VarChar(22)
+  level_roles Json?
+  xp_rate     Float    @default(1)
+  enabled     Boolean  @default(false)
+  created_at  DateTime @default(now())
+}
+
+model logging_settings {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique
+  channel    String?  @db.VarChar(22)
+  events     Json?
+  enabled    Boolean  @default(false)
+  created_at DateTime @default(now())
+}
+
+model giveaway_settings {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique
+  channel    String?  @db.VarChar(22)
+  enabled    Boolean  @default(false)
+  created_at DateTime @default(now())
+}

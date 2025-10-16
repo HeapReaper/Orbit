@@ -11,7 +11,7 @@ import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete"
 import {addDashboardLog} from "@/app/lib/addDashboardLog";
 
 export default function AntiBotPage() {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(false);
   const [timeWindow, setTimeWindow] = useState(10);
   const [channelLimit, setChannelLimit] = useState(3);
   const [punishment, setPunishment] = useState("");

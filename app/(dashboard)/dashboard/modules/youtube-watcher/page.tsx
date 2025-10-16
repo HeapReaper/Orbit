@@ -13,7 +13,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [selectedChannel, setSelectedChannel] = useState<string>("");
-  const [urls, setUrls] = useState<string[]>([""]);
+  const [users, setUsers] = useState<string[]>([""]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const { selectedGuild, channels } = useGuild();
@@ -31,7 +31,7 @@ export default function Page() {
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setSelectedChannel(data.channel ?? "");
-        setUrls(data.urls?.length ? data.urls : [""]);
+        setUsers(data.users?.length ? data.users : [""]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -61,7 +61,7 @@ export default function Page() {
           guild_id: selectedGuild,
           channel: selectedChannel,
           enabled,
-          urls: urls.filter((url) => url.trim() !== ""),
+          users: users.filter((u) => u.trim() !== ""),
         }),
       });
 
@@ -83,16 +83,16 @@ export default function Page() {
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
-  }, [enabled, selectedChannel, urls]);
+  }, [enabled, selectedChannel, users]);
 
-  const handleUrlChange = (index: number, value: string) => {
-    const newUrls = [...urls];
-    newUrls[index] = value;
-    setUrls(newUrls);
+  const handleUserChange = (index: number, value: string) => {
+    const newUsers = [...users];
+    newUsers[index] = value;
+    setUsers(newUsers);
   };
 
-  const addUrl = () => setUrls([...urls, ""]);
-  const removeUrl = (index: number) => setUrls(urls.filter((_, i) => i !== index));
+  const addUser = () => setUsers([...users, ""]);
+  const removeUser = (index: number) => setUsers(users.filter((_, i) => i !== index));
 
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
@@ -130,22 +130,22 @@ export default function Page() {
       />
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">YouTube URLs</label>
-        {urls.map((url, index) => (
+        <label className="block text-sm text-gray-400 mb-2">YouTube Users / Channels</label>
+        {users.map((user, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
               type="text"
-              value={url}
-              onChange={(e) => handleUrlChange(index, e.target.value)}
-              placeholder="https://www.youtube.com/channel/..."
+              value={user}
+              onChange={(e) => handleUserChange(index, e.target.value)}
+              placeholder="youtube_channel_or_url"
               className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
             />
-            {urls.length > 1 && (
+            {users.length > 1 && (
               <button
                 type="button"
-                onClick={() => removeUrl(index)}
+                onClick={() => removeUser(index)}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
-                title="Remove message"
+                title="Remove user"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -162,10 +162,10 @@ export default function Page() {
         ))}
         <button
           type="button"
-          onClick={addUrl}
+          onClick={addUser}
           className="bg-[var(--primary-color)] hover:brightness-90 text-white px-3 py-1 rounded"
         >
-          Add URL
+          Add User
         </button>
       </div>
 
