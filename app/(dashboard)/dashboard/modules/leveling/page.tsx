@@ -104,7 +104,7 @@ export default function Page() {
       </h1>
 
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400">Enable Module</span>
+        <span className="text-gray-400">Enable module</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}

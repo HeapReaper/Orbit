@@ -180,7 +180,7 @@ export default function Page() {
 
       {/* Channel selector */}
       <SelectInput
-        label="Select Channel for Logs"
+        label="Select channel for Logs"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels

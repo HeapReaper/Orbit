@@ -127,7 +127,7 @@ export default function Page() {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400">Enable Module</span>
+        <span className="text-gray-400">Enable module</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}
@@ -144,7 +144,7 @@ export default function Page() {
       </div>
 
       <SelectInput
-        label="Select Channel for Kick Notifications"
+        label="Select channel for Kick Notifications"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels

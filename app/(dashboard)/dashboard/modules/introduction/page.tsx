@@ -121,7 +121,7 @@ export default function Page() {
       </div>
 
       <SelectInput
-        label="Select Introduction Channel"
+        label="Select introduction channel"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels

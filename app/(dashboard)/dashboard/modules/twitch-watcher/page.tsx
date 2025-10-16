@@ -122,7 +122,7 @@ export default function Page() {
       </h1>
 
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400">Enable Module</span>
+        <span className="text-gray-400">Enable module</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}
@@ -139,7 +139,7 @@ export default function Page() {
       </div>
 
       <SelectInput
-        label="Select Channel for Twitch Notifications"
+        label="Select channel for Twitch notifications"
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels
@@ -148,7 +148,7 @@ export default function Page() {
       />
 
       <div className="mb-4">
-        <label className="block text-sm text-gray-400 mb-2">Twitch Users / Channels</label>
+        <label className="block text-sm text-gray-400 mb-2">Twitch users/channels</label>
         {twitchUsers.map((user, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
