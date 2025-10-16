@@ -1,0 +1,82 @@
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
+
+const prisma = new PrismaClient();
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const guild_id = searchParams.get("guild_id");
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Please authenticate first" });
+  }
+
+  if (!guild_id) {
+    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  }
+
+  // @ts-ignore
+  if (!(await isUserGuildAdmin(session.user.id, guild_id))) {
+    return NextResponse.json({ error: "You must be a guild admin to access this" });
+  }
+
+  try {
+    const data = await prisma.leave_message_settings.findFirst({
+      where: { guild_id },
+    });
+    return NextResponse.json(
+      data || { messages: [""], channel: null, enabled: 0, randomize: false }
+    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to fetch leave message settings" }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const data = await req.json();
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Please authenticate first" });
+  }
+
+  const { guild_id, messages, channel, enabled, randomize } = data;
+
+  if (!guild_id) {
+    return NextResponse.json({ error: "guild_id is required" });
+  }
+
+  // @ts-ignore
+  if (!(await isUserGuildAdmin(session.user.id, guild_id))) {
+    return NextResponse.json({ error: "You must be a guild admin to access this" });
+  }
+
+  try {
+    const updated = await prisma.leave_message_settings.upsert({
+      where: { guild_id },
+      update: {
+        messages,
+        channel,
+        enabled,
+        randomize,
+      },
+      create: {
+        guild_id,
+        messages,
+        channel,
+        enabled,
+        randomize,
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to update leave message settings" }, { status: 500 });
+  }
+}
