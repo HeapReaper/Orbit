@@ -95,7 +95,7 @@ export default function Page() {
   };
 
   return (
-    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">

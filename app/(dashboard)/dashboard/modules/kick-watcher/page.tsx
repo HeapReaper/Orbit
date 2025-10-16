@@ -104,7 +104,7 @@ export default function Page() {
 
   if (!isPremium) {
     return (
-      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6 text-center text-gray-400">
+      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6 text-center text-gray-400">
         <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
         <p>This feature is only available for premium guilds.</p>
       </section>
@@ -112,7 +112,7 @@ export default function Page() {
   }
 
   return (
-    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
