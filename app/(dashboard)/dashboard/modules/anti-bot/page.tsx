@@ -1,47 +1,141 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
-import {addDashboardLog} from "@/app/lib/addDashboardLog";
+import { addDashboardLog } from "@/app/lib/addDashboardLog";
+import { useGuild } from "@/app/context/GuildContext";
+import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
 export default function AntiBotPage() {
-  const [enabled, setEnabled] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [enabled, setEnabled] = useState(false);
   const [timeWindow, setTimeWindow] = useState(10);
   const [channelLimit, setChannelLimit] = useState(3);
   const [punishment, setPunishment] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([""]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
+  const { selectedGuild } = useGuild();
   const { notify } = useNotification();
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSave = () => {
-    notify("Saved!", "", "success");
+  useEffect(() => {
+    document.title = "Anti-Bot Settings";
+    if (!selectedGuild) return;
+
+    const fetchGuildData = async () => {
+      setLoading(true);
+
+      // Check premium
+      const resPremium = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+      const dataPremium = await resPremium.json();
+      setIsPremium(dataPremium?.premium ?? false);
+      if (!dataPremium?.premium) {
+        setLoading(false);
+        return;
+      }
+
+      // Fetch anti-bot settings
+      try {
+        const res = await fetch(`/api/anti-bot?guild_id=${selectedGuild}`);
+        const data = await res.json();
+        setEnabled(data?.enabled ?? false);
+        setTimeWindow(data?.time_window ?? 10);
+        setChannelLimit(data?.channel_limit ?? 3);
+        setPunishment(data?.punishment ?? "");
+        setForbiddenWords(data?.forbidden_words?.length ? data.forbidden_words : [""]);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchGuildData();
+  }, [selectedGuild]);
+
+  // Auto-save logic
+  const triggerAutoSave = () => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      void handleSave(true);
+    }, 1500);
   };
 
-  const addForbiddenWord = () => {
-    setForbiddenWords([...forbiddenWords, ""]);
+  const handleSave = async (auto = false) => {
+    if (!selectedGuild) return;
+    setIsSaving(true);
+
+    try {
+      const res = await fetch("/api/anti-bot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guild_id: selectedGuild,
+          enabled,
+          time_window: timeWindow,
+          channel_limit: channelLimit,
+          punishment,
+          forbidden_words: forbiddenWords.filter((w) => w.trim() !== ""),
+        }),
+      });
+
+      if (!res.ok) {
+        if (!auto) notify("Failed to save settings", "", "error");
+      } else {
+        void addDashboardLog(selectedGuild, "INFO", "Updated Anti-Bot settings");
+        if (!auto) notify("Saved!", "", "success");
+      }
+    } catch (err) {
+      if (!auto) notify("Error saving settings", String(err), "error");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
+  useEffect(() => {
+    if (!selectedGuild || !isPremium) return;
+    triggerAutoSave();
+  }, [enabled, timeWindow, channelLimit, punishment, forbiddenWords]);
+
+  const addForbiddenWord = () => setForbiddenWords([...forbiddenWords, ""]);
   const updateForbiddenWord = (index: number, value: string) => {
     const updated = [...forbiddenWords];
     updated[index] = value;
     setForbiddenWords(updated);
   };
-
   const removeForbiddenWord = (index: number) => {
     const updated = [...forbiddenWords];
     updated.splice(index, 1);
     setForbiddenWords(updated);
   };
 
+  if (!isPremium) {
+    return (
+      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6 text-center text-gray-400">
+        <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
+        <p>This feature is only available for premium guilds.</p>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
-      <h1 className="text-2xl font-semibold mb-4 text-white">Anti-Bot Settings</h1>
+      {loading && <PageLoader />}
+
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
+        Anti-Bot Settings
+        <InfoTooltip text="Work in progress" />
+        <PremiumLabel />
+      </h1>
 
       <div className="flex items-center justify-between mb-6">
         <span className="text-gray-400">Enable Anti-Bot</span>
@@ -95,26 +189,24 @@ export default function AntiBotPage() {
         />
       </div>
 
-      {/* Forbidden Words/Sentences */}
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">Forbidden Words/Sentences</label>
-        {forbiddenWords.map((word, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <input
-              type="text"
-              value={word}
-              onChange={(e) => updateForbiddenWord(index, e.target.value)}
-              placeholder="Enter forbidden word or sentence"
-              className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
-            />
-            {forbiddenWords.length > 1 && (
-              <DeleteButton
-                onClick={() => {removeForbiddenWord(index)}}
+        <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-gray-700 p-2 rounded bg-[#1f2330]">
+          {forbiddenWords.map((word, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={word}
+                onChange={(e) => updateForbiddenWord(index, e.target.value)}
+                placeholder="Enter forbidden word or sentence"
+                className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
               />
-            )}
-
-          </div>
-        ))}
+              {forbiddenWords.length > 1 && (
+                <DeleteButton onClick={() => removeForbiddenWord(index)} />
+              )}
+            </div>
+          ))}
+        </div>
         <button
           type="button"
           onClick={addForbiddenWord}
@@ -124,7 +216,11 @@ export default function AntiBotPage() {
         </button>
       </div>
 
-      <SaveButton onClick={handleSave} />
+      <div className="text-right text-gray-400 text-sm mt-3">
+        {isSaving ? "Saving..." : "Auto saved!"}
+      </div>
+
+      <SaveButton onClick={() => void handleSave(false)} />
     </section>
   );
 }

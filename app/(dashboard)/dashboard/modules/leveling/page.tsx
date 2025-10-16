@@ -15,7 +15,7 @@ export default function Page() {
   const [levelRoles, setLevelRoles] = useState<string[]>([]);
   const [xpRate, setXpRate] = useState<number>(1);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-
+  const [search, setSearch] = useState<string>("");
   const { selectedGuild, roles, channels } = useGuild();
   const { notify } = useNotification();
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -151,18 +151,34 @@ export default function Page() {
 
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">Level Roles</label>
-        <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-gray-700 p-2 rounded bg-[#1f2330]">
-          {roles?.map((role) => (
-            <label key={role.id} className="flex items-center gap-2 text-white">
-              <input
-                type="checkbox"
-                checked={levelRoles.includes(role.id)}
-                onChange={() => toggleRole(role.id)}
-                className="accent-[var(--primary-color)]"
-              />
-              {role.name}
-            </label>
-          ))}
+
+        {/* Search input */}
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search roles..."
+          className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 mb-2 text-gray-200 placeholder-gray-500"
+        />
+
+        {/* Scrollable checkbox list */}
+        <div className="flex flex-col gap-2 max-h-64 overflow-y-auto border border-gray-700 p-2 rounded bg-[#1f2330] custom-scrollbar">
+          {roles
+            ?.filter((role) => role.name.toLowerCase().includes(search.toLowerCase()))
+            .map((role) => (
+              <label key={role.id} className="flex items-center gap-2 text-white cursor-pointer hover:bg-[#2a2e3b] px-2 py-1 rounded">
+                <input
+                  type="checkbox"
+                  checked={levelRoles.includes(role.id)}
+                  onChange={() => toggleRole(role.id)}
+                  className="w-4 h-4 accent-[var(--primary-color)]"
+                />
+                {role.name}
+              </label>
+            ))}
+          {roles?.filter((role) => role.name.toLowerCase().includes(search.toLowerCase())).length === 0 && (
+            <p className="text-gray-500 text-sm text-center py-2">No roles found.</p>
+          )}
         </div>
       </div>
 

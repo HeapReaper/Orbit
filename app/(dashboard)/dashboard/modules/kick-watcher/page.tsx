@@ -8,6 +8,8 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
+import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,6 +17,7 @@ export default function Page() {
   const [selectedChannel, setSelectedChannel] = useState<string>("");
   const [kickUsers, setKickUsers] = useState<string[]>([""]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isPremium, setIsPremium] = useState<boolean>(false);
 
   const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
@@ -22,10 +25,16 @@ export default function Page() {
 
   useEffect(() => {
     document.title = "Kick Watcher Settings";
+
     if (!selectedGuild) return;
 
     const fetchGuildData = async () => {
       setLoading(true);
+
+      const res = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+      const dataPremium = await res.json();
+      setIsPremium(dataPremium?.premium ?? false);
+
       try {
         const res = await fetch(`/api/kick-watcher?guild_id=${selectedGuild}`);
         const data = await res.json();
@@ -93,6 +102,15 @@ export default function Page() {
   const addUser = () => setKickUsers([...kickUsers, ""]);
   const removeUser = (index: number) => setKickUsers(kickUsers.filter((_, i) => i !== index));
 
+  if (!isPremium) {
+    return (
+      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6 text-center text-gray-400">
+        <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
+        <p>This feature is only available for premium guilds.</p>
+      </section>
+    );
+  }
+
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6">
       {loading && <PageLoader />}
@@ -100,7 +118,13 @@ export default function Page() {
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
         Kick Watcher Settings
         <InfoTooltip text="Work in progress" />
+
+        <PremiumLabel />
       </h1>
+
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold text-white">Analytics</h1>
+      </div>
 
       <div className="flex items-center justify-between mb-4">
         <span className="text-gray-400">Enable Module</span>
@@ -140,22 +164,7 @@ export default function Page() {
               className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
             />
             {kickUsers.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeUser(index)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
-                title="Remove message"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <DeleteButton onClick={() => removeUser(index)} />
             )}
           </div>
         ))}

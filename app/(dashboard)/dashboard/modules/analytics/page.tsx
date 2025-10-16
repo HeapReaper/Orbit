@@ -9,6 +9,7 @@ import ActiveVsInactiveChart from "@/app/(dashboard)/dashboard/components/charts
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
+import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 
 const TIME_RANGES = ["last_week", "last_month", "last_year"] as const;
 
@@ -66,14 +67,23 @@ export default function Page() {
     void fetchData();
   }, [selectedGuild, timeRange]);
 
+  if (!isPremium) {
+    return (
+      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-2xl mx-auto mt-6 text-center text-gray-400">
+        <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
+        <p>This feature is only available for premium guilds.</p>
+      </section>
+    );
+  }
+
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-4xl mx-auto mt-6">
       {loading && <PageLoader />}
 
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold text-white">Analytics</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
+        Analytics
         <PremiumLabel />
-      </div>
+      </h1>
 
       <div className="flex gap-2 mb-6">
         {TIME_RANGES.map((range) => (
