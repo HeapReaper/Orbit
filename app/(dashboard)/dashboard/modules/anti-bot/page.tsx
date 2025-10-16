@@ -14,16 +14,18 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
 export default function AntiBotPage() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [timeWindow, setTimeWindow] = useState(10);
   const [channelLimit, setChannelLimit] = useState(3);
   const [punishment, setPunishment] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([""]);
+  const [notificationChannel, setNotificationChannel] = useState("");
+  const [jailRole, setJailRole] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
 
-  const { selectedGuild } = useGuild();
+  const { selectedGuild, roles, channels } = useGuild();
   const { notify } = useNotification();
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -34,26 +36,33 @@ export default function AntiBotPage() {
     const fetchGuildData = async () => {
       setLoading(true);
 
-      // Check premium
-      const resPremium = await fetch(`/api/premium?guild_id=${selectedGuild}`);
-      const dataPremium = await resPremium.json();
-      setIsPremium(dataPremium?.premium ?? false);
-      if (!dataPremium?.premium) {
-        setLoading(false);
-        return;
+      // Check premium status
+      try {
+        const resPremium = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+        const dataPremium = await resPremium.json();
+        setIsPremium(dataPremium?.premium ?? false);
+        if (!dataPremium?.premium) {
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Failed to fetch premium info:", err);
       }
 
-      // Fetch anti-bot settings
+      // Fetch Anti-Bot settings
       try {
         const res = await fetch(`/api/anti-bot?guild_id=${selectedGuild}`);
         const data = await res.json();
+
         setEnabled(data?.enabled ?? false);
         setTimeWindow(data?.time_window ?? 10);
         setChannelLimit(data?.channel_limit ?? 3);
         setPunishment(data?.punishment ?? "");
         setForbiddenWords(data?.forbidden_words?.length ? data.forbidden_words : [""]);
+        setNotificationChannel(data?.notification_channel ?? "");
+        setJailRole(data?.jail_role ?? "");
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch anti-bot data:", err);
       } finally {
         setLoading(false);
       }
@@ -62,7 +71,7 @@ export default function AntiBotPage() {
     void fetchGuildData();
   }, [selectedGuild]);
 
-  // Auto-save logic
+  // Auto-save
   const triggerAutoSave = () => {
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
@@ -85,6 +94,8 @@ export default function AntiBotPage() {
           channel_limit: channelLimit,
           punishment,
           forbidden_words: forbiddenWords.filter((w) => w.trim() !== ""),
+          notification_channel: notificationChannel,
+          jail_role: punishment === "jail" ? jailRole : null,
         }),
       });
 
@@ -104,8 +115,9 @@ export default function AntiBotPage() {
   useEffect(() => {
     if (!selectedGuild || !isPremium) return;
     triggerAutoSave();
-  }, [enabled, timeWindow, channelLimit, punishment, forbiddenWords]);
+  }, [enabled, timeWindow, channelLimit, punishment, forbiddenWords, notificationChannel, jailRole]);
 
+  // Manage forbidden words
   const addForbiddenWord = () => setForbiddenWords([...forbiddenWords, ""]);
   const updateForbiddenWord = (index: number, value: string) => {
     const updated = [...forbiddenWords];
@@ -128,7 +140,7 @@ export default function AntiBotPage() {
   }
 
   return (
-    <section className="bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
+    <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
@@ -137,8 +149,9 @@ export default function AntiBotPage() {
         <PremiumLabel />
       </h1>
 
+      {/* Enable */}
       <div className="flex items-center justify-between mb-6">
-        <span className="text-gray-400">Enable Anti-Bot</span>
+        <span className="text-gray-400">Enable anti-bot</span>
         <button
           type="button"
           onClick={() => setEnabled(!enabled)}
@@ -155,20 +168,34 @@ export default function AntiBotPage() {
       </div>
 
       <div className="mb-4">
+        <SelectInput
+          label="Notification channel"
+          value={notificationChannel}
+          onChange={setNotificationChannel}
+          options={[
+            { value: "", label: "Select a channel..." },
+            ...(channels?.map((c) => ({ value: c.id, label: `${c.name}` })) ?? []),
+          ]}
+        />
+      </div>
+
+      <div className="mb-4">
         <NumberInput
-          label="Time Window (seconds)"
+          label="Time window (seconds)"
           value={timeWindow}
           onChange={(val) => setTimeWindow(Number(val))}
           placeholder="Example: 10"
         />
         <p className="text-sm text-gray-500">
-          Users cannot send messages in more than <InlineCode text={channelLimit.toString()} /> channels within <InlineCode text={timeWindow.toString()} /> seconds.
+          Users cannot send messages in more than{" "}
+          <InlineCode text={channelLimit.toString()} /> channels within{" "}
+          <InlineCode text={timeWindow.toString()} /> seconds.
         </p>
       </div>
 
       <div className="mb-4">
         <NumberInput
-          label="Channel Limit"
+          label="Channel limit"
           value={channelLimit}
           onChange={(val) => setChannelLimit(Number(val))}
           placeholder="Example: 3"
@@ -185,9 +212,24 @@ export default function AntiBotPage() {
             { value: "mute", label: "Mute" },
             { value: "kick", label: "Kick" },
             { value: "ban", label: "Ban" },
+            { value: "jail", label: "Jail" },
           ]}
         />
       </div>
+
+      {punishment === "jail" && (
+        <div className="mb-4">
+          <SelectInput
+            label="Jail Role"
+            value={jailRole}
+            onChange={setJailRole}
+            options={[
+              { value: "", label: "Select a role..." },
+              ...(roles?.map((r) => ({ value: r.id, label: r.name })) ?? []),
+            ]}
+          />
+        </div>
+      )}
 
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">Forbidden Words/Sentences</label>

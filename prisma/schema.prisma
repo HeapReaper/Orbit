@@ -165,15 +165,17 @@ model youtube_watcher {
 }
 
 model anti_bot_settings {
-  id              Int      @id @default(autoincrement())
-  guild_id        String   @unique(map: "guild_id_antibot") @db.VarChar(22)
-  enabled         Boolean  @default(false)
-  time_window     Int      @default(10)
-  channel_limit   Int      @default(3)
-  punishment      String   @default("none") @db.VarChar(10)
-  forbidden_words Json?
-  created_at      DateTime @default(now()) @db.DateTime(0)
-  updated_at      DateTime @updatedAt @db.DateTime(0)
+  id                   Int      @id @default(autoincrement())
+  guild_id             String   @unique @db.VarChar(22)
+  enabled              Boolean  @default(false)
+  time_window          Int      @default(10)
+  channel_limit        Int      @default(3)
+  punishment           String   @default("none") @db.VarChar(20)
+  forbidden_words      Json?
+  notification_channel String?  @db.VarChar(22)
+  jail_role            String?  @db.VarChar(22)
+  created_at           DateTime @default(now()) @db.DateTime(0)
+  updated_at           DateTime @updatedAt @db.DateTime(0)
 }
 
 model channel_of_fame {
