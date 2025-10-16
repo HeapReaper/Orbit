@@ -222,3 +222,12 @@ model introduction_settings {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model minecraft_settings {
+  guild_id   String   @id
+  enabled    Boolean  @default(false)
+  ip         String
+  port       Int      @default(25565)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
