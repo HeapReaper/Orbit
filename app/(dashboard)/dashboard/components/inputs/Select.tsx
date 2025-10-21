@@ -17,6 +17,9 @@ export default function SelectInput({ label, value, onChange, options }: SelectI
           onChange={(e) => onChange(e.target.value)}
           className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] appearance-none h-10 flex items-center"
         >
+          <option value="">
+            Select...
+          </option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
