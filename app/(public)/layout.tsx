@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {/* Plausible analytics */}
       <Script
         defer
-        data-domain="orbit.heapreaper.nl"
+        data-domain="botinorbit.com"
         src="https://analytics.heapreaper.nl/js/script.outbound-links.js"
       />
       <Script id="plausible-init">{`
