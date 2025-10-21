@@ -174,7 +174,7 @@ export default function AntiBotPage() {
           onChange={setNotificationChannel}
           options={[
             { value: "", label: "Select a channel..." },
-            ...(channels?.map((c) => ({ value: c.id, label: `${c.name}` })) ?? []),
+            ...(channels?.filter(c => c.type === 0).map((c) => ({ value: c.id, label: `${c.name}` })) ?? []),
           ]}
         />
       </div>
