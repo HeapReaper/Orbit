@@ -8,6 +8,7 @@ interface SaveButtonProps {
 export default function SaveButton({ onClick, loading = false }: SaveButtonProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={loading}
       className={`
