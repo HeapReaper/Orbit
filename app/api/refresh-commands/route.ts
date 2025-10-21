@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function POST(req: NextRequest) {
+
   try {
+    const session = await getServerSession(authOptions);
     const { guildId } = await req.json();
+
+    if (!session) return NextResponse.json({ error: "Please authenticate first" });
 
     const response = await fetch(
       `${process.env.API_URL}/api/refresh-commands${guildId ? `?guildId=${guildId}` : ""}`,
