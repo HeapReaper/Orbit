@@ -29,6 +29,7 @@ export default function MinecraftPage() {
   useEffect(() => {
     document.title = "Minecraft Module";
     if (!selectedGuild) return;
+
     const fetchData = async () => {
       setLoading(true);
 
@@ -48,7 +49,11 @@ export default function MinecraftPage() {
         setPort(data?.port ?? 25565);
         setPlayers(data?.players ?? []);
         setMaxPlayers(data?.maxPlayers ?? 0);
-        setServerOnline(data?.online ?? false);
+
+        if (data?.enabled && data?.ip) {
+          void fetchServerStatus();
+        }
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -90,6 +95,7 @@ export default function MinecraftPage() {
       if (!auto) notify("Error saving settings", String(err), "error");
     } finally {
       setIsSaving(false);
+      void fetchServerStatus();
     }
   };
 
@@ -102,8 +108,9 @@ export default function MinecraftPage() {
   const fetchServerStatus = async () => {
     if (!ip) return;
     try {
-      const res = await fetch(`/api/minecraft/status?ip=${ip}&port=${port}`);
+      const res = await fetch(`/api/minecraft-status?ip=${ip}&port=${port}`);
       const data = await res.json();
+      console.log(data)
       setServerOnline(data.online);
       setPlayers(data.players || []);
       setMaxPlayers(data.maxPlayers || 0);
@@ -111,13 +118,6 @@ export default function MinecraftPage() {
       setServerOnline(false);
     }
   };
-
-  useEffect(() => {
-    if (!enabled || !ip) return;
-    void fetchServerStatus();
-    const interval = setInterval(fetchServerStatus, 30000);
-    return () => clearInterval(interval);
-  }, [enabled, ip, port]);
 
   if (!isPremium) {
     return (
