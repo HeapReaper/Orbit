@@ -128,7 +128,9 @@ export default function Page() {
           className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
         >
           <option value="">Select channel</option>
-          {channels?.map((ch) => (
+          {channels
+            .filter(c => c.type === 0)
+            .map((ch) => (
             <option key={ch.id} value={ch.id}>
               {ch.name}
             </option>
