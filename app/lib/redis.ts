@@ -22,7 +22,7 @@ export const getRedisClient = (): Redis => {
       redis.on("close", () => console.log("[Redis] Connection closed"));
     } catch (err) {
       console.warn("[Redis] Could not create client, using fallback. Error:", err);
-      // fallback object zodat build niet crasht
+      // fallback object so build doesn't crash
       redis = {
         get: async (key: string) => null,
         set: async (key: string, value: any, mode?: string, duration?: number) => {

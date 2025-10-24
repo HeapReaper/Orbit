@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
+import {rateLimitApi} from "@/app/lib/rateLimitApi";
 
 const prisma = new PrismaClient();
 
@@ -19,6 +20,10 @@ export async function GET(req: NextRequest) {
   if (!guild_id) {
     return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
   }
+
+  // Rate limit
+  const rateLimitResp = await rateLimitApi(session.user.id, guild_id, 10, 60);
+  if (rateLimitResp) return rateLimitResp;
 
   // @ts-ignore
   const isAdmin = await isUserGuildAdmin(session.user.id, guild_id);
