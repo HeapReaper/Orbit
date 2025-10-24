@@ -10,9 +10,19 @@ const redis = getRedisClient();
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const guild_id = searchParams.get("guild_id");
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
+  }
 
   if (!guild_id) {
     return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  }
+
+  // @ts-ignore
+  if (!(await isUserGuildAdmin(session.user.id, guild_id))) {
+    return NextResponse.json({ error: "You must be a guild admin to access this" }, { status: 403 });
   }
 
   const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
