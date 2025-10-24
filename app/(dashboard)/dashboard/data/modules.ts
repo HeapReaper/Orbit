@@ -49,6 +49,13 @@ const modules = [
     enabled: true,
   },
   {
+    name: "Invite Tracker",
+    url: "invite-tracker",
+    description: "See which invite urls users use.",
+    type: "Free",
+    enabled: true,
+  },
+  {
     name: "Youtube Watcher",
     url: "youtube-watcher",
     description: "Get notifications about your favorite channels.",

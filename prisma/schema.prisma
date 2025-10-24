@@ -233,3 +233,23 @@ model minecraft_settings {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+model guild_invite_settings {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique
+  enabled    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  invites invite_tracker_invite[]
+}
+
+model invite_tracker_invite {
+  id          Int                   @id @default(autoincrement())
+  guild_id    String
+  invite_code String                @unique
+  invite_type String?
+  created_at  DateTime              @default(now())
+  guild       guild_invite_settings @relation(fields: [guild_id], references: [guild_id], onDelete: Cascade)
+
+  @@index([guild_id])
+}
