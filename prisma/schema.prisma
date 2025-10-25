@@ -226,12 +226,14 @@ model introduction_settings {
 }
 
 model minecraft_settings {
-  guild_id   String   @id
-  enabled    Boolean  @default(false)
-  ip         String
-  port       Int      @default(25565)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  guild_id       String   @id
+  enabled        Boolean  @default(false)
+  ip             String
+  port           Int      @default(25565)
+  notify_enabled Boolean  @default(false)
+  channel        String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 }
 
 model guild_invite_settings {

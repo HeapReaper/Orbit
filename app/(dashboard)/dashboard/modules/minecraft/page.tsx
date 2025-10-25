@@ -10,10 +10,14 @@ import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium"
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
+import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 
 export default function MinecraftPage() {
   const [loading, setLoading] = useState(true);
   const [enabled, setEnabled] = useState(false);
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [channel, setChannel] = useState("");
+
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(25565);
   const [players, setPlayers] = useState<string[]>([]);
@@ -22,7 +26,7 @@ export default function MinecraftPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
 
-  const { selectedGuild } = useGuild();
+  const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -45,6 +49,8 @@ export default function MinecraftPage() {
         const res = await fetch(`/api/minecraft?guild_id=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data?.enabled ?? false);
+        setNotifyEnabled(data?.notify_enabled ?? false);
+        setChannel(data?.channel ?? "");
         setIp(data?.ip ?? "");
         setPort(data?.port ?? 25565);
         setPlayers(data?.players ?? []);
@@ -80,6 +86,8 @@ export default function MinecraftPage() {
         body: JSON.stringify({
           guild_id: selectedGuild,
           enabled,
+          notify_enabled: notifyEnabled,
+          channel: channel,
           ip,
           port,
         }),
@@ -102,8 +110,7 @@ export default function MinecraftPage() {
   useEffect(() => {
     if (!selectedGuild || !isPremium) return;
     triggerAutoSave();
-  }, [enabled, ip, port]);
-
+  }, [enabled, ip, port, notifyEnabled, channel]);
 
   const fetchServerStatus = async () => {
     if (!ip) return;
@@ -170,6 +177,43 @@ export default function MinecraftPage() {
           onChange={(val) => setPort(Number(val))}
           placeholder="25565"
         />
+      </div>
+
+      <div className="mb-4">
+        <div className="mt-6 border-t border-gray-700 pt-4">
+          <h2 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+            Join/Leave Notifications
+            <InfoTooltip text="Send join/leave messages when players connect or disconnect." />
+          </h2>
+
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-gray-400">Enable notifications</span>
+            <button
+              type="button"
+              onClick={() => setNotifyEnabled(!notifyEnabled)}
+              className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-200 focus:outline-none ${
+                notifyEnabled ? "bg-[var(--primary-color)]" : "bg-gray-700"
+              }`}
+            >
+              <span
+                className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${
+                  notifyEnabled ? "translate-x-6" : "translate-x-1"
+                }`}
+            />
+            </button>
+          </div>
+
+          {notifyEnabled && (
+            <SelectInput
+              label="Select channel for notifications"
+              value={channel}
+              onChange={(val) => setChannel(val)}
+              options={channels
+                .filter((ch) => ch.type === 0)
+                .map((ch) => ({ value: ch.id, label: `${ch.name}` }))}
+            />
+          )}
+        </div>
       </div>
 
       {enabled && ip && (
