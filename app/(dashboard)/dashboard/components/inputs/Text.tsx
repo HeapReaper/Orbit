@@ -1,5 +1,7 @@
 "use client";
 
+import { Input } from "@heroui/react";
+
 interface TextInputProps {
   label: string;
   value: string;
@@ -10,13 +12,13 @@ interface TextInputProps {
 export default function TextInput({ label, value, onChange, placeholder }: TextInputProps) {
   return (
     <div className="mb-4">
-      <label className="block text-gray-400 mb-1">{label}</label>
-      <input
-        type="text"
+      <Input
+        label={label}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        // @ts-ignore
+        onChange={(val) => onChange(val)}
         placeholder={placeholder}
-        className="w-full bg-[#0d0f13] border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+        className="w-full max-w-xs"
       />
     </div>
   );

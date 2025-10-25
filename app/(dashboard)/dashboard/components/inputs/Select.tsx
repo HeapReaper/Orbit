@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 
 interface SelectInputProps {
@@ -10,36 +9,20 @@ interface SelectInputProps {
   options: { value: string; label: string; description?: string }[];
 }
 
-export default function SelectInput({
-  label,
-  value,
-  onChange,
-  options,
-}: SelectInputProps) {
-  const [query, setQuery] = useState("");
-
+export default function SelectInput({ label, value, onChange, options }: SelectInputProps) {
   return (
-    <div className="mb-4 w-full max-w-xs ">
+    <div className="mb-4 w-full max-w-xs">
       <Autocomplete
         label={label}
         placeholder="Search..."
-        value={query}
-        onChange={(val) => {
-          // @ts-ignore
-          setQuery(val);
-          // @ts-ignore
-          onChange(val);
-        }}
+        value={value} // selected ID
+        onChange={(val) => onChange(val)}
+        displayValue={(val) => options.find((opt) => opt.value === val)?.label || ""}
         className="w-full"
-        // @ts-ignore
         popoverClassName="border border-gray-700 shadow-md"
       >
         {options.map((opt) => (
-          <AutocompleteItem
-            key={opt.value}
-            // @ts-ignore
-            value={opt.value}
-          >
+          <AutocompleteItem key={opt.value} value={opt.value}>
             {opt.label}
           </AutocompleteItem>
         ))}
