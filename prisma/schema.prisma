@@ -255,3 +255,11 @@ model invite_tracker_invite {
 
   @@index([guild_id])
 }
+
+model auto_role_settings {
+  id         Int      @id @default(autoincrement())
+  guild_id   String   @unique
+  auto_roles Json?
+  enabled    Boolean  @default(false)
+  created_at DateTime @default(now())
+}

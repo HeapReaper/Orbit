@@ -14,17 +14,24 @@ const modules = [
     enabled: true,
   },
   {
-    name: "Birthday",
-    url: "birthday",
-    description: "Let members fill in their birthday to get a notification on their birthday.",
-    type: "Free",
-    enabled: true,
-  },
-  {
     name: "Analytics",
     url: "analytics",
     description: "Get insight on what time your server is active, which channels are the most populair and more.",
     type: "Premium",
+    enabled: true,
+  },
+  {
+    name: "Auto Role",
+    url: "auto-role",
+    description: "Automatically assign role(s) to a new server member.",
+    type: "Free",
+    enabled: true,
+  },
+  {
+    name: "Birthday",
+    url: "birthday",
+    description: "Let members fill in their birthday to get a notification on their birthday.",
+    type: "Free",
     enabled: true,
   },
   {
