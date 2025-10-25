@@ -5,13 +5,14 @@
 
 @source "./**/*.{js,ts,jsx,tsx}";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
   --primary-color: #9B30FF;
   --hover-color: #8A29E6;
+  --heroui-background: 210 8% 5%;
+  --heroui-content1: 210 8% 5%;
+  --heroui-content1-foreground: 0 0% 100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,15 +28,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Sets all inputs to the same focus ring */
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none !important;
-  border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color) !important;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-}
 
 @keyframes spin-slow {
   to {

@@ -19,8 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             (window.plausible.q = window.plausible.q || []).push(arguments) 
           }
         `}</Script>
-
-    {children}
+    <div className="dark">
+      {children}
+    </div>
     </body>
     </html>
   );

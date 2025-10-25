@@ -8,9 +8,10 @@ import modules from "../data/modules";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import Link from "next/link";
 import { useGuild } from "@/app/context/GuildContext";
-import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
+import {Button} from "@heroui/react";
+import {Select, SelectItem} from "@heroui/react";
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -39,7 +40,6 @@ export default function Sidebar() {
 
         const userGuilds = await res.json();
         //const filteredGuilds = userGuilds.filter((g: any) => botGuildIds.includes(g.id));
-        console.log(userGuilds);
         setGuilds(userGuilds);
       } catch (err) {
         console.error(err);
@@ -133,12 +133,14 @@ export default function Sidebar() {
         </div>
 
         {/* Guild select */}
-        <SelectInput
-          label=""
+        <Select
           value={selectedGuild}
-          onChange={setSelectedGuild}
-          options={guilds.map((g) => ({ value: g.id, label: g.name }))}
-        />
+          onChange={(e) => setSelectedGuild(e.target.value)}
+          className="max-w-xs" label="Select Guild">
+          {guilds.map((guild) => (
+            <SelectItem key={guild.id}>{guild.name}</SelectItem>
+          ))}
+        </Select>
 
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
@@ -233,7 +235,18 @@ export default function Sidebar() {
           </div>
 
           <div className="w-full">
-            <AddBot />
+            <Button
+              color="primary"
+              className="w-full"
+              onPress={() => {
+                window.open(
+                  "https://discord.com/oauth2/authorize?client_id=1424327630706184343&scope=bot%20applications.commands&permissions=8",
+                  "_blank"
+                );
+              }}
+            >
+              Add bot
+            </Button>
           </div>
 
           <span className="text-xs text-gray-500">By HeapReaper</span>
