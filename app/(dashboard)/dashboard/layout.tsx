@@ -7,6 +7,7 @@ import Provider from "@/app/providers/SessionProvider";
 import { redirect } from "next/navigation";
 import { GuildProvider } from "@/app/context/GuildContext";
 import Script from "next/script";
+import HeroProviders from "@/app/providers/heroProvider";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -19,26 +20,28 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <Provider>
       <NotificationProvider>
         <GuildProvider>
-          <div className="flex min-h-screen">
-            <Script
-              defer
-              data-domain="botinorbit.com"
-              src="https://analytics.heapreaper.nl/js/script.outbound-links.js"
-            />
-            <Script id="plausible-init">{`
+          <HeroProviders>
+            <div className="flex min-h-screen">
+              <Script
+                defer
+                data-domain="botinorbit.com"
+                src="https://analytics.heapreaper.nl/js/script.outbound-links.js"
+              />
+              <Script id="plausible-init">{`
               window.plausible = window.plausible || function() { 
                 (window.plausible.q = window.plausible.q || []).push(arguments) 
               }
             `}</Script>
 
-            <Sidebar />
+              <Sidebar />
 
-            <div className="flex-1 flex flex-col">
-              <main className="flex-1 ml-0 md:ml-64 p-4 md:p-8 overflow-y-auto">
-                {children}
-              </main>
+              <div className="flex-1 flex flex-col">
+                <main className="flex-1 ml-0 md:ml-64 p-4 md:p-8 overflow-y-auto">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
+          </HeroProviders>
         </GuildProvider>
       </NotificationProvider>
     </Provider>

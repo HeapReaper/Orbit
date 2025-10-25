@@ -14,9 +14,13 @@
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
     "@headlessui/react": "^2.2.9",
+    "@heroui/react": "^2.8.5",
+    "@heroui/system": "^2.4.23",
+    "@heroui/theme": "^2.4.23",
     "@mdxeditor/editor": "^3.47.0",
     "@prisma/client": "^6.16.3",
     "easymde": "^2.20.0",
+    "framer-motion": "^12.23.24",
     "ioredis": "^5.8.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.544.0",
