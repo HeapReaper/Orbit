@@ -25,12 +25,13 @@ export async function GET(req: NextRequest) {
       where: { guild_id },
     });
 
-    // Default values if not yet configured
     return NextResponse.json(
       data ?? {
         enabled: false,
         ip: "",
         port: 25565,
+        notify_enabled: false,
+        channel: null,
         players: [],
         maxPlayers: 0,
         online: false,
@@ -58,13 +59,13 @@ export async function POST(req: NextRequest) {
   if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, ip, port, enabled } = data;
+  const { guild_id, ip, port, enabled, notify_enabled, channel } = data;
 
   try {
     const updated = await prisma.minecraft_settings.upsert({
       where: { guild_id },
-      update: { ip, port, enabled },
-      create: { guild_id, ip, port, enabled },
+      update: { ip, port, enabled, notify_enabled, channel },
+      create: { guild_id, ip, port, enabled, notify_enabled, channel },
     });
 
     return NextResponse.json(updated);
