@@ -45,13 +45,13 @@ export async function POST(req: NextRequest) {
   if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, channel, emoji, enabled } = data;
+  const { guild_id, channel, emoji, amount, enabled } = data;
 
   try {
     const updated = await prisma.channel_of_fame.upsert({
       where: { guild_id },
-      update: { channel, emoji, enabled },
-      create: { guild_id, channel, emoji, enabled },
+      update: { channel, emoji, amount, enabled },
+      create: { guild_id, channel, emoji, amount, enabled },
     });
 
     return NextResponse.json(updated);

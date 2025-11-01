@@ -183,6 +183,7 @@ model channel_of_fame {
   guild_id   String   @unique
   channel    String?  @db.VarChar(22)
   emoji      String?  @db.VarChar(10)
+  amount     Int      @default(0)
   enabled    Boolean  @default(false)
   created_at DateTime @default(now())
 }
