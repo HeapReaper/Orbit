@@ -24,7 +24,6 @@ export default function MinecraftPage() {
   const [maxPlayers, setMaxPlayers] = useState<number>(0);
   const [serverOnline, setServerOnline] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
 
   const { selectedGuild, channels } = useGuild();
   const { notify } = useNotification();
@@ -36,14 +35,6 @@ export default function MinecraftPage() {
 
     const fetchData = async () => {
       setLoading(true);
-
-      const resPremium = await fetch(`/api/premium?guild_id=${selectedGuild}`);
-      const dataPremium = await resPremium.json();
-      setIsPremium(dataPremium?.premium ?? false);
-      if (!dataPremium?.premium) {
-        setLoading(false);
-        return;
-      }
 
       try {
         const res = await fetch(`/api/minecraft?guild_id=${selectedGuild}`);
@@ -108,7 +99,7 @@ export default function MinecraftPage() {
   };
 
   useEffect(() => {
-    if (!selectedGuild || !isPremium) return;
+    if (!selectedGuild) return;
     triggerAutoSave();
   }, [enabled, ip, port, notifyEnabled, channel]);
 
@@ -117,7 +108,7 @@ export default function MinecraftPage() {
     try {
       const res = await fetch(`/api/minecraft-status?ip=${ip}&port=${port}`);
       const data = await res.json();
-      console.log(data)
+
       setServerOnline(data.online);
       setPlayers(data.players || []);
       setMaxPlayers(data.maxPlayers || 0);
@@ -126,15 +117,6 @@ export default function MinecraftPage() {
     }
   };
 
-  if (!isPremium) {
-    return (
-      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6 text-center text-gray-400">
-        <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
-        <p>This feature is only available for premium guilds.</p>
-      </section>
-    );
-  }
-
   return (
     <section className="bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
@@ -142,7 +124,6 @@ export default function MinecraftPage() {
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
         Minecraft Settings
         <InfoTooltip text="Monitor your Minecraft server and show online players." />
-        <PremiumLabel />
       </h1>
 
       <div className="flex items-center justify-between mb-6">
