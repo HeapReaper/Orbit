@@ -8,11 +8,13 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [enabled, setEnabled] = useState<boolean>(false);
   const [emoji, setEmoji] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
   const [selectedChannel, setSelectedChannel] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -31,6 +33,7 @@ export default function Page() {
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setEmoji(data.emoji ?? "");
+        setAmount(data.amount ?? 0);
         setSelectedChannel(data.channel ?? "");
       } catch (err) {
         console.error(err);
@@ -61,6 +64,7 @@ export default function Page() {
           guild_id: selectedGuild,
           channel: selectedChannel,
           emoji,
+          amount,
           enabled,
         }),
       });
@@ -79,7 +83,6 @@ export default function Page() {
     }
   };
 
-  // Auto save on changes
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();
@@ -120,8 +123,13 @@ export default function Page() {
           placeholder="🎉"
           className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
         />
-        <p className="text-sm text-gray-500 mt-1">The emoji that will trigger the Channel of Fame message.</p>
       </div>
+
+      <NumberInput
+        label="Amount of reaction needed to trigger channel of fame"
+        value={amount}
+        onChange={setAmount}
+      />
 
       <SelectInput
         label="Select channel"
