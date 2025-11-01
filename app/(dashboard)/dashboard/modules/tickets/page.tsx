@@ -115,20 +115,21 @@ export default function TicketsSettingsPage() {
         value={channel || ""}
         onChange={setChannel}
         options={channels
-          .filter(c => c.type === 0)
-          .map(ch => ({ value: ch.id, label: ch.name }))}
+          .filter((c) => c.type === 0) // Filter non text channels out
+          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
+          .map((ch) => ({ value: ch.id, label: ch.name }))
+        }
       />
 
       <SelectInput
         label="Tickets confidential channel"
         value={channelConfidential || ""}
         onChange={setChannelConfidential}
-        options={[
-          { value: "not-necessary", label: "Not necessary" },
-          ...channels
-            .filter(c => c.type === 0)
-            .map(ch => ({ value: ch.id, label: ch.name })),
-        ]}
+        options={channels
+          .filter((c) => c.type === 0) // Filter non text channels out
+          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
+          .map((ch) => ({ value: ch.id, label: ch.name }))
+        }
       />
 
       <div className="text-right text-gray-400 text-sm mt-3">
