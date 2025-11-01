@@ -148,8 +148,9 @@ export default function Page() {
               options={[
                 { value: "", label: "Select..." },
                 ...channels
-                  .filter(c => c.type === 0)
-                  .map(c => ({ value: c.id, label: c.name }))
+                  .filter((c) => c.type === 0) // Filter non text channels out
+                  .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
+                  .map((ch) => ({ value: ch.id, label: ch.name }))
               ]}
             />
           </div>

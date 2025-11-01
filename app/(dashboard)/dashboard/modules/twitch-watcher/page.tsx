@@ -143,8 +143,10 @@ export default function Page() {
         value={selectedChannel || ""}
         onChange={(val) => setSelectedChannel(val)}
         options={channels
-          .filter((c) => c.type === 0)
-          .map((ch) => ({ value: ch.id, label: ch.name }))}
+          .filter((c) => c.type === 0) // Filter non text channels out
+          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
+          .map((ch) => ({ value: ch.id, label: ch.name }))
+        }
       />
 
       <div className="mb-4">

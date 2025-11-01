@@ -140,8 +140,10 @@ export default function BumpReminderPage() {
         value={selectedChannel || ""}
         onChange={setSelectedChannel}
         options={channels
-          .filter(c => c.type === 0)
-          .map(channel => ({ value: channel.id, label: channel.name }))}
+          .filter((c) => c.type === 0) // Filter non text channels out
+          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
+          .map((ch) => ({ value: ch.id, label: ch.name }))
+        }
       />
 
       <MessagePreview
