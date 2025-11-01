@@ -63,6 +63,13 @@ const modules = [
     enabled: true,
   },
   {
+    name: "Picture Contest",
+    url: "picture-contest",
+    description: "Hold competitions on pictures and automatically pick a winnner based on votes.",
+    type: "Free",
+    enabled: true,
+  },
+  {
     name: "Youtube Watcher",
     url: "youtube-watcher",
     description: "Get notifications about your favorite channels.",
