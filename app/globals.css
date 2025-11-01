@@ -41,6 +41,10 @@ textarea:focus {
   animation: spin-slow 10s linear infinite;
 }
 
+.animate-spin-ultra-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
 .mdxeditor-toolbar {
   background-color: #20242e !important;
   color: white;

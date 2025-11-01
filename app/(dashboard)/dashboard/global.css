@@ -93,3 +93,13 @@ textarea:focus {
 ._selectTrigger_1e2ox_308 {
     background-color: #0a0a0a !important;
 }
+
+@keyframes spin-slow {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 10s linear infinite;
+}

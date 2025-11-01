@@ -92,7 +92,11 @@ export default function Sidebar() {
         {/* Logo + Profile */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-2 text-2xl font-bold text-white">
-            <img src="/logo.png" alt="Logo" className="h-8 w-8" />
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-8 w-8 transition-transform duration-500 animate-spin-ultra-slow"
+            />
             <span className="px-2 py-1">Orbit</span>
           </div>
 
