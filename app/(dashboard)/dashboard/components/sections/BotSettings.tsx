@@ -1,7 +1,5 @@
 "use client";
 
-import IconButton from "@/app/(dashboard)/dashboard/components/inputs/IconButton";
-import { Bot, Save } from "lucide-react";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import { useNotification } from "@/app/context/NotificationContext";
@@ -40,8 +38,8 @@ export default function BotSettings() {
         setLanguage(data.language ?? "");
         setUpdatesChannel(data.updatesChannel ?? "");
         setTimezone(data.timezone ?? "Europe/Amsterdam");
-        setPrimaryColor(data.primaryColor ?? "");
-        setSecondaryColor(data.secondaryColor ?? "");
+        setPrimaryColor(data.primaryColor ?? "#5865F2");
+        setSecondaryColor(data.secondaryColor ?? "#2F3136");
       } catch (err) {
         console.error(err);
       } finally {
