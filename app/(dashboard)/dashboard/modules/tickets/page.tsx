@@ -27,11 +27,11 @@ export default function TicketsSettingsPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/tickets-settings?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/tickets-settings?guildId=${selectedGuild}`);
         const data = await res.json();
 
         setChannel(data.channel ?? "");
-        setChannelConfidential(data.channel_conf ?? "");
+        setChannelConfidential(data.channelConf ?? "");
         setEnabled(data.enabled != null ? data.enabled : false);
       } catch (err) {
         console.error(err);
@@ -59,9 +59,9 @@ export default function TicketsSettingsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: channel,
-          channel_conf: channelConfidential,
+          channelConf: channelConfidential,
           enabled: enabled ? 1 : 0,
         }),
       });

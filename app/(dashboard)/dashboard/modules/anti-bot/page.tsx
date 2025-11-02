@@ -38,7 +38,7 @@ export default function AntiBotPage() {
 
       // Check premium status
       try {
-        const resPremium = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+        const resPremium = await fetch(`/api/premium?guildId=${selectedGuild}`);
         const dataPremium = await resPremium.json();
         setIsPremium(dataPremium?.premium ?? false);
         if (!dataPremium?.premium) {
@@ -51,16 +51,16 @@ export default function AntiBotPage() {
 
       // Fetch Anti-Bot settings
       try {
-        const res = await fetch(`/api/anti-bot?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/anti-bot?guildId=${selectedGuild}`);
         const data = await res.json();
 
         setEnabled(data?.enabled ?? false);
-        setTimeWindow(data?.time_window ?? 10);
-        setChannelLimit(data?.channel_limit ?? 3);
+        setTimeWindow(data?.timeWindow ?? 10);
+        setChannelLimit(data?.channelLimit ?? 3);
         setPunishment(data?.punishment ?? "");
-        setForbiddenWords(data?.forbidden_words?.length ? data.forbidden_words : [""]);
-        setNotificationChannel(data?.notification_channel ?? "");
-        setJailRole(data?.jail_role ?? "");
+        setForbiddenWords(data?.forbiddenWords?.length ? data.forbiddenWords : [""]);
+        setNotificationChannel(data?.notificationChannel ?? "");
+        setJailRole(data?.jailRole ?? "");
       } catch (err) {
         console.error("Failed to fetch anti-bot data:", err);
       } finally {
@@ -88,14 +88,14 @@ export default function AntiBotPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           enabled,
-          time_window: timeWindow,
-          channel_limit: channelLimit,
+          timeWindow,
+          channelLimit,
           punishment,
-          forbidden_words: forbiddenWords.filter((w) => w.trim() !== ""),
-          notification_channel: notificationChannel,
-          jail_role: punishment === "jail" ? jailRole : null,
+          forbiddenWords: forbiddenWords.filter((w) => w.trim() !== ""),
+          notificationChannel,
+          jailRole: punishment === "jail" ? jailRole : null,
         }),
       });
 
@@ -209,7 +209,6 @@ export default function AntiBotPage() {
           value={punishment}
           onChange={setPunishment}
           options={[
-            { value: "", label: "Select..." },
             { value: "mute", label: "Mute" },
             { value: "kick", label: "Kick" },
             { value: "ban", label: "Ban" },

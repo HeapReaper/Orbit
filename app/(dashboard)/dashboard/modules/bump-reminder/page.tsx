@@ -32,10 +32,10 @@ export default function BumpReminderPage() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/bumpreminders?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/bumpreminders?guildId=${selectedGuild}`);
         const data = await res.json();
         setMessage(data.message ?? "");
-        setIntervalHours(data.interval ?? 1);
+        setIntervalHours(data.interval ?? 2);
         setSelectedChannel(data.channel ?? "");
         setEnabled(data.enabled ?? false);
       } catch (err) {
@@ -64,7 +64,7 @@ export default function BumpReminderPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: selectedChannel,
           message: cleanMessage(message),
           interval: intervalHours,

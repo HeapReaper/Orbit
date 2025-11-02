@@ -1,28 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/app/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    const data = await prisma.twitch_watcher.findUnique({
-      where: { guild_id },
+    const data = await prisma.twitchWatcher.findUnique({
+      where: { guildId },
     });
 
     return NextResponse.json({
@@ -41,25 +39,25 @@ export async function POST(req: NextRequest) {
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!data.guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!data.guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, data.guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, channel, users, enabled } = data;
+  const { guildId, channel, users, enabled } = data;
 
   try {
-    const updated = await prisma.twitch_watcher.upsert({
-      where: { guild_id },
+    const updated = await prisma.twitchWatcher.upsert({
+      where: { guildId },
       update: {
         channel,
         enabled,
         users: Array.isArray(users) ? users : [],
       },
       create: {
-        guild_id,
+        guildId,
         channel,
         enabled,
         users: Array.isArray(users) ? users : [],

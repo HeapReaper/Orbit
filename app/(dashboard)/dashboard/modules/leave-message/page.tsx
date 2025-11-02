@@ -32,7 +32,7 @@ export default function LeaveMessagePage() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/leave-message?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/leave-message?guildId=${selectedGuild}`);
         const data = await res.json();
         setMessages(data.messages?.length ? data.messages : [""]);
         setChannel(data.channel ?? "");
@@ -64,7 +64,7 @@ export default function LeaveMessagePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           messages: messages.map((m) => cleanMessage(m)).filter((m) => m.trim() !== ""),
           channel: channel || null,
           enabled: enabled ? 1 : 0,

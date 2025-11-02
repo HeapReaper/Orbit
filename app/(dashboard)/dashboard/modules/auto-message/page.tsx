@@ -41,7 +41,7 @@ export default function Page() {
       setLoading(true);
 
       try {
-        const res = await fetch(`/api/auto-message?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/auto-message?guildId=${selectedGuild}`);
         const data: AutoMessage[] = await res.json();
 
         setLoading(false);
@@ -91,7 +91,7 @@ export default function Page() {
       const resp = await fetch(`/api/auto-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guild_id: selectedGuild, autoMessages: cleanedAutoMessages }),
+        body: JSON.stringify({ guildId: selectedGuild, autoMessages: cleanedAutoMessages }),
       });
 
       if (!resp.ok) throw new Error(resp.statusText);
@@ -145,9 +145,7 @@ export default function Page() {
               label=""
               value={msg.channel}
               onChange={(v) => updateAutoMessage(msg.id, "channel", v)}
-              options={[
-                { value: "", label: "Select..." },
-                ...channels
+              options={[...channels
                   .filter((c) => c.type === 0) // Filter non text channels out
                   .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
                   .map((ch) => ({ value: ch.id, label: ch.name }))

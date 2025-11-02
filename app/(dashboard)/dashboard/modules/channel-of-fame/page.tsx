@@ -29,7 +29,7 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/channel-of-fame?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/channel-of-fame?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setEmoji(data.emoji ?? "");
@@ -61,7 +61,7 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: selectedChannel,
           emoji,
           amount,

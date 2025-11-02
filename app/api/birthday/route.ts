@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
-import {rateLimitApi} from "@/app/lib/rateLimitApi";
-
-const prisma = new PrismaClient();
+import { rateLimitApi } from "@/app/lib/rateLimitApi";
+import { prisma } from "@/app/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
 
   const session = await getServerSession(authOptions);
 
@@ -17,24 +15,24 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
-  if (!guild_id) {
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId) {
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
   }
 
   // Rate limit
-  const rateLimitResp = await rateLimitApi(session.user.id, guild_id, 10, 60);
+  const rateLimitResp = await rateLimitApi(session.user.id, guildId, 10, 60);
   if (rateLimitResp) return rateLimitResp;
 
   // @ts-ignore
-  const isAdmin = await isUserGuildAdmin(session.user.id, guild_id);
+  const isAdmin = await isUserGuildAdmin(session.user.id, guildId);
 
   if (!isAdmin) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
   try {
-    const data = await prisma.birthday_settings.findFirst({
-      where: { guild_id },
+    const data = await prisma.birthdaySettings.findFirst({
+      where: { guildId },
     });
 
     return NextResponse.json(data);
@@ -52,24 +50,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
-  if (!data.guild_id) {
-    return NextResponse.json({ error: "guild_id is required" });
+  if (!data.guildId) {
+    return NextResponse.json({ error: "guildId is required" });
   }
 
   // @ts-ignore
-  const isAdmin = await isUserGuildAdmin(session.user.id, data.guild_id);
+  const isAdmin = await isUserGuildAdmin(session.user.id, data.guildId);
 
   if (!isAdmin) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
-  const { guild_id, channel, message, time, enabled } = data;
+  const { guildId, channel, message, time, enabled } = data;
 
   try {
-    const updated = await prisma.birthday_settings.upsert({
-      where: { guild_id },
+    const updated = await prisma.birthdaySettings.upsert({
+      where: { guildId },
       update: { channel, message, time, enabled },
-      create: { guild_id, channel, message, time, enabled },
+      create: { guildId, channel, message, time, enabled },
     });
 
     return NextResponse.json(updated);

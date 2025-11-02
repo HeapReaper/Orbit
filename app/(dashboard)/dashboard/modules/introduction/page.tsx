@@ -32,13 +32,13 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/introduction?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/introduction?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setSelectedChannel(data.channel ?? "");
-        setMaxMessages(data.max_messages ?? 1);
-        setAutoReply(data.auto_reply ?? "");
-        setAutoEmoji(data.auto_emoji ?? "");
+        setMaxMessages(data.maxMessages ?? 1);
+        setAutoReply(data.autoReply ?? "");
+        setAutoEmoji(data.autoEmoji ?? "");
       } catch (err) {
         console.error(err);
       } finally {
@@ -65,12 +65,12 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: selectedChannel,
           enabled,
-          max_messages: maxMessages,
-          auto_reply: autoReply,
-          auto_emoji: autoEmoji,
+          maxMessages,
+          autoReply,
+          autoEmoji,
         }),
       });
 

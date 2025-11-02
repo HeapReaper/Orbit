@@ -8,14 +8,14 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guildId = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
 
   if (!guildId)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
   if (!(await isUserGuildAdmin(session.user.id, guildId)))
@@ -52,10 +52,10 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
 
-  const { guild_id: guildId, contests } = body;
+  const { guildId: guildId, contests } = body;
 
   if (!guildId)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
   if (!(await isUserGuildAdmin(session.user.id, guildId)))

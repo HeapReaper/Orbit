@@ -14,7 +14,7 @@ export default function Page() {
   const [autoRoles, setAutoRoles] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const { selectedGuild, roles, channels } = useGuild();
+  const { selectedGuild, roles } = useGuild();
   const { notify } = useNotification();
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -25,10 +25,10 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/auto-role?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/auto-role?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
-        setAutoRoles(data.level_roles ?? []);
+        setAutoRoles(data.levelRoles ?? []);
       } catch (err) {
         console.error(err);
       } finally {
@@ -55,9 +55,9 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           enabled,
-          auto_roles: autoRoles,
+          autoRoles,
         }),
       });
 

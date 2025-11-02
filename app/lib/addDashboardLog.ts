@@ -17,7 +17,7 @@ export async function addDashboardLog(guildId: string, type: string, message: st
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        guild_id: guildId,
+        guildId: guildId,
         type,
         message: fullMessage,
       }),

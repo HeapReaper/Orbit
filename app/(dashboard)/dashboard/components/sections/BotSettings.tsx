@@ -34,14 +34,14 @@ export default function BotSettings() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/bot-settings?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/bot-settings?guildId=${selectedGuild}`);
         const data = await res.json();
         setNickname(data.nickname ?? "");
         setLanguage(data.language ?? "");
-        setUpdatesChannel(data.updates_channel ?? "");
+        setUpdatesChannel(data.updatesChannel ?? "");
         setTimezone(data.timezone ?? "Europe/Amsterdam");
-        setPrimaryColor(data.primary_color ?? "");
-        setSecondaryColor(data.secondary_color ?? "");
+        setPrimaryColor(data.primaryColor ?? "");
+        setSecondaryColor(data.secondaryColor ?? "");
       } catch (err) {
         console.error(err);
       } finally {
@@ -68,13 +68,13 @@ export default function BotSettings() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           nickname,
           language,
-          updates_channel: updatesChannel,
+          updatesChannel,
           timezone,
-          primary_color: primaryColor,
-          secondary_color: secondaryColor,
+          primaryColor,
+          secondaryColor,
         }),
       });
 
