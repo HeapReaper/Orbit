@@ -265,25 +265,27 @@ model auto_role_settings {
   created_at DateTime @default(now())
 }
 
-model picture_contest_settings {
-  id         Int                    @id @default(autoincrement())
-  guild_id   String                 @unique
-  contests   picture_contest_item[]
-  created_at DateTime               @default(now())
+model PictureContestSettings {
+  id        Int                  @id @default(autoincrement())
+  guildId   String               @unique
+  contests  PictureContestItem[]
+  createdAt DateTime             @default(now())
 }
 
-model picture_contest_item {
-  id               Int                      @id @default(autoincrement())
-  guild_id         String
-  contest_channel  String
-  announce_channel String
-  vote_emoji       String                   @default("👍")
-  vote_type        String                   @default("highest") // "highest" or "fixed"
-  required_votes   Int? // Only used when vote_type = fixed
-  schedule         String                   @default("end_month") // start_month, end_month, weekly
-  enabled          Boolean                  @default(true)
-  created_at       DateTime                 @default(now())
-  guild            picture_contest_settings @relation(fields: [guild_id], references: [guild_id], onDelete: Cascade)
+model PictureContestItem {
+  id              Int      @id @default(autoincrement())
+  guildId         String
+  name            String   @default("New Contest")
+  contestChannel  String
+  announceChannel String
+  voteEmoji       String   @default("👍")
+  voteType        String   @default("highest") // "highest" or "fixed"
+  requiredVotes   Int? // Only used when voteType = "fixed"
+  schedule        String   @default("end_month") // start_month, end_month, weekly
+  enabled         Boolean  @default(true)
+  createdAt       DateTime @default(now())
 
-  @@index([guild_id])
+  guild PictureContestSettings @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  @@index([guildId])
 }

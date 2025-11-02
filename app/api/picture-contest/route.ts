@@ -8,37 +8,40 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guild_id");
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
 
-  if (!guild_id)
+  if (!guildId)
     return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    const data = await prisma.picture_contest_settings.findUnique({
-      where: { guild_id },
+    let data = await prisma.pictureContestSettings.findUnique({
+      where: { guildId },
       include: { contests: true },
     });
 
+    // Auto-create empty settings if none exist
     if (!data) {
-      const created = await prisma.picture_contest_settings.create({
-        data: { guild_id },
+      data = await prisma.pictureContestSettings.create({
+        data: { guildId },
         include: { contests: true },
       });
-      return NextResponse.json(created);
     }
 
     return NextResponse.json(data);
   } catch (err) {
     console.error("Failed to fetch picture contest data:", err);
-    return NextResponse.json({ error: "Failed to fetch picture contest data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch picture contest data" },
+      { status: 500 }
+    );
   }
 }
 
@@ -49,49 +52,57 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
 
-  const { guild_id, contests } = body;
+  const { guild_id: guildId, contests } = body;
 
-  if (!guild_id)
+  if (!guildId)
     return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    await prisma.picture_contest_settings.upsert({
-      where: { guild_id },
+    // Ensure the settings entry exists
+    await prisma.pictureContestSettings.upsert({
+      where: { guildId },
       update: {},
-      create: { guild_id },
+      create: { guildId },
     });
 
-    await prisma.picture_contest_item.deleteMany({
-      where: { guild_id },
+    // Remove all existing contests for this guild
+    await prisma.pictureContestItem.deleteMany({
+      where: { guildId },
     });
 
+    // Create new contests
     if (Array.isArray(contests) && contests.length > 0) {
-      await prisma.picture_contest_item.createMany({
+      await prisma.pictureContestItem.createMany({
         data: contests.map((c: any) => ({
-          guild_id,
-          contest_channel: c.contestChannel,
-          announce_channel: c.announceChannel,
-          vote_emoji: c.voteEmoji || "👍",
-          vote_type: c.voteType || "highest",
-          required_votes: c.voteType === "fixed" ? c.requiredVotes : null,
+          guildId,
+          name: c.name || "New Contest",
+          contestChannel: c.contestChannel,
+          announceChannel: c.announceChannel,
+          voteEmoji: c.voteEmoji || "👍",
+          voteType: c.voteType || "highest",
+          requiredVotes: c.voteType === "fixed" ? c.requiredVotes : null,
           schedule: c.schedule || "end_month",
           enabled: c.enabled ?? true,
         })),
       });
     }
 
-    const updated = await prisma.picture_contest_settings.findUnique({
-      where: { guild_id },
+    // Return updated settings
+    const updated = await prisma.pictureContestSettings.findUnique({
+      where: { guildId },
       include: { contests: true },
     });
 
     return NextResponse.json(updated);
   } catch (err) {
     console.error("Failed to save picture contest settings:", err);
-    return NextResponse.json({ error: "Failed to save picture contest settings" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to save picture contest settings" },
+      { status: 500 }
+    );
   }
 }

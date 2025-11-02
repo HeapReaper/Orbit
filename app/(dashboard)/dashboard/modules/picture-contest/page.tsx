@@ -12,6 +12,7 @@ import { addDashboardLog } from "@/app/lib/addDashboardLog";
 
 type PictureContest = {
   id: string;
+  name: string;
   contestChannel: string;
   announceChannel: string;
   voteEmoji: string;
@@ -40,7 +41,6 @@ export default function PictureContestPage() {
         const res = await fetch(`/api/picture-contest?guild_id=${selectedGuild}`);
         if (res.ok) {
           const data = await res.json();
-          // ✅ pak de nested array uit
           setContests(data?.contests ?? []);
         } else {
           setContests([]);
@@ -60,6 +60,7 @@ export default function PictureContestPage() {
       ...prev,
       {
         id: crypto.randomUUID(),
+        name: "New Contest",
         contestChannel: "",
         announceChannel: "",
         voteEmoji: "👍",
@@ -130,6 +131,18 @@ export default function PictureContestPage() {
             {contests.length > 1 && (
               <DeleteButton onClick={() => removeContest(contest.id)} />
             )}
+          </div>
+
+          {/* Contest Name */}
+          <div className="mb-2">
+            <label className="block text-gray-400 mb-1">Contest Name</label>
+            <input
+              type="text"
+              value={contest.name}
+              onChange={(e) => updateContest(contest.id, "name", e.target.value)}
+              placeholder="Enter contest name"
+              className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
+            />
           </div>
 
           {/* Contest Channel */}
