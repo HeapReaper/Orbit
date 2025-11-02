@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   if (startDate) whereClause.timestamp = { gte: startDate };
 
   if (type === "guild") {
-    const logs = await prisma.guild_log.findMany({
+    const logs = await prisma.guildLog.findMany({
       where: whereClause,
       orderBy: { timestamp: "desc" },
     });
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (type === "dashboard") {
-    const logs = await prisma.dashboard_log.findMany({
+    const logs = await prisma.dashboardLog.findMany({
       where: whereClause,
       orderBy: { timestamp: "desc" },
     });
