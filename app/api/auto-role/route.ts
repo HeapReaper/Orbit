@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const data = await prisma.autoRoleSettings.findUnique({ where: { guildId } });
-    return NextResponse.json(data ?? { enabled: false, channel: null, levelRoles: [], xpRate: 1 });
+    return NextResponse.json(data ?? { enabled: false, channel: null, levelRoles: [] });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Failed to fetch Auto Role settings" }, { status: 500 });

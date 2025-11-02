@@ -28,7 +28,7 @@ export default function Page() {
         const res = await fetch(`/api/auto-role?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
-        setAutoRoles(data.levelRoles ?? []);
+        setAutoRoles(data.autoRoles ?? []);
       } catch (err) {
         console.error(err);
       } finally {
