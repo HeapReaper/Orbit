@@ -44,7 +44,7 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guild_id = searchParams.get("guildId");
   const range = (searchParams.get("range") as keyof typeof TIME_RANGES) || "last_week";
 
   const session = await getServerSession(authOptions);
