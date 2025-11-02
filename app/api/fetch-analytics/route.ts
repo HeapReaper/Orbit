@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 import { clickhouseClient } from "@/app/lib/clickhouse";
 import { getRedisClient } from "@/app/lib/redis";
+import { validateApiSessionAndGuildAdmin } from "@/app/lib/validateApiSessionAndGuildAdmin";
 
 const redis = getRedisClient();
 
@@ -47,15 +45,10 @@ export async function GET(req: NextRequest) {
   const guild_id = searchParams.get("guildId");
   const range = (searchParams.get("range") as keyof typeof TIME_RANGES) || "last_week";
 
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Please authenticate first" });
-
-  if (!guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
-
-  // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
-    return NextResponse.json({ error: "You must be a guild admin to access this" });
+  // Validate authentication by session and if user is guild admin
+  const session = await validateApiSessionAndGuildAdmin(guild_id);
+  if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
+  if (!guild_id) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   try {
     const days: number = TIME_RANGES[range];
@@ -258,8 +251,8 @@ export async function GET(req: NextRequest) {
     };
 
 
-    // Cache 3 minutes
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 180);
+    // Cache 5 minutes
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 320);
 
     return NextResponse.json(result);
   } catch (error) {

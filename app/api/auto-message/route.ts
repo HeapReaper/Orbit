@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 import { prisma } from "@/app/lib/prisma";
+import { validateApiSessionAndGuildAdmin } from "@/app/lib/validateApiSessionAndGuildAdmin";
 
 export async function GET(req: NextRequest) {
   const guildId = req.nextUrl.searchParams.get("guildId");
-  if (!guildId) return NextResponse.json([], { status: 400 });
 
-  const session = await getServerSession(authOptions);
-
-  if (!session) return NextResponse.json({ error: "Please authenticate first" });
-
-  if (!await isUserGuildAdmin(session.user.id, guildId)) {
-    return NextResponse.json({ error: "You must be a guild admin to access this" });
-  }
+  // Validate authentication by session and if user is guild admin
+  const session = await validateApiSessionAndGuildAdmin(guildId);
+  if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
+  if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   const autoMessages = await prisma.autoMessage.findMany({
     where: { guildId },
@@ -28,17 +22,10 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { guildId, autoMessages } = body;
 
-  if (!guildId || !Array.isArray(autoMessages)) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
-
-  const session = await getServerSession(authOptions);
-
-  if (!session) return NextResponse.json({ error: "Please authenticate first" });
-
-  if (!await isUserGuildAdmin(session.user.id, guildId)) {
-    return NextResponse.json({ error: "You must be a guild admin to access this" });
-  }
+  // Validate authentication by session and if user is guild admin
+  const validation = await validateApiSessionAndGuildAdmin(guildId);
+  if (typeof validation === "string") return NextResponse.json({ error: validation }, { status: 403 });
+  if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   try {
     // Delete all old auto messages

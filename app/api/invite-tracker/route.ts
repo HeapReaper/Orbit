@@ -1,29 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
 import { prisma } from "@/app/lib/prisma";
 import { getRedisClient } from "@/app/lib/redis";
+import { validateApiSessionAndGuildAdmin } from "@/app/lib/validateApiSessionAndGuildAdmin";
 
 const redis = getRedisClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const guildId = searchParams.get("guildId");
-  const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  }
-
-  if (!guildId) {
-    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
-  }
-
-  // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guildId))) {
-    return NextResponse.json({ error: "You must be a guild admin to access this" }, { status: 403 });
-  }
+  // Validate authentication by session and if user is guild admin
+  const session = await validateApiSessionAndGuildAdmin(guildId);
+  if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
+  if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
   if (!DISCORD_BOT_TOKEN) {
@@ -96,22 +85,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  }
-
-  if (!body.guildId) {
-    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
-  }
-
-  // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, body.guildId))) {
-    return NextResponse.json({ error: "You must be a guild admin to access this" }, { status: 403 });
-  }
-
   const { guildId, enabled, invites } = body;
+
+  // Validate authentication by session and if user is guild admin
+  const session = await validateApiSessionAndGuildAdmin(guildId);
+  if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
+  if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   try {
     await prisma.guildInviteSettings.upsert({
