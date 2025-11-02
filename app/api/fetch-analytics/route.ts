@@ -44,22 +44,22 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guildId = searchParams.get("guildId");
+  const guild_id = searchParams.get("guild_id");
   const range = (searchParams.get("range") as keyof typeof TIME_RANGES) || "last_week";
 
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Please authenticate first" });
 
-  if (!guildId)
-    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
+  if (!guild_id)
+    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guildId)))
+  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
     return NextResponse.json({ error: "You must be a guild admin to access this" });
 
   try {
     const days: number = TIME_RANGES[range];
-    const cacheKey = `analytics:${guildId}:${range}`;
+    const cacheKey = `analytics:${guild_id}:${range}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
       return NextResponse.json(JSON.parse(cached));
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
                      count() AS hourly_count
                  FROM discord_messages
                  WHERE created_at >= now() - INTERVAL ${days} DAY
-                   AND guildId = '${guildId}'
+                   AND guild_id = '${guild_id}'
                  GROUP BY hour_of_day, toStartOfDay(created_at)
              )
         GROUP BY hour_of_day
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
                          ELSE toStartOfMonth(created_at)
                          END AS period_start
                  FROM discord_messages
-                 WHERE guildId = '${guildId}'
+                 WHERE guild_id = '${guild_id}'
                    AND created_at >= now() - INTERVAL ${days} DAY
              )
         GROUP BY period_start
@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
         SELECT channel_id, count() AS message_count
         FROM discord_messages
         WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guildId = '${guildId}'
+          AND guild_id = '${guild_id}'
         GROUP BY channel_id
         ORDER BY message_count DESC
         LIMIT 5
@@ -150,7 +150,7 @@ export async function GET(req: NextRequest) {
         SELECT user_id, count() AS message_count
         FROM discord_messages
         WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guildId = '${guildId}'
+          AND guild_id = '${guild_id}'
         GROUP BY user_id
         ORDER BY message_count DESC
         LIMIT 4
@@ -208,7 +208,7 @@ export async function GET(req: NextRequest) {
           range(0, points)
         ) AS period_start
       WHERE
-        guildId = '${guildId}'
+        guild_id = '${guild_id}'
       GROUP BY
         period_start
       ORDER BY
@@ -225,20 +225,20 @@ export async function GET(req: NextRequest) {
         WITH current_members AS (
             SELECT user_id
             FROM discord_membership
-            WHERE guildId = '${guildId}'
+            WHERE guild_id = '${guild_id}'
               AND left_at IS NULL
         )
         SELECT
             COUNTIf(user_id IN (
                 SELECT DISTINCT user_id
                 FROM discord_messages
-                WHERE guildId = '${guildId}'
+                WHERE guild_id = '${guild_id}'
                   AND created_at >= now() - INTERVAL ${days} DAY
             )) AS active,
             COUNTIf(user_id NOT IN (
                 SELECT DISTINCT user_id
                 FROM discord_messages
-                WHERE guildId = '${guildId}'
+                WHERE guild_id = '${guild_id}'
             )) AS inactive
         FROM current_members
     `;
@@ -253,9 +253,10 @@ export async function GET(req: NextRequest) {
       totalMessages,
       topChannels: topChannelsWithNames,
       topUsers: topUsersWithNames,
-      memberCounts,
+      memberCounts: memberCounts ?? [],
       activeVsInactive,
     };
+
 
     // Cache 3 minutes
     await redis.set(cacheKey, JSON.stringify(result), "EX", 180);

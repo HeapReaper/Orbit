@@ -24,6 +24,7 @@ export default function Page() {
   const [topUsers, setTopUsers] = useState<any[]>([]);
   const {selectedGuild} = useGuild();
   const [memberCount, setMemberCount] = useState<any[]>([]);
+  const [memberChartData, setMemberChartData] = useState<any[]>([]);
   const [activeInactiveMembers, setActiveInactiveMembers] = useState<{ active: number; inactive: number }>({ active: 0, inactive: 0 });
 
   useEffect(() => {
@@ -48,16 +49,17 @@ export default function Page() {
         messages: item.avg_messages,
       }));
 
-      const memberChartData = data.memberCounts.map((row: any) => ({
+      const memberChartData = (data.memberCounts ?? []).map((row: any) => ({
         date: row.period_start,
         count: row.member_count,
-        change: row.member_change ?? 0
+        change: row.member_change ?? 0,
       }));
 
       setMessageFlow(chartData);
       setTotalMessages(data.totalMessages ?? []);
       setMostPopulairChannels(data.topChannels ?? []);
       setMemberCount(data.memberCounts ?? []);
+      setMemberChartData(memberChartData);
       setTopUsers(data.topUsers ?? []);
       setActiveInactiveMembers({
         active: data.activeVsInactive?.active || 0,
@@ -142,7 +144,7 @@ export default function Page() {
       <div className="mb-8">
         <h3 className="text-xl font-semibold mb-1">Member count over time</h3>
         <p className="text-gray-400 mb-2">Shows how many total members in the server are at a given time</p>
-        <JoinsOverTimeChart data={memberCount} />
+        <JoinsOverTimeChart data={memberChartData} />
       </div>
 
       <div className="mb-8">
