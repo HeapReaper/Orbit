@@ -28,11 +28,11 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/leveling?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/leveling?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
-        setLevelRoles(data.level_roles ?? []);
-        setXpRate(data.xp_rate ?? 1);
+        setLevelRoles(data.levelRoles ?? []);
+        setXpRate(data.xpRate ?? 1);
         setSelectedChannel(data.channel ?? "");
       } catch (err) {
         console.error(err);
@@ -60,11 +60,11 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
-          enabled,
+          guildId: selectedGuild,
           channel: selectedChannel,
-          level_roles: levelRoles,
-          xp_rate: xpRate,
+          enabled,
+          levelRoles,
+          xpRate,
         }),
       });
 

@@ -12,14 +12,14 @@ export async function POST(req: NextRequest) {
 
   if (!session) return NextResponse.json({ error: "Please authenticate first" });
 
-  if (!data.guild_id) return NextResponse.json({ error: "guild_id is required" });
+  if (!data.guildId) return NextResponse.json({ error: "guildId is required" });
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+  if (!await isUserGuildAdmin(session.user.id, data.guildId)) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
-  const { guild_id, type, time_range } = data;
+  const { guildId, type, time_range } = data;
 
   let startDate: Date | undefined;
   const now = new Date();
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     startDate.setMonth(now.getMonth() - 1);
   }
 
-  const whereClause: any = { guild_id };
+  const whereClause: any = { guildId };
   if (startDate) whereClause.timestamp = { gte: startDate };
 
   if (type === "guild") {

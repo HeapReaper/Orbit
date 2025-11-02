@@ -8,21 +8,21 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    const data = await prisma.minecraft_settings.findUnique({
-      where: { guild_id },
+    const data = await prisma.minecraftSettings.findUnique({
+      where: { guildId },
     });
 
     return NextResponse.json(
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
         enabled: false,
         ip: "",
         port: 25565,
-        notify_enabled: false,
+        notifyEnabled: false,
         channel: null,
         players: [],
         maxPlayers: 0,
@@ -52,20 +52,20 @@ export async function POST(req: NextRequest) {
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!data.guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!data.guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, data.guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, ip, port, enabled, notify_enabled, channel } = data;
+  const { guildId, ip, port, enabled, notifyEnabled, channel } = data;
 
   try {
-    const updated = await prisma.minecraft_settings.upsert({
-      where: { guild_id },
-      update: { ip, port, enabled, notify_enabled, channel },
-      create: { guild_id, ip, port, enabled, notify_enabled, channel },
+    const updated = await prisma.minecraftSettings.upsert({
+      where: { guildId },
+      update: { ip, port, enabled, notifyEnabled, channel },
+      create: { guildId, ip, port, enabled, notifyEnabled, channel },
     });
 
     return NextResponse.json(updated);

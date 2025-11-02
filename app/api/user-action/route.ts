@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import isUserGuildAdmin from "@/app/lib/isGuildAdmin";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/app/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -14,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const data = await prisma.user_action.findMany();
+    const data = await prisma.userAction.findMany();
 
     return NextResponse.json({ data: data });
   } catch (err) {
@@ -33,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   const { guildId, action, userId } = data;
 
-  const updatedUser = await prisma.user_action.create({
+  const updatedUser = await prisma.userAction.create({
     data: {
       userId: userId,
       guildId: guildId,

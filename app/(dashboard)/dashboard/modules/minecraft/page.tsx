@@ -6,7 +6,6 @@ import { useNotification } from "@/app/context/NotificationContext";
 import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
-import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
@@ -37,10 +36,10 @@ export default function MinecraftPage() {
       setLoading(true);
 
       try {
-        const res = await fetch(`/api/minecraft?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/minecraft?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data?.enabled ?? false);
-        setNotifyEnabled(data?.notify_enabled ?? false);
+        setNotifyEnabled(data?.notifyEnabled ?? false);
         setChannel(data?.channel ?? "");
         setIp(data?.ip ?? "");
         setPort(data?.port ?? 25565);
@@ -75,10 +74,10 @@ export default function MinecraftPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           enabled,
-          notify_enabled: notifyEnabled,
-          channel: channel,
+          notifyEnabled,
+          channel,
           ip,
           port,
         }),

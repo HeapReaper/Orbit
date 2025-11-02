@@ -86,7 +86,7 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/logging?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/logging?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setSelectedChannel(data.channel ?? "");
@@ -117,7 +117,7 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           enabled,
           channel: selectedChannel,
           events: selectedEvents,

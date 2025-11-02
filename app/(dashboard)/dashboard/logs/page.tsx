@@ -29,7 +29,7 @@ export default function BotLogs() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           type: logType,
           time_range: timeRange,
         }),

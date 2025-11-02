@@ -34,7 +34,7 @@ export default function InviteTrackerPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/invite-tracker?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/invite-tracker?guildId=${selectedGuild}`);
         if (res.ok) {
           const data = await res.json();
           setEnabled(data?.enabled ?? false);
@@ -89,7 +89,7 @@ export default function InviteTrackerPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           enabled,
           invites: invites.map((i) => ({
             code: i.code,

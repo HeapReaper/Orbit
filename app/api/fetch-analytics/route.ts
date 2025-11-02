@@ -44,22 +44,22 @@ async function fetchDiscordNames(type: "channel" | "user", ids: string[]) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const range = (searchParams.get("range") as keyof typeof TIME_RANGES) || "last_week";
 
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Please authenticate first" });
 
-  if (!guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin to access this" });
 
   try {
     const days: number = TIME_RANGES[range];
-    const cacheKey = `analytics:${guild_id}:${range}`;
+    const cacheKey = `analytics:${guildId}:${range}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
       return NextResponse.json(JSON.parse(cached));
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
                      count() AS hourly_count
                  FROM discord_messages
                  WHERE created_at >= now() - INTERVAL ${days} DAY
-                   AND guild_id = '${guild_id}'
+                   AND guildId = '${guildId}'
                  GROUP BY hour_of_day, toStartOfDay(created_at)
              )
         GROUP BY hour_of_day
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
                          ELSE toStartOfMonth(created_at)
                          END AS period_start
                  FROM discord_messages
-                 WHERE guild_id = '${guild_id}'
+                 WHERE guildId = '${guildId}'
                    AND created_at >= now() - INTERVAL ${days} DAY
              )
         GROUP BY period_start
@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
         SELECT channel_id, count() AS message_count
         FROM discord_messages
         WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guild_id = '${guild_id}'
+          AND guildId = '${guildId}'
         GROUP BY channel_id
         ORDER BY message_count DESC
         LIMIT 5
@@ -150,7 +150,7 @@ export async function GET(req: NextRequest) {
         SELECT user_id, count() AS message_count
         FROM discord_messages
         WHERE created_at >= now() - INTERVAL ${days} DAY
-          AND guild_id = '${guild_id}'
+          AND guildId = '${guildId}'
         GROUP BY user_id
         ORDER BY message_count DESC
         LIMIT 4
@@ -208,7 +208,7 @@ export async function GET(req: NextRequest) {
           range(0, points)
         ) AS period_start
       WHERE
-        guild_id = '${guild_id}'
+        guildId = '${guildId}'
       GROUP BY
         period_start
       ORDER BY
@@ -225,20 +225,20 @@ export async function GET(req: NextRequest) {
         WITH current_members AS (
             SELECT user_id
             FROM discord_membership
-            WHERE guild_id = '${guild_id}'
+            WHERE guildId = '${guildId}'
               AND left_at IS NULL
         )
         SELECT
             COUNTIf(user_id IN (
                 SELECT DISTINCT user_id
                 FROM discord_messages
-                WHERE guild_id = '${guild_id}'
+                WHERE guildId = '${guildId}'
                   AND created_at >= now() - INTERVAL ${days} DAY
             )) AS active,
             COUNTIf(user_id NOT IN (
                 SELECT DISTINCT user_id
                 FROM discord_messages
-                WHERE guild_id = '${guild_id}'
+                WHERE guildId = '${guildId}'
             )) AS inactive
         FROM current_members
     `;

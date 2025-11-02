@@ -32,7 +32,7 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/birthday?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/birthday?guildId=${selectedGuild}`);
         const data = await res.json();
         setMessage(data.message ?? "");
         setTime(data.time ?? "");
@@ -64,7 +64,7 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: selectedChannel,
           message: cleanMessage(message),
           time,
@@ -86,7 +86,6 @@ export default function Page() {
     }
   };
 
-  // Triggers auto save
   useEffect(() => {
     if (!selectedGuild) return;
     triggerAutoSave();

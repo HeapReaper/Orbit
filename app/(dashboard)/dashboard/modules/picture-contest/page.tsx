@@ -38,7 +38,7 @@ export default function PictureContestPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/picture-contest?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/picture-contest?guildId=${selectedGuild}`);
         if (res.ok) {
           const data = await res.json();
           setContests(data?.contests ?? []);
@@ -100,7 +100,7 @@ export default function PictureContestPage() {
       const res = await fetch("/api/picture-contest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guild_id: selectedGuild, contests }),
+        body: JSON.stringify({ guildId: selectedGuild, contests }),
       });
 
       if (!res.ok) throw new Error(res.statusText);

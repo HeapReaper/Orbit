@@ -13,6 +13,6 @@ export const pictureContestItemSchema = z.object({
 });
 
 export const pictureContestBodySchema = z.object({
-  guild_id: z.string().min(1, "guild_id is required"),
+  guildId: z.string().min(1, "guildId is required"),
   contests: z.array(pictureContestItemSchema),
 });

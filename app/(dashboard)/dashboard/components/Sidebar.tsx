@@ -63,7 +63,7 @@ export default function Sidebar() {
       if (!selectedGuild) return;
 
       try {
-        const res = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/premium?guildId=${selectedGuild}`);
         const data = await res.json();
         setIsPremium(data?.premium ?? false);
       } catch (err) {

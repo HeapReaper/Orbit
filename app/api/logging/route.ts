@@ -8,20 +8,20 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const session = await getServerSession(authOptions);
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
   try {
-    const data = await prisma.logging_settings.findUnique({ where: { guild_id } });
+    const data = await prisma.loggingSettings.findUnique({ where: { guildId } });
     return NextResponse.json(data ?? { enabled: false, channel: null, events: [] });
   } catch (err) {
     console.error(err);
@@ -35,20 +35,20 @@ export async function POST(req: NextRequest) {
 
   if (!session)
     return NextResponse.json({ error: "Please authenticate first" }, { status: 401 });
-  if (!data.guild_id)
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!data.guildId)
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
 
   // @ts-ignore
-  if (!(await isUserGuildAdmin(session.user.id, data.guild_id)))
+  if (!(await isUserGuildAdmin(session.user.id, data.guildId)))
     return NextResponse.json({ error: "You must be a guild admin" }, { status: 403 });
 
-  const { guild_id, channel, events, enabled } = data;
+  const { guildId, channel, events, enabled } = data;
 
   try {
-    const updated = await prisma.logging_settings.upsert({
-      where: { guild_id },
+    const updated = await prisma.loggingSettings.upsert({
+      where: { guildId },
       update: { channel, events, enabled },
-      create: { guild_id, channel, events, enabled },
+      create: { guildId, channel, events, enabled },
     });
 
     return NextResponse.json(updated);

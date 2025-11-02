@@ -55,11 +55,11 @@ export async function GET() {
       return hasAdmin && botGuildIds.has(g.id);
     });
 
-    const premiumGuilds = await prisma.premium_guilds.findMany({
+    const premiumGuilds = await prisma.premiumGuild.findMany({
       // @ts-ignore
-      where: { guild_id: { in: manageableGuilds.map(g => g.id) } },
+      where: { guildId: { in: manageableGuilds.map(g => g.id) } },
     });
-    const premiumMap = new Map(premiumGuilds.map(p => [p.guild_id, p.premium]));
+    const premiumMap = new Map(premiumGuilds.map(p => [p.guildId, p.premium]));
 
     const detailedGuilds = await Promise.all(
       manageableGuilds.map(async (g: any) => {

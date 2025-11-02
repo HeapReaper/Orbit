@@ -8,25 +8,25 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const guild_id = searchParams.get("guild_id");
+  const guildId = searchParams.get("guildId");
   const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "Please authenticate first" });
   }
 
-  if (!guild_id) {
-    return NextResponse.json({ error: "guild_id is required" }, { status: 400 });
+  if (!guildId) {
+    return NextResponse.json({ error: "guildId is required" }, { status: 400 });
   }
 
-  if (!await isUserGuildAdmin(session.user.id, guild_id)) {
+  if (!await isUserGuildAdmin(session.user.id, guildId)) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
   try {
-    const data = await prisma.tickets_settings.findFirst({
+    const data = await prisma.ticketSettings.findFirst({
       where: {
-        guild_id: guild_id,
+        guildId: guildId,
       },
     });
 
@@ -42,19 +42,19 @@ export async function POST(req: NextRequest) {
 
   if (!session) return NextResponse.json({ error: "Please authenticate first"});
 
-  if (!data.guild_id) return NextResponse.json({ error: "guild_id is required" });
+  if (!data.guildId) return NextResponse.json({ error: "guildId is required" });
 
   // @ts-ignore
-  if (!await isUserGuildAdmin(session.user.id, data.guild_id)) {
+  if (!await isUserGuildAdmin(session.user.id, data.guildId)) {
     return NextResponse.json({ error: "You must be a guild admin to access this" });
   }
 
-  const { guild_id, channel, channel_conf, enabled } = data;
+  const { guildId, channel, channelConf, enabled } = data;
 
-  const updated = await prisma.tickets_settings.upsert({
-    where: { guild_id },
-    update: { channel, channel_conf, enabled },
-    create: { guild_id, channel, channel_conf, enabled }
+  const updated = await prisma.ticketSettings.upsert({
+    where: { guildId },
+    update: { channel, channelConf, enabled },
+    create: { guildId, channel, channelConf, enabled }
   })
 
   return NextResponse.json(updated);

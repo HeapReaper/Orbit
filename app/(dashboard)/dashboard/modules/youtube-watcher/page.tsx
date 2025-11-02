@@ -28,7 +28,7 @@ export default function Page() {
     const fetchGuildData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/youtube-watcher?guild_id=${selectedGuild}`);
+        const res = await fetch(`/api/youtube-watcher?guildId=${selectedGuild}`);
         const data = await res.json();
         setEnabled(data.enabled ?? false);
         setSelectedChannel(data.channel ?? "");
@@ -59,7 +59,7 @@ export default function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          guild_id: selectedGuild,
+          guildId: selectedGuild,
           channel: selectedChannel,
           enabled,
           users: users.filter((u) => u.trim() !== ""),

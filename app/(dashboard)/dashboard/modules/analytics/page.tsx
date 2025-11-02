@@ -35,12 +35,12 @@ export default function Page() {
     const fetchData = async () => {
       if (!selectedGuild) return;
 
-      const res = await fetch(`/api/premium?guild_id=${selectedGuild}`);
+      const res = await fetch(`/api/premium?guildId=${selectedGuild}`);
       const dataPremium = await res.json();
       setIsPremium(dataPremium?.premium ?? false);
 
 
-      const resp = await fetch(`/api/fetch-analytics?guild_id=${selectedGuild}&range=${timeRange}`);
+      const resp = await fetch(`/api/fetch-analytics?guildId=${selectedGuild}&range=${timeRange}`);
       const data = await resp.json();
 
       const chartData = data.messageFlowHourly.map((item: any) => ({
