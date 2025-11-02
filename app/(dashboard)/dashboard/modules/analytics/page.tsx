@@ -43,7 +43,7 @@ export default function Page() {
       const resp = await fetch(`/api/fetch-analytics?guildId=${selectedGuild}&range=${timeRange}`);
       const data = await resp.json();
 
-      const chartData = data.messageFlowHourly.map((item: any) => ({
+      const chartData = (data.messageFlowHourly ?? []).map((item: any) => ({
         hour: item.hour_of_day.toString(),
         messages: item.avg_messages,
       }));
@@ -54,12 +54,11 @@ export default function Page() {
         change: row.member_change ?? 0
       }));
 
-      console.log(data.totalMessages);
       setMessageFlow(chartData);
-      setTotalMessages(data.totalMessages)
-      setMostPopulairChannels(data.topChannels);
-      setMemberCount(memberChartData);
-      setTopUsers(data.topUsers);
+      setTotalMessages(data.totalMessages ?? []);
+      setMostPopulairChannels(data.topChannels ?? []);
+      setMemberCount(data.memberCounts ?? []);
+      setTopUsers(data.topUsers ?? []);
       setActiveInactiveMembers({
         active: data.activeVsInactive?.active || 0,
         inactive: data.activeVsInactive?.inactive || 0,
