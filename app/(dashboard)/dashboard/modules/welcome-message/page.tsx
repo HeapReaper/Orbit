@@ -12,6 +12,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
 
 export default function WelcomeMessagePage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -151,7 +152,14 @@ export default function WelcomeMessagePage() {
       <div className="mb-6">
         {messages.map((msg, index) => (
           <div key={index} className="mb-3">
-            <label className="block text-gray-400 mb-1">Message {index + 1}</label>
+            <div className="flex justify-between mb-2">
+              <label className="block text-gray-400 mb-1">Message {index + 1}</label>
+              {messages.length > 1 && (
+                <DeleteButton
+                  onClick={() => removeMessage(index)}
+                />
+              )}
+            </div>
             <div className="flex gap-2">
               <div className="flex-1 rounded-lg border border-gray-700 bg-[#1f2330]">
                 <MarkdownEditor
@@ -161,24 +169,6 @@ export default function WelcomeMessagePage() {
                 />
               </div>
 
-              {messages.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeMessage(index)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 text-white shadow"
-                  title="Remove message"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
             </div>
             <p className="text-sm text-gray-500 mb-4 mt-1">
               You can use <InlineCode text="{user}" /> to mention the user.
