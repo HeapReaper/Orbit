@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { validateApiSessionAndGuildAdmin } from "@/app/lib/validateApiSessionAndGuildAdmin";
+import {botSettingsSchema} from "@/app/zod/botSettings";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -25,6 +26,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const data = await req.json();
   const { guildId, nickname, language, updatesChannel, timezone, primaryColor, secondaryColor } = data;
+
+  if (!botSettingsSchema.safeParse(data)) return NextResponse.json({ error: "Invalid form data"});
 
   // Validate authentication by session and if user is guild admin
   const validation = await validateApiSessionAndGuildAdmin(guildId);

@@ -9,6 +9,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
+import { botSettingsSchema } from "@/app/zod/botSettings";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,6 +23,7 @@ export default function BotSettings() {
   const [primaryColor, setPrimaryColor] = useState<string>("");
   const [secondaryColor, setSecondaryColor] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -60,20 +62,35 @@ export default function BotSettings() {
   const handleSave = async (auto = false) => {
     if (!selectedGuild) return;
     setIsSaving(true);
+    const formData = {
+      guildId: selectedGuild,
+      nickname,
+      language,
+      updatesChannel,
+      timezone,
+      primaryColor,
+      secondaryColor,
+    }
+
+    // Validate data and show errors
+    const validation = botSettingsSchema.safeParse(formData);
+    if (!validation.success) {
+      const formatted: Record<string, string> = {};
+
+      Object.entries(validation.error.flatten().fieldErrors).forEach(([key, value]) => {
+        if (value && value.length > 0) formatted[key] = value[0];
+        notify("Validation error", `${value[0]}`)
+      });
+
+      setIsSaving(false);
+      return;
+    }
 
     try {
       const resp = await fetch("/api/bot-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          guildId: selectedGuild,
-          nickname,
-          language,
-          updatesChannel,
-          timezone,
-          primaryColor,
-          secondaryColor,
-        }),
+        body: JSON.stringify(validation.data),
       });
 
       if (!resp.ok) {
