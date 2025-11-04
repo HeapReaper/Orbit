@@ -29,8 +29,6 @@ export async function addDashboardLog(guildId: string, type: string, message: st
       console.error("Failed to add log:", data.error);
       return;
     }
-
-    console.log("Log added successfully!");
   } catch (err) {
     console.error("Error adding log:", err);
   }
