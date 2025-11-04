@@ -9,7 +9,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
-import {botSettingsSchema} from "@/app/zod/botSettings";
+import { botSettingsSchema } from "@/app/zod/botSettings";
 
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,7 +62,6 @@ export default function BotSettings() {
   const handleSave = async (auto = false) => {
     if (!selectedGuild) return;
     setIsSaving(true);
-
     const formData = {
       guildId: selectedGuild,
       nickname,
@@ -71,18 +70,19 @@ export default function BotSettings() {
       timezone,
       primaryColor,
       secondaryColor,
-    };
+    }
 
+    // Validate data and show errors
     const validation = botSettingsSchema.safeParse(formData);
     if (!validation.success) {
-      const fieldErrors = validation.error.flatten().fieldErrors;
       const formatted: Record<string, string> = {};
 
-      Object.entries(fieldErrors).forEach(([key, value]) => {
+      Object.entries(validation.error.flatten().fieldErrors).forEach(([key, value]) => {
         if (value && value.length > 0) formatted[key] = value[0];
         notify("Validation error", `${value[0]}`)
       });
 
+      setIsSaving(false);
       return;
     }
 
