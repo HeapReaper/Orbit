@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { validateApiSessionAndGuildAdmin } from "@/app/lib/validateApiSessionAndGuildAdmin";
-import {botSettingsSchema} from "@/app/zod/botSettings";
+import { botSettingsSchema } from "@/app/zod/botSettings";
+import { rateLimitApi } from "@/app/lib/rateLimitApi";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -11,6 +12,10 @@ export async function GET(req: NextRequest) {
   const session = await validateApiSessionAndGuildAdmin(guildId);
   if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
   if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
+
+  // Rate limit
+  const rateLimitResp = await rateLimitApi(session.user.id, guildId, 10, 60);
+  if (rateLimitResp) return rateLimitResp;
 
   try {
     const data = await prisma.botSettings.findFirst({

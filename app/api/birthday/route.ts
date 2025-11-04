@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
 
   // Rate limit
-  const rateLimitResp = await rateLimitApi(session.user.id, guildId, 10, 60);
+  const rateLimitResp = await rateLimitApi(`${session.user.id}:getRequest`, guildId, 10, 60);
   if (rateLimitResp) return rateLimitResp;
 
   try {
@@ -32,9 +32,13 @@ export async function POST(req: NextRequest) {
   const data = await req.json();
   const { guildId, channel, message, time, enabled } = data;
 
-  const validation = await validateApiSessionAndGuildAdmin(guildId);
-  if (typeof validation === "string") return NextResponse.json({ error: validation }, { status: 403 });
+  const session = await validateApiSessionAndGuildAdmin(guildId);
+  if (typeof session === "string") return NextResponse.json({ error: session }, { status: 403 });
   if (!guildId) return NextResponse.json({ error: "Guild ID is missing"}, { status: 403 });
+
+  // Rate limit
+  const rateLimitResp = await rateLimitApi(`${session.user.id}:postRequest`, guildId, 10, 60);
+  if (rateLimitResp) return rateLimitResp;
 
   try {
     const updated = await prisma.birthdaySettings.upsert({
