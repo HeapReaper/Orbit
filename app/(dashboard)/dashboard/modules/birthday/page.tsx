@@ -12,6 +12,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import { birthdaySettingsSchema } from "@/app/zod/birthdaySettings";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -58,6 +59,21 @@ export default function Page() {
   const handleSave = async (auto = false) => {
     if (!selectedGuild) return;
     setIsSaving(true);
+
+    const validation = birthdaySettingsSchema.safeParse({
+      guildId: selectedGuild,
+      channel: selectedChannel,
+      message: cleanMessage(message),
+      time
+    })
+    if (!validation.success) {
+      const formatted: Record<string, string> = {};
+      
+      Object.entries(validation.error.flatten().fieldErrors).forEach(([key, value]) => {
+        if (value && value.length > 0) formatted[key] = value[0];
+        notify("Validation error", `${value[0]}`)
+      });
+    }
 
     try {
       const resp = await fetch("/api/birthday", {
