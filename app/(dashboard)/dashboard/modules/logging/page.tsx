@@ -151,6 +151,20 @@ export default function Page() {
     );
   };
 
+  const allEventIds = filteredEvents.map((e) => e.id);
+
+  const toggleSelectAll = () => {
+    if (allEventIds.every((id) => selectedEvents.includes(id))) {
+      setSelectedEvents((prev) =>
+        prev.filter((id) => !allEventIds.includes(id))
+      );
+    } else {
+      setSelectedEvents((prev) => [...new Set([...prev, ...allEventIds])]);
+    }
+  };
+
+  const allSelected = allEventIds.every((id) => selectedEvents.includes(id));
+
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
@@ -207,6 +221,17 @@ export default function Page() {
 
         {/* Scrollable list */}
         <div className="flex flex-col gap-2 bg-[#0f1117] border border-gray-700 rounded p-3 max-h-[300px] overflow-y-auto custom-scrollbar">
+          {/* Select/Deselect All button */}
+          <div className="flex justify-start mb-2">
+            <button
+              type="button"
+              onClick={toggleSelectAll}
+              className="text-sm px-3 py-1 rounded bg-[var(--primary-color)] hover:bg-blue-600 text-white transition"
+            >
+              {allSelected ? "Deselect All" : "Select All"}
+            </button>
+          </div>
+
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
               <label
