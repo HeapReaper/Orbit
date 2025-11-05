@@ -85,7 +85,7 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-[#14171f] p-4 transform transition-transform duration-200 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-screen w-64 bg-[#14171f] p-4 transform transition-transform duration-200 ease-in-out z-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent ${
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -221,19 +221,15 @@ export default function Sidebar() {
           )}
         </nav>
 
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 w-full px-2">
-          <div className="w-full">
-            <div className="w-full flex justify-center mt-2">
-              <div className="px-2 py-1 rounded-md text-sm font-medium">
-                {isPremium === null ? (
-                  <span className="text-gray-400">Checking...</span>
-                ) : isPremium ? (
-                  <PremiumLabel />
-                ) : (
-                  <FreeLabel />
-                )}
-              </div>
-            </div>
+        <div className="mt-auto flex flex-col items-center gap-2 w-full">
+          <div>
+            {isPremium === null ? (
+              <span className="text-gray-400 text-sm">Checking...</span>
+            ) : isPremium ? (
+              <PremiumLabel />
+            ) : (
+              <FreeLabel />
+            )}
           </div>
 
           <div className="w-full">
