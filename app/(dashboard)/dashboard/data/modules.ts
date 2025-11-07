@@ -139,6 +139,13 @@ const modules = [
     type: "Free",
     enabled: true,
   },
+  {
+    name: "Toxic Detector",
+    url: "toxic-detector",
+    description: "Detect toxic players and get notified.",
+    type: "Free",
+    enabled: true,
+  }
 ];
 
 export default modules;
