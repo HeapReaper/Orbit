@@ -61,7 +61,6 @@ export default function Home() {
             >
               Add to your server
             </a>
-
           </div>
 
           <a

@@ -11,6 +11,7 @@ import { useGuild } from "@/app/context/GuildContext";
 import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
+import JoinOurDiscord from "@/app/(dashboard)/dashboard/components/buttons/JoinOurDiscord";
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -234,11 +235,14 @@ export default function Sidebar() {
 
           <div className="w-full">
             <AddBot />
+            <JoinOurDiscord />
+
           </div>
 
           <span className="text-xs text-gray-500">By HeapReaper</span>
         </div>
       </aside>
+
 
       <button
         onClick={() => setOpen(true)}
