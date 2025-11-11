@@ -13,23 +13,23 @@ interface PlansProps {
 export default function Page() {
   const plans: PlansProps[] = [
     {
-      name: "Free",
+      name: "🤗 Free",
       description:
         "Perfect for trying out basic features and managing smaller servers.",
       price: "€ 0 / month",
       nonFeatures: [
-        "No support"
       ],
       features: [
         "Free modules",
         "1 week logs",
+        "Community support"
       ],
       buttonText: "Default plan",
       buttonClass:
         "bg-gray-700 cursor-not-allowed opacity-70 hover:bg-gray-700",
     },
     {
-      name: "Premium",
+      name: "🚀 Premium",
       description:
         "Unlock advanced tools like the Anti Bot module and server analytics.",
       price: "€ 3.99 / month or € 40 / year",
@@ -56,7 +56,7 @@ export default function Page() {
 
         {/* Nieuwe banner voor nieuwe servers */}
         <div className="mb-6 p-4 bg-[#1f2330] border border-gray-700 rounded text-gray-200">
-          🚀 Every new server gets 1 month of Premium trial, no setup needed.
+          🚀 Every new server gets 1 month of Premium trial, no setup or payment information needed.
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
