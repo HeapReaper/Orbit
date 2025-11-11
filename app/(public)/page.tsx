@@ -62,6 +62,15 @@ export default function Home() {
               Add to your server
             </a>
           </div>
+
+          <a
+            href="https://discord.gg/HyGNHZCeTQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 bg-[var(--primary-color)] hover:bg-[var(--hover-color)] text-white font-semibold rounded-lg transition text-center"
+          >
+            Join our Discord
+          </a>
         </div>
 
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
@@ -102,7 +111,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
 
       {/* Bot Modules */}
       <section className="px-6 md:px-20 py-16">
