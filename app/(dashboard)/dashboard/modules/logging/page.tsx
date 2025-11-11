@@ -74,7 +74,6 @@ export default function Page() {
     { id: "birthday_announced", label: "Birthday message sent" },
   ];
 
-  // Filter events op basis van zoekterm
   const filteredEvents = availableEvents.filter((event) =>
     event.label.toLowerCase().includes(search.toLowerCase())
   );
