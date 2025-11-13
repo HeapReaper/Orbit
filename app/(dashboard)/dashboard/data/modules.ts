@@ -139,6 +139,48 @@ const modules = [
     type: "Free",
     enabled: true,
   },
+  {
+    name: "Mod Link",
+    url: "mod-link",
+    description: "Allow bans and other moderation actions to be active across your guilds.",
+    type: "Free",
+    enabled: false,
+  },
+  {
+    name: "Message Glue",
+    url: "message-glue",
+    description: "Keep a particular message always as last message in a channel.",
+    type: "Free",
+    enabled: false,
+  },
+  {
+    name: "Daily Spark",
+    url: "daily-spark",
+    description: "Reward members for staying active daily and keep the momentum going with streaks.",
+    type: "Free",
+    enabled: false,
+  },
+  {
+    name: "Time Keeper",
+    url: "time-keeper",
+    description: "Set personal or server reminders and never miss an important moment again.",
+    type: "Free",
+    enabled: false,
+  },
+  {
+    name: "Boost Spotlight",
+    url: "boost-spotlight",
+    description: "Notify your server whenever someone gives a boost, and celebrate their support!",
+    type: "Free",
+    enabled: false,
+  },
+  {
+    name: "Git Buddy",
+    url: "git-buddy",
+    description: "Report bugs, request features, and track issues without leaving Discord.",
+    type: "Free",
+    enabled: false,
+  }
 ];
 
 export default modules;
