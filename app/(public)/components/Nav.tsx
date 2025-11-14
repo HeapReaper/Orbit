@@ -3,22 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import NavType from "@/app/types/nav";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathName: string = usePathname();
 
-  const navItems = [
+  const isActive = (href: string) => {
+    return pathName === href;
+  }
+
+  const navItems: NavType[] = [
     { name: "Home", href: "/" },
-    { name: "Dashboard", href: "/dashboard" },
     { name: "Subscriptions", href: "/subscriptions" },
     { name: "Releases", href: "/releases" },
+    { name: "Support", href: "/help/support" },
     { name: "Login", href: "/login" },
   ];
 
   return (
     <nav className="bg-[#14171f] text-white px-6 md:px-20 py-4 shadow-md  w-full z-50">
       <div className="flex justify-between items-center">
-        <Link href="/" className="flex items-center ">
+        <Link href="/public" className="flex items-center ">
           <Image
             src="/logo.png"
             alt="Orbit Logo"
@@ -34,7 +41,7 @@ export default function Navbar() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="hover:text-[var(--primary-color)] transition font-medium"
+                className={`hover:text-[var(--primary-color)] transition font-medium ${isActive(item.href) ? "text-[var(--primary-color)] font-bold" : ""}`}
               >
                 {item.name}
               </Link>
@@ -89,7 +96,9 @@ export default function Navbar() {
               <Link
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-4 py-2 hover:bg-[#1f222b] rounded transition"
+                className={`block px-4 py-2 rounded transition ${
+                  isActive(item.href) ? "bg-[#1f222b]" : "hover:bg-[#1f222b]"
+                }`}
               >
                 {item.name}
               </Link>
