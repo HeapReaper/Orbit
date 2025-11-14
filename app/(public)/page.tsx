@@ -6,6 +6,7 @@ import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import helpData from "@/app/(dashboard)/dashboard/data/helpData";
 import {useEffect, useState} from "react";
+import {moduleType} from "@/app/types/modules";
 
 export default function Home() {
   const [totalServers, setTotalServers] = useState<number | null>(null);
@@ -116,28 +117,28 @@ export default function Home() {
       <section className="px-6 md:px-20 py-16">
         <h2 className="text-3xl font-bold text-white mb-8">Bot Modules</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          {modules.map((mod) => (
+          {modules.map((module: moduleType) => (
             <div
-              key={mod.url}
+              key={module.url}
               className={`p-6 rounded-lg hover:shadow-lg transition bg-[#14171f]  hover:border-blue-600 border border-gray-900`}
             >
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-semibold ">{mod.name}</h3>
-                {mod.type === "Free" ? (
+                <h3 className="text-xl font-semibold ">{module.name}</h3>
+                {module.free ? (
                   <FreeLabel />
                 ) : (
                   <PremiumLabel />
                 )}
               </div>
-              <p className="text-gray-400 mb-4">{mod.description}</p>
+              <p className="text-gray-400 mb-4">{module.description}</p>
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  mod.enabled
-                    ? "bg-green-500 text-black"
-                    : "bg-gray-700 text-gray-300"
+                  module.inDevelopment
+                    ? "bg-gray-700 text-gray-300"
+                    : "bg-green-500 text-black"
                 }`}
               >
-                {mod.enabled ? "Available" : "In development"}
+                {module.inDevelopment ? "In development" : "Available"}
               </span>
             </div>
           ))}

@@ -2,34 +2,53 @@
 
 import { Settings } from "lucide-react";
 import Link from "next/link";
+import { moduleType } from "@/app/types/modules";
+import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
+import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 
-interface Props {
-  name: string;
-  description: string;
-  url: string;
-  type: "Free" | "Premium";
-}
-
-export default function ModuleCard({ name, description, url, type }: Props) {
-  const color = type === "Premium" ? "bg-red-600" : "bg-green-700";
-
+export default function ModuleCard({
+  name,
+  description,
+  url,
+  free,
+  inDevelopment,
+ }: moduleType) {
   return (
-    <div className="bg-[#0d0f13] p-4 rounded-lg flex flex-col hover:border-blue-600 border border-gray-900">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-white font-semibold">{name}</h3>
-        <span className={`text-xs ${color} px-2 py-1 rounded`}>{type}</span>
-      </div>
+    <Link
+      href={`/dashboard/modules/${url}`}
+      className="text-[var(--primary-color)] hover:text-[var(--hover-color)]"
+    >
+      <div className="bg-[#14171f] p-6 rounded-lg flex flex-col hover:shadow-lg hover:border-blue-600 border border-gray-900 transition">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-white text-xl font-semibold">{name}</h3>
+          {free ? (
+            <FreeLabel />
+          ) : (
+            <PremiumLabel />
+          )}
+        </div>
 
-      <p className="text-gray-400 text-sm mb-3 flex-1">{description}</p>
+        <p className="text-gray-400 mb-4">{description}</p>
 
-      <div className="flex items-center gap-4">
-        <Link
-          href={`/dashboard/modules/${url}`}
-          className={'text-[var(--primary-color)] hover:text-[var(--hover-color)]'}
-        >
-          <Settings />
-        </Link>
+        <div className="flex justify-between items-center">
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              inDevelopment
+                ? "bg-gray-700 text-gray-300"
+                : "bg-green-500 text-black"
+            }`}
+          >
+            {inDevelopment ? "In development" : "Available"}
+          </span>
+
+          <Link
+            href={`/dashboard/modules/${url}`}
+            className="text-[var(--primary-color)] hover:text-[var(--hover-color)]"
+          >
+            <Settings />
+          </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
