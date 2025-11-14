@@ -4,9 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import NavType from "@/app/types/nav";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathName: string = usePathname();
+
+  const isActive = (href: string) => {
+    return pathName === href;
+  }
 
   const navItems: NavType[] = [
     { name: "Home", href: "/" },
@@ -35,7 +41,7 @@ export default function Navbar() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="hover:text-[var(--primary-color)] transition font-medium"
+                className={`hover:text-[var(--primary-color)] transition font-medium ${isActive(item.href) ? "text-[var(--primary-color)] font-bold" : ""}`}
               >
                 {item.name}
               </Link>
@@ -90,7 +96,9 @@ export default function Navbar() {
               <Link
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-4 py-2 hover:bg-[#1f222b] rounded transition"
+                className={`block px-4 py-2 rounded transition ${
+                  isActive(item.href) ? "bg-[#1f222b]" : "hover:bg-[#1f222b]"
+                }`}
               >
                 {item.name}
               </Link>
