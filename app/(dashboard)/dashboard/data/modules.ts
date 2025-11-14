@@ -1,185 +1,213 @@
-const modules = [
+import { moduleType } from "@/app/types/modules";
+
+const modules: moduleType[] = [
   {
     name: "Bump Reminder",
     url: "bump-reminder",
-    description: "Get notifications when you need to bump again.",
-    type: "Free",
+    description: "Receive reminders when it’s time to bump your server.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Anti Bot",
     url: "anti-bot",
-    description: "Prevent spammers and bots from taking over your guild.",
-    type: "Premium",
+    description: "Protect your server from spam and malicious bots.",
+    free: false,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Analytics",
     url: "analytics",
-    description: "Get insight on what time your server is active, which channels are the most populair and more.",
-    type: "Premium",
+    description: "View server activity and popular channels at a glance.",
+    free: false,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Auto Role",
     url: "auto-role",
-    description: "Automatically assign role(s) to a new server member.",
-    type: "Free",
+    description: "Automatically assign roles to new members joining your server.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Birthday",
     url: "birthday",
-    description: "Let members fill in their birthday to get a notification on their birthday.",
-    type: "Free",
+    description: "Let members share birthdays and get notifications on them.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Tickets",
     url: "tickets",
-    description: "A nice ticket control system to let members contact staff.",
-    type: "Free",
+    description: "Manage member requests with an easy ticketing system.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Logging",
     url: "logging",
-    description: "Log guild events like voice join and message delete to a log channel.",
-    type: "Free",
+    description: "Track server events like messages and voice activity.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Introduction",
     url: "introduction",
-    description: "Control how your introduction channel should behave.",
-    type: "Free",
+    description: "Set up how new members are welcomed and introduced.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Invite Tracker",
     url: "invite-tracker",
-    description: "See which invite urls users use.",
-    type: "Free",
+    description: "See which invite links your members are using.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Picture Contest",
     url: "picture-contest",
-    description: "Hold competitions on pictures and automatically pick a winnner based on votes.",
-    type: "Free",
+    description: "Run photo contests and pick winners automatically.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Youtube Watcher",
     url: "youtube-watcher",
-    description: "Get notifications about your favorite channels.",
-    type: "Free",
+    description: "Get notified when your favorite YouTube channels post.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Twitch Watcher",
     url: "twitch-watcher",
-    description: "Get notifications in a channel when your favorite Twitch streamers go live.",
-    type: "Premium",
+    description: "Receive alerts when selected Twitch streamers go live.",
+    free: false,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Kick Watcher",
     url: "kick-watcher",
-    description: "Get notifications in a channel when your favorite Kick streamers go live.",
-    type: "Premium",
+    description: "Get notifications when favorite Kick streamers start streaming.",
+    free: false,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Auto Message",
     url: "auto-message",
-    description: "Send automatic messages to channels.",
-    type: "Free",
+    description: "Send automated messages to channels on a schedule.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Welcome Message",
     url: "welcome-message",
-    description: "Send automatic messages to welcome someone.",
-    type: "Free",
+    description: "Send messages automatically when new members join.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Leave Message",
     url: "leave-message",
-    description: "Send automatic messages when someone leaves",
-    type: "Free",
+    description: "Notify the server when a member leaves automatically.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Leveling",
     url: "leveling",
-    description: "Bring a leveling system to your server.",
-    type: "Free",
+    description: "Add a leveling system for members based on activity.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Channel of Fame",
     url: "channel-of-fame",
-    description: "Posts messages from members in a channel that got stars.",
-    type: "Free",
+    description: "Show starred messages in a special channel automatically.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Giveaway",
     url: "giveaway",
-    description: "Host giveaways and let members win prizes!",
-    type: "Free",
+    description: "Host giveaways and let members win prizes easily.",
+    free: true,
     enabled: true,
+    inDevelopment: true
   },
   {
     name: "Minecraft",
     url: "minecraft",
-    description: "Monitor your Minecraft server and show online players.",
-    type: "Free",
+    description: "Display online players and status of your Minecraft server.",
+    free: true,
     enabled: true,
+    inDevelopment: false
   },
   {
     name: "Mod Link",
     url: "mod-link",
-    description: "Allow bans and other moderation actions to be active across your guilds.",
-    type: "Free",
+    description: "Synchronize moderation actions across multiple servers automatically.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   },
   {
     name: "Message Glue",
     url: "message-glue",
-    description: "Keep a particular message always as last message in a channel.",
-    type: "Free",
+    description: "Keep a specific message pinned as the last message.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   },
   {
     name: "Daily Spark",
     url: "daily-spark",
-    description: "Reward members for staying active daily and keep the momentum going with streaks.",
-    type: "Free",
+    description: "Reward members for daily activity and maintain streaks.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   },
   {
     name: "Time Keeper",
     url: "time-keeper",
-    description: "Set personal or server reminders and never miss an important moment again.",
-    type: "Free",
+    description: "Set personal or server reminders for important moments.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   },
   {
     name: "Boost Spotlight",
     url: "boost-spotlight",
-    description: "Notify your server whenever someone gives a boost, and celebrate their support!",
-    type: "Free",
+    description: "Celebrate and notify whenever someone boosts your server.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   },
   {
     name: "Git Buddy",
     url: "git-buddy",
-    description: "Report bugs, request features, and track issues without leaving Discord.",
-    type: "Free",
+    description: "Track bugs, requests, and issues directly in Discord.",
+    free: true,
     enabled: false,
+    inDevelopment: true
   }
 ];
 

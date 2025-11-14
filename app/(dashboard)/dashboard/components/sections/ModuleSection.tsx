@@ -5,6 +5,7 @@ import modules from "@/app/(dashboard)/dashboard/data/modules";
 import { Package } from "lucide-react";
 import {useState} from "react";
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
+import { moduleType } from "@/app/types/modules";
 
 export default function ModuleSection() {
   const [search, setSearch] = useState("");
@@ -29,7 +30,7 @@ export default function ModuleSection() {
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredModules.map((module) => (
+        {filteredModules.map((module: moduleType) => (
           // @ts-ignore
           <ModuleCard key={module.name} {...module} />
         ))}
