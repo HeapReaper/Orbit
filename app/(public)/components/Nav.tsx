@@ -3,22 +3,23 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import NavType from "@/app/types/nav";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems = [
+  const navItems: NavType[] = [
     { name: "Home", href: "/" },
-    { name: "Dashboard", href: "/dashboard" },
     { name: "Subscriptions", href: "/subscriptions" },
     { name: "Releases", href: "/releases" },
+    { name: "Support", href: "/help/support" },
     { name: "Login", href: "/login" },
   ];
 
   return (
     <nav className="bg-[#14171f] text-white px-6 md:px-20 py-4 shadow-md  w-full z-50">
       <div className="flex justify-between items-center">
-        <Link href="/" className="flex items-center ">
+        <Link href="/public" className="flex items-center ">
           <Image
             src="/logo.png"
             alt="Orbit Logo"
