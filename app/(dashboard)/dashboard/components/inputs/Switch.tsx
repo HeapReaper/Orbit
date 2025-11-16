@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface ToggleSwitchProps {
   enabled?: boolean;
   onChange?: (enabled: boolean) => void;
   className?: string;
+  label?: string | React.ReactNode;
 }
 
 export default function ToggleSwitch({
   enabled: initialEnabled = false,
   onChange,
   className = "",
+  label,
 }: ToggleSwitchProps) {
   const [enabled, setEnabled] = useState(initialEnabled);
 
@@ -22,20 +24,23 @@ export default function ToggleSwitch({
   };
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-200 focus:outline-none ${
-        enabled ? "bg-[var(--primary-color)]" : "bg-gray-700"
-      } ${className}`}
-      aria-pressed={enabled}
-      aria-label="Toggle switch"
-    >
-      <span
-        className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${
-          enabled ? "translate-x-6" : "translate-x-1"
+    <label className={`inline-flex items-center cursor-pointer ${className}`}>
+      <button
+        type="button"
+        onClick={toggle}
+        className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-200 focus:outline-none ${
+          enabled ? "bg-[var(--primary-color)]" : "bg-gray-700"
         }`}
-      />
-    </button>
+        aria-pressed={enabled}
+        aria-label={typeof label === 'string' ? label : 'Toggle switch'}
+      >
+        <span
+          className={`bg-white w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${
+            enabled ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+      {label && <span className="ml-2 select-none">{label}</span>}
+    </label>
   );
 }

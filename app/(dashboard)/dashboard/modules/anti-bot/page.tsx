@@ -12,6 +12,8 @@ import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
+import ToggleSwitch from "@/app/(dashboard)/dashboard/components/inputs/Switch";
+import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 
 export default function AntiBotPage() {
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,8 @@ export default function AntiBotPage() {
   const [jailRole, setJailRole] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [excludeAdmins, setExcludeAdmins] = useState(false);
+  const [blockInvites, setBlockInvites] = useState(false);
 
   const { selectedGuild, roles, channels } = useGuild();
   const { notify } = useNotification();
@@ -35,19 +39,6 @@ export default function AntiBotPage() {
 
     const fetchGuildData = async () => {
       setLoading(true);
-
-      // Check premium status
-      try {
-        const resPremium = await fetch(`/api/premium?guildId=${selectedGuild}`);
-        const dataPremium = await resPremium.json();
-        setIsPremium(dataPremium?.premium ?? false);
-        if (!dataPremium?.premium) {
-          setLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.error("Failed to fetch premium info:", err);
-      }
 
       // Fetch Anti-Bot settings
       try {
@@ -61,6 +52,8 @@ export default function AntiBotPage() {
         setForbiddenWords(data?.forbiddenWords?.length ? data.forbiddenWords : [""]);
         setNotificationChannel(data?.notificationChannel ?? "");
         setJailRole(data?.jailRole ?? "");
+        setExcludeAdmins(data?.excludeAdmins ?? false);
+        setBlockInvites(data?.blockInvites ?? false);
       } catch (err) {
         console.error("Failed to fetch anti-bot data:", err);
       } finally {
@@ -96,6 +89,8 @@ export default function AntiBotPage() {
           forbiddenWords: forbiddenWords.filter((w) => w.trim() !== ""),
           notificationChannel,
           jailRole: punishment === "jail" ? jailRole : null,
+          excludeAdmins,
+          blockInvites,
         }),
       });
 
@@ -110,12 +105,13 @@ export default function AntiBotPage() {
     } finally {
       setIsSaving(false);
     }
-  };
+  }
 
+  // Trigger auto save
   useEffect(() => {
     if (!selectedGuild || !isPremium) return;
     triggerAutoSave();
-  }, [enabled, timeWindow, channelLimit, punishment, forbiddenWords, notificationChannel, jailRole]);
+  }, [enabled, timeWindow, channelLimit, punishment, forbiddenWords, notificationChannel, jailRole, excludeAdmins, blockInvites]);
 
   // Manage forbidden words
   const addForbiddenWord = () => setForbiddenWords([...forbiddenWords, ""]);
@@ -130,23 +126,14 @@ export default function AntiBotPage() {
     setForbiddenWords(updated);
   };
 
-  if (!isPremium) {
-    return (
-      <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6 text-center text-gray-400">
-        <p className="text-lg font-semibold mb-2 text-white">Premium Required</p>
-        <p>This feature is only available for premium guilds.</p>
-      </section>
-    );
-  }
-
   return (
     <section className="relative bg-[#181b25] p-6 rounded-lg max-w-3xl mx-auto mt-6">
       {loading && <PageLoader />}
 
       <h1 className="text-2xl font-semibold mb-4 text-white flex items-center gap-2">
-        Anti-Bot Settings
+        Anti Bot Settings
         <InfoTooltip text="Work in progress" />
-        <PremiumLabel />
+        <FreeLabel />
       </h1>
 
       {/* Enable */}
@@ -256,6 +243,22 @@ export default function AntiBotPage() {
         >
           Add Word/Sentence
         </button>
+      </div>
+
+      <div className="mb-4">
+        <ToggleSwitch
+          enabled={excludeAdmins}
+          onChange={() => setExcludeAdmins(!excludeAdmins)}
+          label="Exclude Admins"
+        />
+      </div>
+
+      <div className="mb-4">
+        <ToggleSwitch
+          enabled={blockInvites}
+          onChange={() => setBlockInvites(!blockInvites)}
+          label="Block Discord invites for non admins"
+        />
       </div>
 
       <div className="text-right text-gray-400 text-sm mt-3">
