@@ -22,6 +22,8 @@ export async function GET(req: NextRequest) {
         forbiddenWords: [],
         notificationChannel: null,
         jailRole: null,
+        excludeAdmins: false,
+        blockInvites: false,
       }
     );
   } catch (err) {
@@ -32,7 +34,18 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { guildId, enabled = false, timeWindow = 10, channelLimit = 3, punishment = "none", forbiddenWords = [], notificationChannel = null, jailRole = null,} = data;
+  const {
+    guildId,
+    enabled = false,
+    timeWindow = 10,
+    channelLimit = 3,
+    punishment = "none",
+    forbiddenWords = [],
+    notificationChannel = null,
+    jailRole = null,
+    excludeAdmins = false,
+    blockInvites = false,
+  } = data;
 
   // Validate authentication by session and if user is guild admin
   const session = await validateApiSessionAndGuildAdmin(guildId);
@@ -50,6 +63,8 @@ export async function POST(req: NextRequest) {
         forbiddenWords,
         notificationChannel,
         jailRole,
+        excludeAdmins,
+        blockInvites,
       },
       create: {
         guildId,
@@ -60,6 +75,8 @@ export async function POST(req: NextRequest) {
         forbiddenWords,
         notificationChannel,
         jailRole,
+        excludeAdmins,
+        blockInvites,
       },
     });
 

@@ -13,7 +13,7 @@ const modules: moduleType[] = [
     name: "Anti Bot",
     url: "anti-bot",
     description: "Protect your server from spam and malicious bots.",
-    free: false,
+    free: true,
     enabled: true,
     inDevelopment: false
   },
