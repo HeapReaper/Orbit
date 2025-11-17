@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
@@ -13,6 +12,7 @@ import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function WelcomeMessagePage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -126,15 +126,10 @@ export default function WelcomeMessagePage() {
         </button>
       </div>
 
-      <SelectInput
-        label="Announcement channel"
-        value={channel || ""}
-        onChange={setChannel}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel for Welcome Message notifications"
+        value={channel ?? ""}
+        onChange={(value) => setChannel(value)}
       />
 
       <div className="mb-4">

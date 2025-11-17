@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import InlineCode from "@/app/(dashboard)/dashboard/components/ui/InlineCode";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
@@ -13,6 +12,7 @@ import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import { birthdaySettingsSchema } from "@/app/zod/birthdaySettings";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,21 +59,6 @@ export default function Page() {
   const handleSave = async (auto = false) => {
     if (!selectedGuild) return;
     setIsSaving(true);
-
-    const validation = birthdaySettingsSchema.safeParse({
-      guildId: selectedGuild,
-      channel: selectedChannel,
-      message: cleanMessage(message),
-      time
-    })
-    if (!validation.success) {
-      const formatted: Record<string, string> = {};
-      
-      Object.entries(validation.error.flatten().fieldErrors).forEach(([key, value]) => {
-        if (value && value.length > 0) formatted[key] = value[0];
-        notify("Validation error", `${value[0]}`)
-      });
-    }
 
     try {
       const resp = await fetch("/api/birthday", {
@@ -158,15 +143,10 @@ export default function Page() {
         />
       </div>
 
-      <SelectInput
-        label="Select channel"
-        value={selectedChannel || ""}
-        onChange={(val) => setSelectedChannel(val)}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel for Birthday Notifications"
+        value={selectedChannel ?? ""}
+        onChange={(value) => setSelectedChannel(value)}
       />
 
       <MessagePreview

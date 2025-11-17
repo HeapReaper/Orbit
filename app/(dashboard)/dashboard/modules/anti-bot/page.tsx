@@ -14,6 +14,7 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import ToggleSwitch from "@/app/(dashboard)/dashboard/components/inputs/Switch";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function AntiBotPage() {
   const [loading, setLoading] = useState(false);
@@ -154,18 +155,11 @@ export default function AntiBotPage() {
         </button>
       </div>
 
-      <div className="mb-4">
-        <SelectInput
-          label="Notification channel"
-          value={notificationChannel}
-          onChange={setNotificationChannel}
-          options={channels
-            .filter((c) => c.type === 0) // Filter non text channels out
-            .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-            .map((ch) => ({ value: ch.id, label: ch.name }))
-          }
-        />
-      </div>
+      <ChannelSelect
+        label="Select channel for birthday notifications"
+        value={notificationChannel ?? ""}
+        onChange={(value) => setNotificationChannel(value)}
+      />
 
       <div className="mb-4">
         <NumberInput

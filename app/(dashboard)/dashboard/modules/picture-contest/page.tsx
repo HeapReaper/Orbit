@@ -9,6 +9,7 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 type PictureContest = {
   id: string;
@@ -133,7 +134,6 @@ export default function PictureContestPage() {
             )}
           </div>
 
-          {/* Contest Name */}
           <div className="mb-2">
             <label className="block text-gray-400 mb-1">Contest Name</label>
             <input
@@ -145,37 +145,18 @@ export default function PictureContestPage() {
             />
           </div>
 
-          {/* Contest Channel */}
-          <div className="mb-2">
-            <label className="block text-gray-400 mb-1">Contest Channel</label>
-            <SelectInput
-              label=""
-              value={contest.contestChannel}
-              onChange={(v) => updateContest(contest.id, "contestChannel", v)}
-              options={channels
-                .filter((c) => c.type === 0) // Filter non text channels out
-                .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-                .map((ch) => ({ value: ch.id, label: ch.name }))
-              }
-            />
-          </div>
+          <ChannelSelect
+            label="Select channel for the contest"
+            value={contest.contestChannel ?? ""}
+            onChange={(value) => updateContest(contest.id, "contestChannel", value)}
+          />
 
-          {/* Announcement Channel */}
-          <div className="mb-2">
-            <label className="block text-gray-400 mb-1">Announcement Channel</label>
-            <SelectInput
-              label=""
-              value={contest.announceChannel}
-              onChange={(v) => updateContest(contest.id, "announceChannel", v)}
-              options={channels
-                .filter((c) => c.type === 0) // Filter non text channels out
-                .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-                .map((ch) => ({ value: ch.id, label: ch.name }))
-              }
-            />
-          </div>
+          <ChannelSelect
+            label="Select channel for Picture Contest notifications"
+            value={contest.announceChannel ?? ""}
+            onChange={(value) => updateContest(contest.id, "announceChannel", value)}
+          />
 
-          {/* Vote Emoji */}
           <div className="mb-2">
             <label className="block text-gray-400 mb-1">Vote Emoji</label>
             <input
@@ -187,7 +168,6 @@ export default function PictureContestPage() {
             />
           </div>
 
-          {/* Voting Method */}
           <div className="mb-3">
             <label className="block text-gray-400 mb-1">Voting Method</label>
             <SelectInput
@@ -216,7 +196,6 @@ export default function PictureContestPage() {
             </div>
           )}
 
-          {/* Schedule */}
           <div className="mb-3">
             <label className="block text-gray-400 mb-1">Contest Schedule</label>
             <SelectInput
@@ -231,7 +210,6 @@ export default function PictureContestPage() {
             />
           </div>
 
-          {/* Enabled Toggle */}
           <div className="flex items-center mt-3">
             <span className="text-gray-400 mr-2">Enabled</span>
             <button

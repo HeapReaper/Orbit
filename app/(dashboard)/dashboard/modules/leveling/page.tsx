@@ -7,7 +7,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -121,16 +121,12 @@ export default function Page() {
         </button>
       </div>
 
-      <SelectInput
-        label="Select channel for notifications"
-        value={selectedChannel || ""}
-        onChange={(val) => setSelectedChannel(val)}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel for Leveling notifications"
+        value={selectedChannel ?? ""}
+        onChange={(value) => setSelectedChannel(value)}
       />
+
       <div className="mb-4">
         <label className="block text-sm text-gray-400 mb-2">XP Rate</label>
         <input
