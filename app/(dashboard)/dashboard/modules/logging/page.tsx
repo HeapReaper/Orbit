@@ -3,11 +3,11 @@
 import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { useGuild } from "@/app/context/GuildContext";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -173,7 +173,6 @@ export default function Page() {
         <InfoTooltip text="Select what server events should be logged." />
       </h1>
 
-      {/* Enable toggle */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-gray-400">Enable Logging</span>
         <button
@@ -191,25 +190,17 @@ export default function Page() {
         </button>
       </div>
 
-      {/* Channel selector */}
-      <SelectInput
-        label="Select channel for Logs"
-        value={selectedChannel || ""}
-        onChange={(val) => setSelectedChannel(val)}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel for Logging notifications"
+        value={selectedChannel ?? ""}
+        onChange={(value) => setSelectedChannel(value)}
       />
 
-      {/* Events selector */}
       <div className="mt-4">
         <label className="block text-sm text-gray-400 mb-2">
           Select Events to Log
         </label>
 
-        {/* Search field */}
         <input
           type="text"
           value={search}
@@ -218,7 +209,6 @@ export default function Page() {
           className="w-full bg-[#0f1117] border border-gray-700 rounded p-2 mb-2 text-gray-200 placeholder-gray-500"
         />
 
-        {/* Scrollable list */}
         <div className="flex flex-col gap-2 bg-[#0f1117] border border-gray-700 rounded p-3 max-h-[300px] overflow-y-auto custom-scrollbar">
           {/* Select/Deselect All button */}
           <div className="flex justify-start mb-2">

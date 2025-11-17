@@ -8,6 +8,8 @@ import { useGuild } from "@/app/context/GuildContext";
 import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
+import {c} from "@codemirror/legacy-modes/mode/clike";
 
 export default function TicketsSettingsPage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -110,26 +112,16 @@ export default function TicketsSettingsPage() {
         </button>
       </div>
 
-      <SelectInput
-        label="Ticket channel"
-        value={channel || ""}
-        onChange={setChannel}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel where Ticket threads will be created"
+        value={channel ?? ""}
+        onChange={(value) => setChannel(value)}
       />
 
-      <SelectInput
-        label="Tickets confidential channel"
-        value={channelConfidential || ""}
-        onChange={setChannelConfidential}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel where Ticket confidential threads will be created"
+        value={channelConfidential ?? ""}
+        onChange={(value) => setChannelConfidential(value)}
       />
 
       <div className="text-right text-gray-400 text-sm mt-3">

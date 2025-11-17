@@ -4,7 +4,6 @@ import {useEffect, useRef, useState} from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import DeleteButton from "@/app/(dashboard)/dashboard/components/buttons/Delete";
 import { useNotification } from "@/app/context/NotificationContext";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
@@ -12,6 +11,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
 import {addDashboardLog} from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 type AutoMessage = {
   id: string;
@@ -139,19 +139,11 @@ export default function Page() {
             />
           </div>
 
-          <div className="mb-2">
-            <label className="block text-gray-400 mb-1">Channel</label>
-            <SelectInput
-              label=""
-              value={msg.channel}
-              onChange={(v) => updateAutoMessage(msg.id, "channel", v)}
-              options={[...channels
-                  .filter((c) => c.type === 0) // Filter non text channels out
-                  .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-                  .map((ch) => ({ value: ch.id, label: ch.name }))
-              ]}
-            />
-          </div>
+          <ChannelSelect
+            label="Select channel for the automatic message"
+            value={msg.channel ?? ""}
+            onChange={(value) => updateAutoMessage(msg.id, "channel", value)}
+          />
 
           <div className="mb-2">
             <label className="block text-gray-400 mb-1">Time</label>

@@ -9,7 +9,7 @@ import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
 import TextInput from "@/app/(dashboard)/dashboard/components/inputs/Text";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function MinecraftPage() {
   const [loading, setLoading] = useState(true);
@@ -184,13 +184,10 @@ export default function MinecraftPage() {
           </div>
 
           {notifyEnabled && (
-            <SelectInput
-              label="Select channel for notifications"
-              value={channel}
-              onChange={(val) => setChannel(val)}
-              options={channels
-                .filter((ch) => ch.type === 0)
-                .map((ch) => ({ value: ch.id, label: `${ch.name}` }))}
+            <ChannelSelect
+              label="Select channel for Minecraft notifications"
+              value={channel ?? ""}
+              onChange={(value) => setChannel(value)}
             />
           )}
         </div>

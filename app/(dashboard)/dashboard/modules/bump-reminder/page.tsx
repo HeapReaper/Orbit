@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import SaveButton from "@/app/(dashboard)/dashboard/components/buttons/Save";
 import { useNotification } from "@/app/context/NotificationContext";
 import NumberInput from "@/app/(dashboard)/dashboard/components/inputs/Number";
-import SelectInput from "@/app/(dashboard)/dashboard/components/inputs/Select";
 import { useGuild } from "@/app/context/GuildContext";
 import MarkdownEditor from "@/app/(dashboard)/dashboard/components/MarkdownEditor";
 import MessagePreview from "@/app/(dashboard)/dashboard/components/previews/Message";
@@ -12,6 +11,7 @@ import PageLoader from "@/app/(dashboard)/dashboard/components/PageLoader";
 import cleanMessage from "@/app/lib/cleanMessage";
 import { addDashboardLog } from "@/app/lib/addDashboardLog";
 import InfoTooltip from "@/app/(dashboard)/dashboard/components/ui/InfoToolTip";
+import ChannelSelect from "@/app/(dashboard)/dashboard/components/inputs/ChannelSelect";
 
 export default function BumpReminderPage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -135,15 +135,10 @@ export default function BumpReminderPage() {
         max={24}
       />
 
-      <SelectInput
-        label="Select channel"
-        value={selectedChannel || ""}
-        onChange={setSelectedChannel}
-        options={channels
-          .filter((c) => c.type === 0) // Filter non text channels out
-          .sort((a, b) => a.name.localeCompare(b.name)) // Sort from a to Z
-          .map((ch) => ({ value: ch.id, label: ch.name }))
-        }
+      <ChannelSelect
+        label="Select channel for the bump reminder notification"
+        value={selectedChannel ?? ""}
+        onChange={(value) => setSelectedChannel(value)}
       />
 
       <MessagePreview
