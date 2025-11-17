@@ -12,6 +12,7 @@ import AddBot from "@/app/(dashboard)/dashboard/components/buttons/AddBot";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import JoinOurDiscord from "@/app/(dashboard)/dashboard/components/buttons/JoinOurDiscord";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -22,8 +23,13 @@ export default function Sidebar() {
   const { selectedGuild, setSelectedGuild, guilds, setGuilds } = useGuild();
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
 
-  const filteredModules = modules.filter((module) => module.enabled);
-  const sortedModules = filteredModules.sort((a, b) => a.name.localeCompare(b.name));
+  const sortAndFilterModules = modules
+    .filter((module) => module.enabled)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const isActive = (href: string)=> {
+    return href === usePathname();
+  }
 
   // Fetch only the guilds the user is in
   useEffect(() => {
@@ -150,7 +156,9 @@ export default function Sidebar() {
         <nav className="flex flex-col space-y-2 text-gray-400 mt-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className={
+              `flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md ${isActive("/dashboard") ? "font-bold text-[var(--hover-color)]" : ""}`
+            }
           >
             <Home className="w-6 h-6 text-[var(--primary-color)]" />
             Dashboard
@@ -158,7 +166,9 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/bot"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className={
+              `flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md ${isActive("/dashboard/bot") ? "font-bold text-[var(--hover-color)]" : ""}`
+            }
           >
             <Bot className="w-6 h-6 text-[var(--primary-color)]" />
             Bot
@@ -184,11 +194,13 @@ export default function Sidebar() {
 
             {modulesOpen && (
               <div className="flex flex-col ml-4 mt-1 space-y-1 text-gray-300">
-                {sortedModules.map((module, index: number) => (
+                {sortAndFilterModules.map((module, index: number) => (
                   <Link
                     key={index}
                     href={`/dashboard/modules/${module.url}`}
-                    className="hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+                    className={
+                      `hover:text-[var(--hover-color)] px-2 py-1 rounded-md ${isActive(`/dashboard/modules/${module.url}`) ? "font-bold text-[var(--hover-color)]" : ""}`
+                    }
                   >
                     {module.name}
                   </Link>
@@ -199,7 +211,9 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/modules/commands"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className={
+            `flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md ${isActive("/dashboard/modules/commands") ? "font-bold text-[var(--hover-color)]" : ""}`
+          }
           >
             <SquareChevronRight className="w-6 h-6 text-[var(--primary-color)]" />
             Commands
@@ -207,7 +221,9 @@ export default function Sidebar() {
 
           <Link
             href="/dashboard/logs"
-            className="flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md"
+            className={
+              `flex items-center gap-2 hover:text-[var(--hover-color)] px-2 py-1 rounded-md ${isActive("/dashboard/logs") ? "font-bold text-[var(--hover-color)]" : ""}`
+            }
           >
             <ClipboardClock className="w-6 h-6 text-[var(--primary-color)]" />
             Logs
@@ -238,7 +254,6 @@ export default function Sidebar() {
           <div className="w-full">
             <AddBot />
             <JoinOurDiscord />
-
           </div>
 
           <span className="text-xs text-gray-500">By HeapReaper</span>
