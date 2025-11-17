@@ -165,7 +165,7 @@ const modules: moduleType[] = [
     name: "Mod Link",
     url: "mod-link",
     description: "Synchronize moderation actions across multiple servers automatically.",
-    free: true,
+    free: false,
     enabled: false,
     inDevelopment: true
   },
