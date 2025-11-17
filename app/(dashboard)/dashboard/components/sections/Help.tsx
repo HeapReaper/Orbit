@@ -15,7 +15,7 @@ export default function HelpArticles() {
             key={article.title}
             href={article.link}
             target="_blank"
-            className="bg-[#0d0f13] p-4 rounded-lg hover:border-blue-600 border border-gray-900 transition-colors flex flex-col gap-2 shadow-sm "
+            className="bg-[#14171f] p-4 rounded-lg hover:border-blue-600 border border-gray-900 transition-colors flex flex-col gap-2 shadow-sm "
           >
             <h3 className="text-white font-semibold">{article.title}</h3>
             <p className="text-gray-400 text-sm">{article.description}</p>
