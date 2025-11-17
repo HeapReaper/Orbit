@@ -140,7 +140,7 @@ export default function Page() {
               type="text"
               value={user}
               onChange={(e) => handleUserChange(index, e.target.value)}
-              placeholder="youtube_channel_or_url"
+              placeholder="Youtube channel URL or handle like @FliteTest"
               className="flex-1 bg-[#0f1117] border border-gray-700 rounded p-2 text-white"
             />
             {users.length > 1 && (
