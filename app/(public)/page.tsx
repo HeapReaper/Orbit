@@ -5,8 +5,9 @@ import modules from "@/app/(dashboard)/dashboard/data/modules";
 import FreeLabel from "@/app/(dashboard)/dashboard/components/labels/Free";
 import PremiumLabel from "@/app/(dashboard)/dashboard/components/labels/Premium";
 import helpData from "@/app/(dashboard)/dashboard/data/helpData";
-import {useEffect, useState} from "react";
-import {moduleType} from "@/app/types/modules";
+import { useEffect, useState } from "react";
+import { moduleType } from "@/app/types/modules";
+import reviews from "@/app/(public)/data/reviews";
 
 export default function Home() {
   const [totalServers, setTotalServers] = useState<number | null>(null);
@@ -113,8 +114,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Bot Modules */}
+      {/* Review Section */}
       <section className="px-6 md:px-20 py-16">
+        <h2 className="text-3xl font-bold text-white mb-12 ">
+          What our users say
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {reviews.map((review, index) => (
+            <div className="bg-[#14171f] p-6 rounded-lg hover:shadow-lg hover:border-blue-600 border border-gray-900 transition" key={index}>
+              <div className="flex items-center gap-3 mb-4">
+                <Image
+                  src={review.avatar}
+                  alt="User avatar"
+                  width={50}
+                  height={50}
+                  className="rounded-full border border-gray-700"
+                />
+                <div>
+                  <h4 className="font-semibold">
+                    {review.name}
+                  </h4>
+                  <p className="text-gray-400 text-sm">
+                    {review.title}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-gray-300">
+                "{review.review}"
+              </p>
+
+              <div className="flex text-yellow-400 mt-4"><div className="flex text-yellow-400 mt-4">
+                {review.stars.map((star, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-1"
+                  >
+                    {star}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Bot Modules */}
+      <section className="px-6 md:px-20 py-16 bg-[#101218]">
         <h2 className="text-3xl font-bold text-white mb-8">Bot Modules</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {modules.map((module: moduleType) => (
@@ -146,7 +194,7 @@ export default function Home() {
       </section>
 
       {/* Screenshots Section */}
-      <section className="px-6 md:px-20 py-16 bg-[#101218]">
+      <section className="px-6 md:px-20 py-16">
         <h2 className="text-3xl font-bold text-white mb-8">Configuration Previews</h2>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">
@@ -226,7 +274,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-20 py-16">
+      {/* Help section */}
+      <section className="px-6 md:px-20 py-16 bg-[#101218]">
         <h2 className="text-3xl font-bold text-white mb-8">Help</h2>
 
         <div className="grid md:grid-cols-3 gap-8">
