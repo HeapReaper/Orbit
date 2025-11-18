@@ -14,8 +14,9 @@ import { botSettingsSchema } from "@/app/zod/botSettings";
 export default function BotSettings() {
   const [loading, setLoading] = useState<boolean>(false);
   const { notify } = useNotification();
-  const { selectedGuild, channels } = useGuild();
+  const { selectedGuild, channels, currentGuild } = useGuild();
 
+  console.log(currentGuild)
   const [nickname, setNickname] = useState<string>("Orbit");
   const [language, setLanguage] = useState<string>("");
   const [updatesChannel, setUpdatesChannel] = useState<string>("");
@@ -132,7 +133,12 @@ export default function BotSettings() {
 
       <form className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
-          <TextInput label="Nickname" value={nickname ?? ""} onChange={setNickname} />
+          <TextInput
+            label="Nickname (premium)"
+            value={nickname ?? ""}
+            onChange={setNickname}
+            disabled={!currentGuild?.isPremium}
+          />
 
           <SelectInput
             label="Language"
