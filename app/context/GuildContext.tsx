@@ -33,6 +33,7 @@ interface GuildContextType {
   roles: Role[];
   guilds: Guild[];
   setGuilds: (guilds: Guild[]) => void;
+  currentGuild: Guild | undefined;
 }
 
 const GuildContext = createContext<GuildContextType | undefined>(undefined);
@@ -43,13 +44,31 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
 
+  // Load all guilds
   useEffect(() => {
     const fetchUserGuilds = async () => {
       try {
         const res = await fetch("/api/discord/guilds");
-        console.log(res);
         const data = await res.json();
-        setGuilds(data.guilds || []);
+
+        const fetchedGuilds = data.guilds || [];
+        setGuilds(fetchedGuilds);
+
+        // Fetch premium per guild
+        fetchedGuilds.forEach(async (g: Guild) => {
+          try {
+            const premRes = await fetch(`/api/discord/premium?guildId=${g.id}`);
+            const premData = await premRes.json();
+
+            setGuilds((prev) =>
+              prev.map((x) =>
+                x.id === g.id ? { ...x, isPremium: !!premData } : x
+              )
+            );
+          } catch (err) {
+            console.error("Premium check failed:", err);
+          }
+        });
       } catch (err) {
         console.error(err);
         setGuilds([]);
@@ -59,15 +78,26 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     void fetchUserGuilds();
   }, []);
 
+  // Compute currently active guild
+  const currentGuild = guilds.find((g) => g.id === selectedGuild);
+
+  // Update channels + roles
   useEffect(() => {
-    const guild = guilds.find((g) => g.id === selectedGuild);
-    setChannels(guild?.channels || []);
-    setRoles(guild?.roles || []);
-  }, [selectedGuild, guilds]);
+    setChannels(currentGuild?.channels || []);
+    setRoles(currentGuild?.roles || []);
+  }, [currentGuild]);
 
   return (
     <GuildContext.Provider
-      value={{ selectedGuild, setSelectedGuild, channels, roles, guilds, setGuilds }}
+      value={{
+        selectedGuild,
+        setSelectedGuild,
+        channels,
+        roles,
+        guilds,
+        setGuilds,
+        currentGuild,
+      }}
     >
       {children}
     </GuildContext.Provider>
