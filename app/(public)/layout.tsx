@@ -83,7 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <footer className="bg-[#14171f] text-gray-500 text-center py-6 mt-auto">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-          <p>&copy; {new Date().getFullYear()} Orbit. By HeapReaper.</p>
+          <p>&copy; {new Date().getFullYear()} <span className="underline decoration-purple-700 hover:text-white"><a href="https://klikbit.nl" target="_blank">KlikBit</a></span></p>
           <div className="flex gap-4 text-sm">
             <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
             <span>|</span>

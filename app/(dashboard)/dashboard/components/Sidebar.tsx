@@ -256,7 +256,9 @@ export default function Sidebar() {
             <JoinOurDiscord />
           </div>
 
-          <span className="text-xs text-gray-500">By HeapReaper</span>
+          <p className=" text-gray-300">
+            By <span className="underline decoration-purple-700 hover:text-white"><a href="https://klikbit.nl" target="_blank">KlikBit</a></span>
+          </p>
         </div>
       </aside>
 
